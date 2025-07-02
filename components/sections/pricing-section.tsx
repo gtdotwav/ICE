@@ -4,13 +4,9 @@ import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
-import type { ModalType } from "@/components/home-page"
+import Link from "next/link"
 
-type PricingSectionProps = {
-  onOpenModal: (type: ModalType) => void
-}
-
-export function PricingSection({ onOpenModal }: PricingSectionProps) {
+export function PricingSection() {
   const [visitors, setVisitors] = useState(25000)
   const [conversion, setConversion] = useState(1.5)
   const [ticket, setTicket] = useState(200)
@@ -48,7 +44,6 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
       price: "49",
       features: ["1k decisões/mês", "IA Básica", "Suporte 24/7"],
       highlight: false,
-      action: () => onOpenModal("signUp"),
     },
     {
       name: "Scale AI",
@@ -56,14 +51,12 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
       features: ["100k decisões/mês", "IA Avançada", "Consultoria de IA", "API Access"],
       highlight: true,
       badge: "Mais Popular",
-      action: () => onOpenModal("signUp"),
     },
     {
       name: "Enterprise AI",
       price: "Custom",
       features: ["Decisões Ilimitadas", "IA Customizada", "SLA 99.99%", "Suporte Dedicado"],
       highlight: false,
-      action: () => onOpenModal("contact"),
     },
   ]
 
@@ -256,15 +249,17 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
                   </ul>
 
                   <Button
+                    asChild
                     size="lg"
-                    onClick={plan.action}
                     className={`w-full font-bold transition-all duration-300 ${
                       plan.highlight
                         ? "bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] hover:scale-105"
                         : "bg-secondary text-foreground hover:bg-accent"
                     }`}
                   >
-                    {plan.price === "Custom" ? "Falar com Especialista" : "Começar Agora"}
+                    <Link href="/lista-espera">
+                      {plan.price === "Custom" ? "Falar com Especialista" : "Começar Agora"}
+                    </Link>
                   </Button>
                 </div>
               </div>

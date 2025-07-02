@@ -99,9 +99,9 @@ criteria: 'potential_ltv > 1000'
 type DemoKey = keyof typeof demoData
 
 const outputColors = {
-  green: "border-ai-green/30 bg-gradient-to-r from-ai-green/20 text-ai-green",
-  cyan: "border-ai-cyan/30 bg-gradient-to-r from-ai-cyan/20 text-ai-cyan",
-  purple: "border-ai-purple/30 bg-gradient-to-r from-ai-purple/20 text-ai-purple",
+  green: "border-ai-green/30 bg-gradient-to-r from-ai-green/30 text-ai-green",
+  cyan: "border-ai-cyan/30 bg-gradient-to-r from-ai-cyan/30 text-ai-cyan",
+  purple: "border-ai-purple/30 bg-gradient-to-r from-ai-purple/30 text-ai-purple",
 }
 
 export function TechnicalDemoSection() {
@@ -149,11 +149,7 @@ export function TechnicalDemoSection() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-3xl md:text-5xl font-bold font-display">
-            Veja a{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-frost from-ai-cyan to-ai-purple">
-              IA em Ação
-            </span>{" "}
-            - Ao Vivo
+            Veja a <span className="text-transparent bg-clip-text bg-gradient-frost">IA em Ação</span> - Ao Vivo
           </h2>
           <p className="mt-4 max-w-3xl mx-auto text-lg text-ice-quantum-300">
             Demonstração técnica interativa que mostra como nossa IA otimiza funis em tempo real.
@@ -169,7 +165,7 @@ export function TechnicalDemoSection() {
               className={cn(
                 "border-ice-quantum-700 bg-ice-quantum-800/50 hover:bg-ice-quantum-700/50 transition-all duration-300 gap-2",
                 activeDemo === key &&
-                  "border-ai-cyan/50 bg-gradient-frost from-ai-cyan to-ai-purple text-ice-quantum-950 font-bold hover:opacity-90",
+                  "border-ai-cyan/50 bg-gradient-frost text-ice-quantum-950 font-bold hover:opacity-90",
               )}
             >
               {demoData[key].icon}

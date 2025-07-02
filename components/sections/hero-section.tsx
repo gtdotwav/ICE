@@ -8,6 +8,7 @@ import { HologramScene } from "@/components/three/hologram-scene"
 import { ArrowRight, Bot, Cpu, BarChart } from "lucide-react"
 import { AnimatedText } from "@/components/animated-text"
 import type { ModalType } from "@/components/home-page"
+import Link from "next/link"
 
 type HeroSectionProps = {
   onOpenModal: (type: ModalType) => void
@@ -74,12 +75,14 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
           </motion.div>
           <motion.div className="mt-10 flex flex-col sm:flex-row gap-4" variants={itemVariants}>
             <Button
+              asChild
               size="lg"
-              onClick={() => onOpenModal("signUp")}
               className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all duration-300 group shadow-[0_0_20px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_30px_hsl(var(--primary)/0.8)]"
             >
-              Ativar IA Agora
-              <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              <Link href="/lista-espera">
+                Ativar IA Agora
+                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
             </Button>
             <Button size="lg" variant="outline" onClick={() => onOpenModal("demoVideo")}>
               Ver IA em Ação

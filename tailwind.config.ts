@@ -57,6 +57,10 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // NOVO: Cores personalizadas para a IA
+        "ai-cyan": "hsl(180 90% 65%)",
+        "ai-purple": "hsl(260 70% 60%)",
+        "ai-green": "hsl(140 70% 50%)",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -76,11 +80,22 @@ const config = {
           "0%": { backgroundPosition: "200% 0" },
           "100%": { backgroundPosition: "-200% 0" },
         },
+        // NOVO: Keyframe para animação de gradiente
+        "gradient-move": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "100%": { backgroundPosition: "100% 50%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "subtle-shine": "subtle-shine 5s linear infinite",
+        // NOVO: Animação de gradiente
+        "gradient-move": "gradient-move 3s ease-in-out infinite alternate",
+      },
+      // NOVO: Background Image para o gradiente frost
+      backgroundImage: {
+        "gradient-frost": "linear-gradient(to right, var(--ai-cyan), var(--ai-purple))",
       },
     },
   },
