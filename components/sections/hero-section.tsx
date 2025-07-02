@@ -1,10 +1,7 @@
 "use client"
 
-import { Suspense } from "react"
 import { motion } from "framer-motion"
-import { Canvas } from "@react-three/fiber"
 import { Button } from "@/components/ui/button"
-import { HologramScene } from "@/components/three/hologram-scene"
 import { ArrowRight, Bot, Cpu, BarChart } from "lucide-react"
 import { AnimatedText } from "@/components/animated-text"
 import type { ModalType } from "@/components/home-page"
@@ -37,13 +34,7 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
 
   return (
     <header className="relative flex items-center justify-center min-h-screen w-full overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <Suspense fallback={<div className="w-full h-full bg-background" />}>
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-            <HologramScene />
-          </Canvas>
-        </Suspense>
-      </div>
+      {/* Removido o Canvas daqui - agora está no AnimatedGradient global */}
 
       <div className="relative flex items-center min-h-screen w-full px-4 md:px-8 bg-gradient-to-r from-background via-background/70 to-transparent">
         <motion.div

@@ -36,6 +36,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           spaceGrotesk.variable,
         )}
       >
+        {/* AnimatedGradient agora inclui o HologramScene como fundo global */}
         <AnimatedGradient />
         <div className="relative z-10 flex flex-col min-h-screen">{children}</div>
       </body>
