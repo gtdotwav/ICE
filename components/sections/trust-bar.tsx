@@ -14,7 +14,7 @@ export function TrustBar() {
   const duplicatedMetrics = [...metrics, ...metrics]
 
   return (
-    <section className="bg-secondary/50 border-y border-border leading-9 py-2">
+    <section className="py-8 bg-secondary/50 border-y border-border">
       <div className="w-full overflow-hidden">
         <div className="relative w-full h-10 flex items-center">
           <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background z-10" />

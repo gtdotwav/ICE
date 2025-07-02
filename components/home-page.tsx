@@ -15,6 +15,7 @@ import { DemoVideoPopup } from "@/components/popups/demo-video-popup"
 import { SignUpPopup } from "@/components/popups/signup-popup"
 import { ContactPopup } from "@/components/popups/contact-popup"
 import { ChatContainer } from "@/src/components/chat/ChatContainer"
+import { AnimatePresence } from "framer-motion"
 
 export type ModalType = "demoVideo" | "signUp" | "contact" | null
 
@@ -49,7 +50,7 @@ export default function HomePage() {
       </main>
       <Footer />
 
-      {isChatbotOpen && <ChatContainer onClose={() => setIsChatbotOpen(false)} />}
+      <AnimatePresence>{isChatbotOpen && <ChatContainer onClose={() => setIsChatbotOpen(false)} />}</AnimatePresence>
 
       <Modal isOpen={!!activeModal} onClose={() => setActiveModal(null)}>
         {renderModalContent()}
