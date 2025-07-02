@@ -28,7 +28,7 @@ export function ProblemSection() {
               <span className="text-4xl font-bold">2%</span>
               <span>Conversão</span>
             </div>
-            <div className="flex items-center gap-4 text-yellow-400">
+            <div className="flex items-center gap-4 text-red-900">
               <Clock className="h-8 w-8" />
               <span className="text-4xl font-bold">30 dias</span>
               <span>Para otimizar</span>
@@ -41,7 +41,7 @@ export function ProblemSection() {
             className="space-y-6 text-left border-primary/50 bg-primary/10 shadow-[0_0_40px_hsl(var(--primary)/0.2)]"
           >
             <h3 className="text-2xl font-bold font-display text-foreground">IceFunnel com IA</h3>
-            <div className="flex items-center gap-4 text-green-400">
+            <div className="flex items-center gap-4 text-primary">
               <TrendingUp className="h-8 w-8" />
               <span className="text-4xl font-bold">18%</span>
               <span>Conversão</span>
