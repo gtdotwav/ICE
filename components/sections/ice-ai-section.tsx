@@ -12,14 +12,14 @@ export function IceAiSection() {
     const interval = setInterval(() => {
       setFunnels((prev) => prev + Math.floor(Math.random() * 15) + 1)
       setStructures((prev) => prev + Math.floor(Math.random() * 35) + 5)
-    }, 1500) // Atualiza a cada 1.5 segundos
+    }, 1500)
 
     return () => clearInterval(interval)
   }, [])
 
   return (
-    <section className="py-20 md:py-32 px-4">
-      <div className="container mx-auto text-center">
+    <section className="py-20 md:py-32">
+      <div className="container mx-auto px-4 text-center">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -27,13 +27,13 @@ export function IceAiSection() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-3xl md:text-5xl font-bold font-display">Ice AI em Ação</h2>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-ice-quantum-300">
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
             Nossa inteligência artificial trabalha 24/7 para congelar a concorrência. Veja os dados em tempo real.
           </p>
         </motion.div>
 
         <motion.div
-          className="mt-16 max-w-4xl mx-auto p-8 rounded-2xl border border-ai-green/30 bg-gradient-to-br from-ai-green/10 to-transparent shadow-[0_0_60px_rgba(16,245,158,0.15)] backdrop-blur-lg"
+          className="mt-16 max-w-4xl mx-auto p-8 rounded-lg border border-primary/30 bg-secondary/50 shadow-[0_0_60px_hsl(var(--primary)/0.15)] backdrop-blur-lg"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -41,31 +41,31 @@ export function IceAiSection() {
         >
           <div className="flex items-center justify-center gap-3 mb-6">
             <div className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-ai-green opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-ai-green"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
             </div>
-            <span className="text-lg font-medium text-ai-green">Sistema Operacional</span>
+            <span className="text-lg font-medium text-green-400">Sistema Operacional</span>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 text-left">
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-lg bg-ice-quantum-800 border border-ice-quantum-700">
-                <BrainCircuit className="h-8 w-8 text-ai-purple" />
+              <div className="p-3 rounded-lg bg-background border border-border">
+                <BrainCircuit className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <p className="text-ice-quantum-400">Funis Analisados</p>
-                <p className="text-3xl md:text-4xl font-bold font-display text-white">
+                <p className="text-muted-foreground">Funis Analisados</p>
+                <p className="text-3xl md:text-4xl font-bold font-display text-foreground">
                   {funnels.toLocaleString("pt-BR")}
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <div className="p-3 rounded-lg bg-ice-quantum-800 border border-ice-quantum-700">
-                <SlidersHorizontal className="h-8 w-8 text-ai-cyan" />
+              <div className="p-3 rounded-lg bg-background border border-border">
+                <SlidersHorizontal className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <p className="text-ice-quantum-400">Estruturas Otimizadas</p>
-                <p className="text-3xl md:text-4xl font-bold font-display text-white">
+                <p className="text-muted-foreground">Estruturas Otimizadas</p>
+                <p className="text-3xl md:text-4xl font-bold font-display text-foreground">
                   {structures.toLocaleString("pt-BR")}
                 </p>
               </div>

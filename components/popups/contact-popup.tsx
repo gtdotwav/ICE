@@ -11,22 +11,15 @@ export function ContactPopup() {
       </div>
       <form className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input type="text" placeholder="Nome" className="h-12 bg-ice-quantum-800/50 border-ice-quantum-700" />
-          <Input type="text" placeholder="Empresa" className="h-12 bg-ice-quantum-800/50 border-ice-quantum-700" />
+          <Input type="text" placeholder="Nome" className="h-12 bg-secondary border-border" />
+          <Input type="text" placeholder="Empresa" className="h-12 bg-secondary border-border" />
         </div>
-        <Input
-          type="email"
-          placeholder="E-mail corporativo"
-          className="h-12 bg-ice-quantum-800/50 border-ice-quantum-700"
-        />
-        <Textarea
-          placeholder="Descreva suas necessidades..."
-          className="bg-ice-quantum-800/50 border-ice-quantum-700"
-        />
+        <Input type="email" placeholder="E-mail corporativo" className="h-12 bg-secondary border-border" />
+        <Textarea placeholder="Descreva suas necessidades..." className="bg-secondary border-border" />
         <Button
           size="lg"
           type="submit"
-          className="w-full h-12 bg-gradient-to-r from-ai-cyan to-ai-purple text-white font-bold hover:opacity-90 transition-opacity"
+          className="w-full h-12 bg-primary text-primary-foreground hover:bg-primary/90 transition-opacity"
         >
           Agendar uma Demonstração
         </Button>

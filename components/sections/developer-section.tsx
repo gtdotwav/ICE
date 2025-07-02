@@ -12,8 +12,8 @@ export function DeveloperSection() {
 });`
 
   return (
-    <section className="py-20 md:py-32 px-4 bg-ice-quantum-900">
-      <div className="container mx-auto text-center">
+    <section className="py-20 md:py-32 bg-secondary/30">
+      <div className="container mx-auto px-4 text-center">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -21,23 +21,23 @@ export function DeveloperSection() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-3xl md:text-5xl font-bold font-display">Para Devs: API First, IA Native</h2>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-ice-quantum-300">
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
             Integre o poder da nossa IA em qualquer stack com APIs robustas e SDKs completos.
           </p>
         </motion.div>
 
         <motion.div
-          className="mt-12 max-w-4xl mx-auto bg-ice-quantum-950 rounded-lg border border-ice-quantum-700 text-left shadow-lg"
+          className="mt-12 max-w-4xl mx-auto bg-background/50 rounded-lg border border-border text-left shadow-lg"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6 }}
         >
-          <div className="px-4 py-2 border-b border-ice-quantum-700 flex items-center gap-2">
-            <Terminal className="h-4 w-4 text-ice-quantum-500" />
-            <span className="text-sm text-ice-quantum-400">REST & GraphQL API</span>
+          <div className="px-4 py-2 border-b border-border flex items-center gap-2">
+            <Terminal className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">REST & GraphQL API</span>
           </div>
-          <div className="p-6">
+          <div className="p-6 bg-secondary/30">
             <pre className="text-sm whitespace-pre-wrap">
               <code className="language-typescript">{codeSnippet}</code>
             </pre>
@@ -51,11 +51,7 @@ export function DeveloperSection() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-ai-purple text-ai-purple bg-ai-purple/10 hover:bg-ai-purple/20 hover:text-ai-purple"
-          >
+          <Button size="lg" variant="outline">
             Acessar Documentação
           </Button>
         </motion.div>

@@ -4,7 +4,7 @@ import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
-import type { ModalType } from "@/app/page"
+import type { ModalType } from "@/components/home-page"
 
 type PricingSectionProps = {
   onOpenModal: (type: ModalType) => void
@@ -81,11 +81,9 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
   }
 
   return (
-    <section className="py-20 md:py-32 px-4 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-ice-quantum-950 via-ice-quantum-900 to-ice-quantum-950" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)]" />
-
-      <div className="container mx-auto relative z-10">
+    <section className="py-20 md:py-32 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/30 to-background" />
+      <div className="container mx-auto px-4 relative z-10">
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: -20 }}
@@ -94,12 +92,9 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-3xl md:text-5xl font-bold font-display">
-            Investimento{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-ai-cyan via-ai-purple to-ai-green">
-              Inteligente
-            </span>
+            Investimento <span className="text-primary">Inteligente</span>
           </h2>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-ice-quantum-300">
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
             ROI calculado por IA em tempo real. Escolha o plano que escala com você e congela a concorrência.
           </p>
         </motion.div>
@@ -111,28 +106,24 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <div className="relative p-8 rounded-3xl border border-ai-purple/30 bg-gradient-to-br from-ai-purple/10 via-ai-cyan/5 to-transparent shadow-[0_0_80px_rgba(139,92,246,0.15)] backdrop-blur-xl">
-            <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-ai-cyan/5 to-ai-purple/5 opacity-50" />
-
+          <div className="relative p-8 rounded-lg border border-primary/30 bg-secondary/50 shadow-[0_0_80px_hsl(var(--primary)/0.15)] backdrop-blur-xl">
             <div className="relative z-10">
               <div className="text-center mb-8">
-                <h3 className="text-2xl md:text-3xl font-bold font-display text-white mb-2">Calcule seu ROI com IA</h3>
-                <p className="text-ice-quantum-300">
+                <h3 className="text-2xl md:text-3xl font-bold font-display text-foreground mb-2">
+                  Calcule seu ROI com IA
+                </h3>
+                <p className="text-muted-foreground">
                   Arraste os controles e veja o impacto potencial do IceFunnel em tempo real.
                 </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="space-y-8">
-                  <div className="group">
-                    <label htmlFor="visitors" className="flex justify-between text-ice-quantum-200 mb-3 font-medium">
-                      <span className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-ai-cyan rounded-full" />
-                        Tráfego Mensal
-                      </span>
-                      <span className="font-bold text-white text-lg">
-                        {new Intl.NumberFormat("pt-BR").format(visitors)}
-                      </span>
+                  {/* ROI Controls */}
+                  <div>
+                    <label htmlFor="visitors" className="flex justify-between text-foreground mb-2 font-medium">
+                      <span>Tráfego Mensal</span>
+                      <span className="font-bold text-primary">{new Intl.NumberFormat("pt-BR").format(visitors)}</span>
                     </label>
                     <input
                       id="visitors"
@@ -142,17 +133,13 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
                       step="1000"
                       value={visitors}
                       onChange={(e) => setVisitors(Number(e.target.value))}
-                      className="w-full h-3 bg-ice-quantum-700 rounded-lg appearance-none cursor-pointer range-thumb group-hover:bg-ice-quantum-600 transition-colors"
+                      className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
-
-                  <div className="group">
-                    <label htmlFor="conversion" className="flex justify-between text-ice-quantum-200 mb-3 font-medium">
-                      <span className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-ai-purple rounded-full" />
-                        Taxa de Conversão Atual
-                      </span>
-                      <span className="font-bold text-white text-lg">{conversion.toFixed(1)}%</span>
+                  <div>
+                    <label htmlFor="conversion" className="flex justify-between text-foreground mb-2 font-medium">
+                      <span>Taxa de Conversão Atual</span>
+                      <span className="font-bold text-primary">{conversion.toFixed(1)}%</span>
                     </label>
                     <input
                       id="conversion"
@@ -162,17 +149,13 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
                       step="0.1"
                       value={conversion}
                       onChange={(e) => setConversion(Number(e.target.value))}
-                      className="w-full h-3 bg-ice-quantum-700 rounded-lg appearance-none cursor-pointer range-thumb group-hover:bg-ice-quantum-600 transition-colors"
+                      className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
-
-                  <div className="group">
-                    <label htmlFor="ticket" className="flex justify-between text-ice-quantum-200 mb-3 font-medium">
-                      <span className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-ai-green rounded-full" />
-                        Ticket Médio
-                      </span>
-                      <span className="font-bold text-white text-lg">{formatCurrency(ticket)}</span>
+                  <div>
+                    <label htmlFor="ticket" className="flex justify-between text-foreground mb-2 font-medium">
+                      <span>Ticket Médio</span>
+                      <span className="font-bold text-primary">{formatCurrency(ticket)}</span>
                     </label>
                     <input
                       id="ticket"
@@ -182,31 +165,29 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
                       step="10"
                       value={ticket}
                       onChange={(e) => setTicket(Number(e.target.value))}
-                      className="w-full h-3 bg-ice-quantum-700 rounded-lg appearance-none cursor-pointer range-thumb group-hover:bg-ice-quantum-600 transition-colors"
+                      className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
                 </div>
 
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-ai-cyan/10 to-ai-green/10 rounded-2xl blur-xl" />
-                  <div className="relative p-8 bg-ice-quantum-900/80 rounded-2xl border border-ice-quantum-700/50 backdrop-blur-sm">
+                  <div className="absolute inset-0 bg-primary/10 rounded-2xl blur-xl" />
+                  <div className="relative p-8 bg-background/80 rounded-lg border border-border/50 backdrop-blur-sm">
                     <div className="text-center space-y-6">
                       <div>
-                        <p className="text-ice-quantum-300 text-sm uppercase tracking-wider font-medium mb-2">
+                        <p className="text-muted-foreground text-sm uppercase tracking-wider font-medium mb-2">
                           Receita Adicional Anual
                         </p>
-                        <p className="text-3xl lg:text-4xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-r from-ai-green to-ai-cyan">
+                        <p className="text-3xl lg:text-4xl font-bold font-display text-green-400">
                           {formatCurrency(roiResult.additionalRevenue)}
                         </p>
                       </div>
-
-                      <div className="h-px bg-gradient-to-r from-transparent via-ice-quantum-600 to-transparent" />
-
+                      <div className="h-px bg-border" />
                       <div>
-                        <p className="text-ice-quantum-300 text-sm uppercase tracking-wider font-medium mb-2">
+                        <p className="text-muted-foreground text-sm uppercase tracking-wider font-medium mb-2">
                           ROI Anual Previsto
                         </p>
-                        <p className="text-3xl lg:text-4xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-r from-ai-cyan to-ai-purple">
+                        <p className="text-3xl lg:text-4xl font-bold font-display text-primary">
                           +{roiResult.roi.toFixed(0)}%
                         </p>
                       </div>
@@ -230,52 +211,46 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
               viewport={{ once: true, amount: 0.3 }}
             >
               <div
-                className={`relative p-8 rounded-3xl border flex flex-col h-full transition-all duration-300 ${
+                className={`relative p-8 rounded-lg border flex flex-col h-full transition-all duration-300 ${
                   plan.highlight
-                    ? "border-ai-cyan/50 bg-gradient-to-br from-ice-quantum-800/80 to-ice-quantum-900/80 shadow-[0_0_60px_rgba(0,240,255,0.2)] backdrop-blur-xl"
-                    : "border-ice-quantum-700/50 bg-ice-quantum-900/50 hover:border-ice-quantum-600/50 backdrop-blur-xl"
+                    ? "border-primary/50 bg-secondary/50 shadow-[0_0_60px_hsl(var(--primary)/0.2)]"
+                    : "border-border bg-secondary/30 hover:border-border/80"
                 }`}
               >
                 {plan.highlight && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                    <div className="px-6 py-2 bg-gradient-to-r from-ai-cyan to-ai-purple text-ice-quantum-950 text-sm font-bold rounded-full shadow-lg">
+                    <div className="px-6 py-2 bg-primary text-primary-foreground text-sm font-bold rounded-full shadow-lg">
                       {plan.badge}
                     </div>
                   </div>
                 )}
 
-                {plan.highlight && (
-                  <div className="absolute inset-0 bg-gradient-to-br from-ai-cyan/5 to-ai-purple/5 rounded-3xl" />
-                )}
-
                 <div className="relative z-10 flex flex-col h-full">
                   <div className="mb-6">
-                    <h3 className="text-2xl font-bold font-display text-white mb-2">{plan.name}</h3>
+                    <h3 className="text-2xl font-bold font-display text-foreground mb-2">{plan.name}</h3>
                     <div className="flex items-baseline gap-2">
                       <span
                         className={`text-4xl lg:text-5xl font-bold font-display ${
-                          plan.highlight
-                            ? "text-transparent bg-clip-text bg-gradient-to-r from-ai-cyan to-ai-purple"
-                            : "text-white"
+                          plan.highlight ? "text-primary" : "text-foreground"
                         }`}
                       >
                         {plan.price !== "Custom" ? `$${plan.price}` : plan.price}
                       </span>
-                      {plan.price !== "Custom" && <span className="text-ice-quantum-400 text-lg">/mês</span>}
+                      {plan.price !== "Custom" && <span className="text-muted-foreground text-lg">/mês</span>}
                     </div>
                   </div>
 
-                  <ul className="space-y-4 text-ice-quantum-300 flex-grow mb-8">
+                  <ul className="space-y-4 text-muted-foreground flex-grow mb-8">
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-start gap-3">
                         <div
                           className={`w-5 h-5 rounded-full flex items-center justify-center mt-0.5 ${
-                            plan.highlight ? "bg-ai-cyan/20" : "bg-ai-green/20"
+                            plan.highlight ? "bg-primary/20" : "bg-green-500/20"
                           }`}
                         >
-                          <Check className={`h-3 w-3 ${plan.highlight ? "text-ai-cyan" : "text-ai-green"}`} />
+                          <Check className={`h-3 w-3 ${plan.highlight ? "text-primary" : "text-green-400"}`} />
                         </div>
-                        <span className="text-ice-quantum-200">{feature}</span>
+                        <span className="text-foreground">{feature}</span>
                       </li>
                     ))}
                   </ul>
@@ -285,8 +260,8 @@ export function PricingSection({ onOpenModal }: PricingSectionProps) {
                     onClick={plan.action}
                     className={`w-full font-bold transition-all duration-300 ${
                       plan.highlight
-                        ? "bg-gradient-to-r from-ai-cyan to-ai-purple text-ice-quantum-950 hover:shadow-[0_0_30px_rgba(0,240,255,0.4)] hover:scale-105"
-                        : "bg-ice-quantum-700 text-white hover:bg-ice-quantum-600 border border-ice-quantum-600 hover:border-ice-quantum-500"
+                        ? "bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] hover:scale-105"
+                        : "bg-secondary text-foreground hover:bg-accent"
                     }`}
                   >
                     {plan.price === "Custom" ? "Falar com Especialista" : "Começar Agora"}

@@ -4,10 +4,6 @@ import { motion, type MotionProps } from "framer-motion"
 import { cn } from "@/lib/utils"
 import type { HTMLAttributes } from "react"
 
-// Um componente reutilizável para o efeito de "glassmorphism".
-// Combina `backdrop-blur` com um fundo semi-transparente e bordas sutis.
-// O uso de `motion.div` permite que ele seja animado facilmente com Framer Motion.
-// A propriedade `custom` é usada para criar animações escalonadas (staggered).
 type GlassCardProps = HTMLAttributes<HTMLDivElement> &
   MotionProps & {
     custom?: number
@@ -23,7 +19,7 @@ export function GlassCard({ className, children, custom, ...props }: GlassCardPr
       transition: {
         duration: 0.6,
         delay: i * 0.1,
-        ease: [0.25, 1, 0.5, 1], // Curva de easing suave
+        ease: [0.25, 1, 0.5, 1],
       },
     }),
   }
@@ -31,7 +27,7 @@ export function GlassCard({ className, children, custom, ...props }: GlassCardPr
   return (
     <motion.div
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-ice-quantum-700/50 bg-ice-quantum-800/30 p-8 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-ai-cyan/50",
+        "relative overflow-hidden rounded-lg border border-border bg-secondary/30 p-8 shadow-lg backdrop-blur-xl transition-all duration-300 hover:border-primary/50",
         className,
       )}
       variants={cardVariants}

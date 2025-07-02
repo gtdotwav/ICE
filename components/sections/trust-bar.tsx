@@ -14,26 +14,28 @@ export function TrustBar() {
   const duplicatedMetrics = [...metrics, ...metrics]
 
   return (
-    <div className="w-full py-8 bg-ice-quantum-900 overflow-hidden">
-      <div className="relative w-full h-10 flex items-center">
-        <div className="absolute inset-0 bg-gradient-to-r from-ice-quantum-900 via-transparent to-ice-quantum-900 z-10" />
-        <motion.div
-          className="flex gap-16"
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{
-            ease: "linear",
-            duration: 20,
-            repeat: Number.POSITIVE_INFINITY,
-          }}
-        >
-          {duplicatedMetrics.map((item, index) => (
-            <div key={index} className="flex items-baseline gap-3 whitespace-nowrap">
-              <span className="text-3xl font-bold font-display text-ai-cyan">{item.metric}</span>
-              <span className="text-ice-quantum-400">{item.label}</span>
-            </div>
-          ))}
-        </motion.div>
+    <section className="bg-secondary/50 border-y border-border leading-9 py-2">
+      <div className="w-full overflow-hidden">
+        <div className="relative w-full h-10 flex items-center">
+          <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-background z-10" />
+          <motion.div
+            className="flex gap-16"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{
+              ease: "linear",
+              duration: 20,
+              repeat: Number.POSITIVE_INFINITY,
+            }}
+          >
+            {duplicatedMetrics.map((item, index) => (
+              <div key={index} className="flex items-baseline gap-3 whitespace-nowrap">
+                <span className="text-3xl font-bold font-display text-primary">{item.metric}</span>
+                <span className="text-muted-foreground">{item.label}</span>
+              </div>
+            ))}
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </section>
   )
 }

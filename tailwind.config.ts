@@ -24,27 +24,6 @@ const config = {
         body: ["var(--font-inter)", "sans-serif"],
       },
       colors: {
-        "ice-quantum": {
-          "950": "#0A0F1B",
-          "900": "#0A1628",
-          "800": "#1F3A72",
-          "700": "#2E5090",
-          "600": "#3E67AE",
-          "500": "#6BB7E7",
-          "400": "#8CC8ED",
-          "300": "#ADD9F3",
-          "200": "#CEEAF9",
-          "100": "#EFFBFF",
-        },
-        ai: {
-          cyan: "#00F0FF",
-          purple: "#8B5CF6",
-          green: "#10F59E",
-        },
-        "ice-blue": "#00D4FF",
-        "polar-white": "#F0F8FF",
-        "steel-gray": "#71797E",
-        "petroleum-blue": "#1C2951",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -79,9 +58,10 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-      backgroundImage: {
-        "gradient-frost": "linear-gradient(135deg, var(--tw-gradient-stops))",
-        "gradient-neural": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {
@@ -92,15 +72,15 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "spin-slow": {
-          from: { transform: "rotate(0deg)" },
-          to: { transform: "rotate(360deg)" },
+        "subtle-shine": {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "spin-slow": "spin-slow 20s linear infinite",
+        "subtle-shine": "subtle-shine 5s linear infinite",
       },
     },
   },

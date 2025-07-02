@@ -23,7 +23,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
         >
           {/* Overlay */}
           <motion.div
-            className="absolute inset-0 bg-ice-quantum-950/80 backdrop-blur-sm"
+            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
             onClick={onClose}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -32,7 +32,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
 
           {/* Modal Content */}
           <motion.div
-            className="relative z-10 w-full max-w-2xl rounded-3xl border border-ice-quantum-700/50 bg-ice-quantum-900/50 shadow-2xl shadow-black/50 backdrop-blur-2xl"
+            className="relative z-10 w-full max-w-2xl rounded-lg border border-border bg-background/80 shadow-2xl shadow-black/50 backdrop-blur-2xl"
             initial={{ scale: 0.9, y: 20, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.9, y: 20, opacity: 0 }}
@@ -41,7 +41,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
             <div className="absolute top-4 right-4">
               <button
                 onClick={onClose}
-                className="p-2 rounded-full text-ice-quantum-400 hover:text-white hover:bg-ice-quantum-700/50 transition-colors"
+                className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
                 aria-label="Fechar modal"
               >
                 <X className="h-6 w-6" />
