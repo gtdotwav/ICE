@@ -11,9 +11,10 @@ import type { ModalType } from "@/app/page"
 
 type HeroSectionProps = {
   onOpenModal: (type: ModalType) => void
+  onOpenChatbot: () => void
 }
 
-export function HeroSection({ onOpenModal }: HeroSectionProps) {
+export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
   const features = [
     { icon: <Bot className="h-5 w-5 text-ai-cyan" />, text: "IA Preditiva" },
     { icon: <Cpu className="h-5 w-5 text-ai-cyan" />, text: "Automação Gelada" },
@@ -87,6 +88,15 @@ export function HeroSection({ onOpenModal }: HeroSectionProps) {
               className="border-ai-cyan text-ai-cyan bg-ai-cyan/10 hover:bg-ai-cyan/20 hover:text-ai-cyan backdrop-blur-sm"
             >
               Ver IA em Ação
+            </Button>
+            <Button
+              size="lg"
+              variant="ghost"
+              onClick={onOpenChatbot}
+              className="border-steel-gray/50 text-polar-white bg-steel-gray/10 hover:bg-steel-gray/20 hover:text-white backdrop-blur-sm"
+            >
+              <Bot className="mr-2 h-5 w-5" />
+              Falar com IA
             </Button>
           </motion.div>
         </motion.div>

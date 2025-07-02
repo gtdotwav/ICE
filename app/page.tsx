@@ -14,11 +14,13 @@ import { Modal } from "@/components/ui/modal"
 import { DemoVideoPopup } from "@/components/popups/demo-video-popup"
 import { SignUpPopup } from "@/components/popups/signup-popup"
 import { ContactPopup } from "@/components/popups/contact-popup"
+import { Chatbot } from "@/components/chatbot/chatbot"
 
 export type ModalType = "demoVideo" | "signUp" | "contact" | null
 
 export default function LandingPage() {
   const [activeModal, setActiveModal] = useState<ModalType>(null)
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false)
 
   const renderModalContent = () => {
     switch (activeModal) {
@@ -35,7 +37,7 @@ export default function LandingPage() {
 
   return (
     <div className="overflow-x-hidden">
-      <HeroSection onOpenModal={setActiveModal} />
+      <HeroSection onOpenModal={setActiveModal} onOpenChatbot={() => setIsChatbotOpen(true)} />
       <TrustBar />
       <ProblemSection />
       <FeaturesSection />
@@ -48,6 +50,7 @@ export default function LandingPage() {
       <Modal isOpen={!!activeModal} onClose={() => setActiveModal(null)}>
         {renderModalContent()}
       </Modal>
+      <Chatbot isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
     </div>
   )
 }
