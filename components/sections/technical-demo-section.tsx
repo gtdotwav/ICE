@@ -149,7 +149,7 @@ export function TechnicalDemoSection() {
           transition={{ duration: 0.5 }}
         >
           <h2 className="text-3xl md:text-5xl font-bold font-display">
-            Veja a <span className="text-transparent bg-clip-text bg-gradient-frost">IA em Ação</span> - Ao Vivo
+            Veja a <span className="bg-clip-text bg-gradient-frost text-sky-400">IA em Ação</span> - Ao Vivo
           </h2>
           <p className="mt-4 max-w-3xl mx-auto text-lg text-ice-quantum-300">
             Demonstração técnica interativa que mostra como nossa IA otimiza funis em tempo real.

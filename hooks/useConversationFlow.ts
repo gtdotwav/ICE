@@ -1,12 +1,13 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useCallback } from "react"
+import { useEffect, useCallback, useRef } from "react"
 import { chatFlow, TOTAL_STEPS } from "@/lib/chat-flow"
 import { WelcomeOrchestrator } from "@/components/chat/steps/WelcomeOrchestrator"
+import { BotAnalysis } from "@/components/chat/steps/BotAnalysis"
 import type { ChatState, ChatAction } from "@/lib/chat-reducer"
 
-// Simulação de um serviço de personalização
+// --- Helper Functions for contextual text ---
 const personalizationService = {
   getTrafficSource: (): "Google Ads" | "LinkedIn" | "Organic" | "Direct" => {
     const sources: ["Google Ads", "LinkedIn", "Organic", "Direct"] = ["Google Ads", "LinkedIn", "Organic", "Direct"]
@@ -14,8 +15,17 @@ const personalizationService = {
   },
 }
 
-export const useConversationFlow = (state: ChatState, dispatch: React.Dispatch<ChatAction>) => {
-  const { currentStep, messages, profile } = state
+const getOptionText = (step: number, value: string) => {
+  const stepConfig = chatFlow[step as keyof typeof chatFlow]
+  if (!stepConfig || !("options" in stepConfig)) return ""
+  const option = stepConfig.options.find((o) => o.value === value)
+  return option ? option.text.toLowerCase() : ""
+}
+
+// --- Main Hook ---
+export const useConversationFlow = (state: ChatState, dispatch: React.Dispatch<ChatAction>, onClose: () => void) => {
+  const { currentStep, profile } = state
+  const processedSteps = useRef(new Set<number>())
 
   const addBotMessage = useCallback(
     (content: React.ReactNode, delay = 500, component?: React.ComponentType<any>, componentProps?: any) => {
@@ -29,77 +39,121 @@ export const useConversationFlow = (state: ChatState, dispatch: React.Dispatch<C
   )
 
   const processCurrentStep = useCallback(() => {
-    if (currentStep >= TOTAL_STEPS) {
-      addBotMessage("Nossa conversa chegou ao fim por enquanto. Obrigado!")
-      return
-    }
+    if (currentStep >= TOTAL_STEPS) return
+    if (processedSteps.current.has(currentStep)) return // Evita processamento duplicado
+
+    processedSteps.current.add(currentStep)
 
     const stepConfig = chatFlow[currentStep as keyof typeof chatFlow]
     if (!stepConfig) {
-      // Fallback para caso uma etapa não esteja definida
-      addBotMessage("Parece que chegamos ao fim do nosso fluxo de demonstração. Obrigado!")
+      addBotMessage("Ocorreu um erro. Reiniciando a conversa.")
+      setTimeout(() => dispatch({ type: "RESET" }), 2000)
       return
     }
 
+    // Logic for each step
     switch (currentStep) {
-      case 0: // LANDING_INTELIGENTE
+      case 0: {
         const source = personalizationService.getTrafficSource()
         dispatch({ type: "UPDATE_PROFILE", payload: { source } })
         addBotMessage("", 100, WelcomeOrchestrator, { source })
-        setTimeout(() => dispatch({ type: "NEXT_STEP" }), 3000)
+        setTimeout(() => {
+          processedSteps.current.delete(0) // Permite reprocessar se necessário
+          dispatch({ type: "SET_STEP", payload: 1 })
+        }, 4000)
         break
-
-      case 1: // DIAGNOSTICO_COMPORTAMENTAL
-      case 2: // MAPEAMENTO_DE_DOR
-      case 3: // QUALIFICACAO_TECNICA
-      case 5: // APRESENTACAO_SOLUCAO
-        addBotMessage(stepConfig.message, 1000)
+      }
+      case 2: {
+        const painPointText = getOptionText(1, profile.painPoint)
+        addBotMessage(`Entendido, seu foco é ${painPointText}. E qual o nível de urgência para resolver isso?`, 1000)
         break
-
-      case 4: // TRANQUILIZACAO (etapa condicional)
+      }
+      case 4: {
+        const techLevelText = getOptionText(3, profile.techLevel)
+        addBotMessage(
+          `Perfeito. Com base no seu perfil de "${techLevelText}", estou analisando a melhor solução...`,
+          500,
+        )
+        setTimeout(() => addBotMessage("", 100, BotAnalysis), 1000)
+        setTimeout(() => {
+          processedSteps.current.delete(4)
+          dispatch({ type: "SET_STEP", payload: 5 })
+        }, 5000)
+        break
+      }
+      case 5: {
         const techLevel = profile.techLevel
-        let reassuranceMessage = ""
-        if (techLevel === "developer") {
-          reassuranceMessage =
-            "Excelente. Você vai adorar nossa API robusta, documentação completa e SDKs para as principais linguagens. A integração é rápida e poderosa."
-        } else {
-          // non-technical ou low-code
-          reassuranceMessage =
-            "Perfeito. O IceFunnel foi desenhado para todos. Nossa IA cuida do complexo, e você pode integrar tudo com apenas alguns cliques, sem precisar de código."
-        }
+        const reassuranceMessage =
+          techLevel === "developer"
+            ? "Excelente. Nossa API foi construída para desenvolvedores. A integração é simples e o poder, imenso."
+            : "Perfeito. A IceFunnel foi projetada para ser poderosa e acessível, sem precisar de código."
         addBotMessage(reassuranceMessage, 1000)
-        setTimeout(() => dispatch({ type: "NEXT_STEP" }), 3500) // Auto-avanço para a próxima etapa
+        setTimeout(() => {
+          processedSteps.current.delete(5)
+          dispatch({ type: "SET_STEP", payload: 6 })
+        }, 3500)
         break
-
-      default:
-        addBotMessage(`Estamos na etapa ${currentStep}: ${stepConfig?.name || "Desconhecida"}.`, 1000)
-        setTimeout(() => dispatch({ type: "NEXT_STEP" }), 2000)
+      }
+      case 6: {
+        const painPoint = getOptionText(1, profile.painPoint)
+        const urgency = getOptionText(2, profile.urgencyLevel)
+        const solutionMessage = `Analisei suas respostas. Para o desafio de ${painPoint}, com urgência ${urgency}, o plano **Scale AI** é o ponto de partida ideal para você.`
+        addBotMessage(solutionMessage, 1500)
         break
+      }
+      default: {
+        if (stepConfig.message) {
+          addBotMessage(stepConfig.message, 1000)
+        }
+        break
+      }
     }
   }, [currentStep, addBotMessage, dispatch, profile])
 
+  // Efeito controlado que só roda quando o step muda
   useEffect(() => {
-    // Inicia o fluxo apenas na primeira vez
-    if (messages.length === 0 && currentStep === 0) {
+    processCurrentStep()
+  }, [currentStep]) // Removido 'messages' das dependências para evitar loop
+
+  // Efeito inicial apenas para o primeiro step
+  useEffect(() => {
+    if (currentStep === 0 && !processedSteps.current.has(0)) {
       processCurrentStep()
     }
-  }, [messages.length, currentStep, processCurrentStep])
+  }, []) // Array vazio - roda apenas uma vez
 
-  const handleUserResponse = (option: { text: string; value: string; score?: any }) => {
-    dispatch({ type: "ADD_MESSAGE", payload: { sender: "user", content: option.text } })
-
-    if (option.score) {
-      dispatch({ type: "UPDATE_SCORE", payload: option.score })
+  const handleUserResponse = (option: { text: string; value: string; score?: any; nextStep?: number }) => {
+    if (option.value === "go-home") {
+      onClose()
+      return
     }
 
-    // Atualiza o perfil do usuário com base na resposta
+    dispatch({ type: "SET_INPUT_DISABLED", payload: true })
+    dispatch({ type: "ADD_MESSAGE", payload: { sender: "user", content: option.text } })
+
+    if (option.score) dispatch({ type: "UPDATE_SCORE", payload: option.score })
     if (currentStep === 1) dispatch({ type: "UPDATE_PROFILE", payload: { painPoint: option.value } })
     if (currentStep === 2) dispatch({ type: "UPDATE_PROFILE", payload: { urgencyLevel: option.value } })
     if (currentStep === 3) dispatch({ type: "UPDATE_PROFILE", payload: { techLevel: option.value } })
 
-    dispatch({ type: "NEXT_STEP" })
-    setTimeout(processCurrentStep, 500)
+    const nextStep = option.nextStep || currentStep + 1
+    setTimeout(() => {
+      dispatch({ type: "SET_STEP", payload: nextStep })
+    }, 500)
   }
 
-  return { handleUserResponse }
+  const handleFormSubmit = (value: string) => {
+    dispatch({ type: "SET_INPUT_DISABLED", payload: true })
+    dispatch({ type: "ADD_MESSAGE", payload: { sender: "user", content: value } })
+    dispatch({ type: "UPDATE_PROFILE", payload: { email: value } })
+
+    console.log("Lead capturado:", { ...profile, email: value })
+
+    const nextStep = currentStep + 1
+    setTimeout(() => {
+      dispatch({ type: "SET_STEP", payload: nextStep })
+    }, 500)
+  }
+
+  return { handleUserResponse, handleFormSubmit }
 }

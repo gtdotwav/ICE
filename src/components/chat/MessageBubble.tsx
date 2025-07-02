@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
-import type { Message } from "@/stores/conversationStore"
+import type { Message } from "@/lib/chat-reducer"
 import { Bot } from "lucide-react"
 
 const Avatar = ({ sender }: { sender: "bot" | "user" }) => {
