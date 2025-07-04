@@ -30,7 +30,7 @@ const config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "hsl(var(--primary))", // #2563EB
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
@@ -38,7 +38,7 @@ const config = {
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
+          DEFAULT: "hsl(var(--destructive))", // #EF4444
           foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
@@ -57,10 +57,16 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // NOVO: Cores personalizadas para a IA
+        // Cores personalizadas para a IA
         "ai-cyan": "hsl(180 90% 65%)",
         "ai-purple": "hsl(260 70% 60%)",
         "ai-green": "hsl(140 70% 50%)",
+        // Cores de Status
+        status: {
+          active: "hsl(var(--status-active))", // #10B981
+          draft: "hsl(var(--status-draft))", // #F59E0B
+          archived: "hsl(var(--status-archived))", // #64748B
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
