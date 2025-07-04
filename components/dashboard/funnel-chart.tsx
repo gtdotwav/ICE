@@ -1,7 +1,12 @@
 "use client"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Funnel, FunnelChart as FunnelChartComponent, LabelList, ResponsiveContainer, Tooltip } from "recharts"
+import dynamic from "next/dynamic"
+
+const FunnelChartClient = dynamic(() => import("./funnel-chart.client").then((m) => m.FunnelChartClient), {
+  ssr: false,
+  loading: () => null,
+})
 
 const data = [
   { value: 12540, name: "Visitantes", fill: "#8884d8" },
@@ -19,19 +24,7 @@ export function FunnelChart() {
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <FunnelChartComponent>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "hsl(var(--background) / 0.8)",
-                  borderColor: "hsl(var(--border))",
-                }}
-              />
-              <Funnel dataKey="value" data={data} isAnimationActive>
-                <LabelList position="right" fill="#fff" stroke="none" dataKey="name" />
-              </Funnel>
-            </FunnelChartComponent>
-          </ResponsiveContainer>
+          <FunnelChartClient />
         </div>
       </CardContent>
     </Card>
