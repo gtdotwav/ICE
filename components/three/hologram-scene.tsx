@@ -1,10 +1,10 @@
 "use client"
 
-import { Canvas, useFrame } from "@react-three/fiber"
+import { useFrame } from "@react-three/fiber"
 import { Icosahedron, useTexture } from "@react-three/drei"
 import { useRef, useMemo, useEffect } from "react"
-import * as THREE from "three"
 import { gsap } from "gsap"
+import * as THREE from "three"
 
 /*────────────────── GLSL ──────────────────*/
 const vertex = /* glsl */ `
@@ -44,8 +44,8 @@ const fragment = /* glsl */ `
 
 /*───────────────── Mesh ───────────────────*/
 export function Hologram() {
-  const mesh = useRef<THREE.Mesh>(null!)
-  const mat = useRef<THREE.ShaderMaterial>(null!)
+  const mesh = useRef<any>(null!)
+  const mat = useRef<any>(null!)
   const tex = useTexture("/placeholder-logo.png")
 
   const uniforms = useMemo(
@@ -71,9 +71,13 @@ export function Hologram() {
   }, [])
 
   useFrame((state, delta) => {
-    mat.current.uniforms.uTime.value = state.clock.getElapsedTime()
-    mesh.current.rotation.x += delta * 0.1
-    mesh.current.rotation.y += delta * 0.15
+    if (mat.current) {
+      mat.current.uniforms.uTime.value = state.clock.getElapsedTime()
+    }
+    if (mesh.current) {
+      mesh.current.rotation.x += delta * 0.1
+      mesh.current.rotation.y += delta * 0.15
+    }
   })
 
   return (
@@ -90,18 +94,3 @@ export function Hologram() {
     </Icosahedron>
   )
 }
-
-/*──────────────── Stand-alone demo (optional) ───────────────*/
-// ───────────────────────────────────────────────────────────
-// Stand-alone demo canvas.  Needed as a **named** export for
-// other pages and as default for local previews.
-export const HologramScene = () => (
-  <Canvas camera={{ position: [0, 0, 5] }}>
-    <ambientLight intensity={0.4} />
-    <directionalLight position={[3, 4, 5]} intensity={1} />
-    <Hologram />
-  </Canvas>
-)
-
-// Exporting as default as well keeps existing imports working.
-export default HologramScene

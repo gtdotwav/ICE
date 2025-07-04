@@ -1,27 +1,36 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { motion } from "framer-motion"
+import type { ReactNode } from "react"
 
 interface AnimatedTextProps {
-  text: string
+  children: ReactNode
   className?: string
   delay?: number
 }
 
-export function AnimatedText({ text, className = "", delay = 50 }: AnimatedTextProps) {
-  const [displayedText, setDisplayedText] = useState("")
-  const [currentIndex, setCurrentIndex] = useState(0)
+export function AnimatedText({ children, className = "", delay = 0 }: AnimatedTextProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
 
-  useEffect(() => {
-    if (currentIndex < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayedText((prev) => prev + text[currentIndex])
-        setCurrentIndex((prev) => prev + 1)
-      }, delay)
-
-      return () => clearTimeout(timeout)
-    }
-  }, [currentIndex, text, delay])
-
-  return <span className={className}>{displayedText}</span>
+export function AnimatedTextReveal({ children, className = "", delay = 0 }: AnimatedTextProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, delay, ease: "easeOut" }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
 }

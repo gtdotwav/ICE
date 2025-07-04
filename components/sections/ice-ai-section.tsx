@@ -1,58 +1,54 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Sparkles, Zap, Target } from "lucide-react"
+"use client"
+
+import { View } from "@react-three/drei"
+import { useRef } from "react"
+import { Hologram } from "@/components/three/hologram-scene"
+import { AnimatedText } from "@/components/animated-text"
 
 export function IceAiSection() {
+  const viewRef = useRef<HTMLDivElement>(null)
+
   return (
-    <section className="py-24 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950 dark:to-indigo-900">
+    <section className="py-20 bg-gradient-to-b from-background to-muted/20">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">
-            Powered by <span className="text-blue-600">ICE AI</span>
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Nossa inteligência artificial revolucionária que transforma dados em insights acionáveis
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <Card className="text-center">
-            <CardHeader>
-              <Sparkles className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <CardTitle>Análise Inteligente</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Analisa comportamentos e padrões para otimizar suas conversões automaticamente
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <AnimatedText>
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                Powered by ICE AI
+              </h2>
+            </AnimatedText>
+            <AnimatedText delay={0.2}>
+              <p className="text-xl text-muted-foreground">
+                Nossa inteligência artificial revolucionária analisa comportamentos, otimiza conversões e personaliza
+                experiências em tempo real.
               </p>
-            </CardContent>
-          </Card>
+            </AnimatedText>
+            <AnimatedText delay={0.4}>
+              <ul className="space-y-3">
+                <li className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-primary rounded-full" />
+                  <span>Análise preditiva de comportamento</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-primary rounded-full" />
+                  <span>Otimização automática de funis</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="w-2 h-2 bg-primary rounded-full" />
+                  <span>Personalização em tempo real</span>
+                </li>
+              </ul>
+            </AnimatedText>
+          </div>
 
-          <Card className="text-center">
-            <CardHeader>
-              <Zap className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <CardTitle>Otimização Automática</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Ajusta elementos do funil em tempo real para maximizar resultados</p>
-            </CardContent>
-          </Card>
-
-          <Card className="text-center">
-            <CardHeader>
-              <Target className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <CardTitle>Targeting Preciso</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Identifica e segmenta seu público ideal com precisão cirúrgica</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="text-center">
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
-            Experimente o ICE AI
-          </Button>
+          <div className="relative h-[400px] w-full">
+            <div ref={viewRef} className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/10 to-blue-600/10">
+              <View track={viewRef}>
+                <Hologram />
+              </View>
+            </div>
+          </div>
         </div>
       </div>
     </section>

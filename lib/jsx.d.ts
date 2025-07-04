@@ -6,9 +6,5 @@ declare global {
         "data-custom-attr"?: string
       }
     }
-
-    interface HTMLAttributes<T> {
-      "data-custom-attr"?: string
-    }
   }
 }
