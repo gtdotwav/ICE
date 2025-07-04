@@ -37,7 +37,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           spaceGrotesk.variable,
         )}
       >
-        {/* The animation layer now mounts ONLY on the client */}
         <AnimatedGradientClient />
         <div className="relative z-10 flex flex-col min-h-screen">{children}</div>
       </body>

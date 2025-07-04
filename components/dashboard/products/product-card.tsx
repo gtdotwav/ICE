@@ -1,71 +1,74 @@
 "use client"
 
-import { Archive, Copy, MoreVertical, Pencil } from "lucide-react"
+import { Pencil, ShoppingCart } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import type { Product, ProductStatus } from "@/lib/types"
 import { Button } from "@/components/ui/button"
+import type { Product } from "@/lib/types"
 
 interface ProductCardProps {
   product: Product
   onEdit: (product: Product) => void
 }
 
-const statusConfig: Record<ProductStatus, { label: string; className: string }> = {
-  active: { label: "Ativo", className: "bg-status-active hover:bg-status-active" },
-  draft: { label: "Rascunho", className: "bg-status-draft hover:bg-status-draft" },
-  archived: { label: "Arquivado", className: "bg-status-archived hover:bg-status-archived text-white" },
-}
-
 export function ProductCard({ product, onEdit }: ProductCardProps) {
-  const { name, price, status, imageUrl } = product
-  const currentStatus = statusConfig[status]
+  const {
+    name,
+    category,
+    price,
+    imageUrl = "/placeholder.svg", // fallback path
+    status,
+  } = product
 
   return (
-    <Card>
-      <CardHeader className="p-0">
-        <div className="relative">
-          <img
-            src={imageUrl || "/placeholder.svg?width=400&height=225&query=Product"}
-            alt={name}
-            width={400}
-            height={225}
-            className="aspect-video w-full rounded-t-lg object-cover"
-          />
-          <Badge className={`absolute right-2 top-2 ${currentStatus.className}`}>{currentStatus.label}</Badge>
+    <div
+      className="group relative flex flex-col overflow-hidden rounded-xl bg-white/90 shadow
+                 transition hover:shadow-lg dark:bg-background/70"
+    >
+      {/* product image */}
+      <img
+        src={imageUrl || "/placeholder.svg"}
+        alt={name}
+        onError={(e) => {
+          // if the image fails, replace with placeholder once
+          const target = e.currentTarget
+          if (target.dataset.errored !== "true") {
+            target.dataset.errored = "true"
+            target.src = "/placeholder.svg"
+          }
+        }}
+        className="h-40 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+      />
+
+      {/* info */}
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="line-clamp-2 font-semibold">{name}</h3>
+          <Badge variant={status === "active" ? "default" : "secondary"}>
+            {status === "active" ? "Ativo" : "Rascunho"}
+          </Badge>
         </div>
-      </CardHeader>
-      <CardContent className="p-4">
-        <CardTitle className="text-lg font-semibold leading-tight">{name}</CardTitle>
-        <CardDescription className="mt-2 text-2xl font-bold text-foreground">
-          R$ {price.toFixed(2).replace(".", ",")}
-        </CardDescription>
-      </CardContent>
-      <CardFooter className="flex justify-between p-4 pt-0">
-        <Button variant="outline" size="sm" onClick={() => onEdit(product)}>
-          <Pencil className="mr-2 size-4" />
-          Editar
-        </Button>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <MoreVertical className="size-4" />
-              <span className="sr-only">Mais ações</span>
+
+        <p className="text-sm text-muted-foreground">{category}</p>
+
+        <div className="mt-auto flex items-center justify-between">
+          <span className="text-lg font-bold">
+            {price.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+            })}
+          </span>
+
+          <div className="flex gap-2">
+            <Button size="icon" variant="ghost" onClick={() => onEdit(product)} aria-label="Editar produto">
+              <Pencil className="size-4" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Copy className="mr-2 size-4" />
-              Duplicar
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Archive className="mr-2 size-4" />
-              Arquivar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </CardFooter>
-    </Card>
+
+            <Button size="icon" variant="outline" aria-label="Adicionar ao carrinho">
+              <ShoppingCart className="size-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }

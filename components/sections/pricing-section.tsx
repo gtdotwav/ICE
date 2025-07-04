@@ -1,15 +1,30 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 
 export function PricingSection() {
   const [visitors, setVisitors] = useState(25000)
   const [conversion, setConversion] = useState(1.5)
   const [ticket, setTicket] = useState(200)
+
+  const updateRangeBackground = (element: HTMLInputElement) => {
+    if (element) {
+      const min = Number.parseFloat(element.min)
+      const max = Number.parseFloat(element.max)
+      const val = Number.parseFloat(element.value)
+      const percentage = ((val - min) * 100) / (max - min)
+      element.style.backgroundSize = `${percentage}% 100%`
+    }
+  }
+
+  useEffect(() => {
+    document.querySelectorAll<HTMLInputElement>('input[type="range"]').forEach(updateRangeBackground)
+  }, [visitors, conversion, ticket])
 
   const roiResult = useMemo(() => {
     const icefunnelPlanCost = 199 * 12
@@ -75,7 +90,6 @@ export function PricingSection() {
 
   return (
     <section className="py-20 md:py-32 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/30 to-background" />
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
           className="text-center mb-16"
@@ -99,92 +113,95 @@ export function PricingSection() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <div className="relative p-8 rounded-lg border border-primary/30 bg-secondary/50 shadow-[0_0_80px_hsl(var(--primary)/0.15)] backdrop-blur-xl">
-            <div className="relative z-10">
-              <div className="text-center mb-8">
-                <h3 className="text-2xl md:text-3xl font-bold font-display text-foreground mb-2">
-                  Calcule seu ROI com IA
-                </h3>
-                <p className="text-muted-foreground">
-                  Arraste os controles e veja o impacto potencial do IceFunnel em tempo real.
-                </p>
+          <div className="relative p-8 rounded-2xl border border-primary/20 bg-secondary/30 shadow-2xl shadow-primary/10 backdrop-blur-xl">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl md:text-3xl font-bold font-display text-foreground mb-2">
+                Calcule seu ROI com IA
+              </h3>
+              <p className="text-muted-foreground">
+                Arraste os controles e veja o impacto potencial do IceFunnel em tempo real.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 items-center">
+              <div className="space-y-8">
+                <div>
+                  <label htmlFor="visitors" className="flex justify-between text-foreground mb-2 font-medium">
+                    <span>Tráfego Mensal</span>
+                    <span className="font-bold text-primary">{new Intl.NumberFormat("pt-BR").format(visitors)}</span>
+                  </label>
+                  <input
+                    id="visitors"
+                    type="range"
+                    min="1000"
+                    max="200000"
+                    step="1000"
+                    value={visitors}
+                    onChange={(e) => {
+                      setVisitors(Number(e.target.value))
+                      updateRangeBackground(e.target)
+                    }}
+                    className="w-full h-2 rounded-lg appearance-none"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="conversion" className="flex justify-between text-foreground mb-2 font-medium">
+                    <span>Taxa de Conversão Atual</span>
+                    <span className="font-bold text-primary">{conversion.toFixed(1)}%</span>
+                  </label>
+                  <input
+                    id="conversion"
+                    type="range"
+                    min="0.5"
+                    max="10"
+                    step="0.1"
+                    value={conversion}
+                    onChange={(e) => {
+                      setConversion(Number(e.target.value))
+                      updateRangeBackground(e.target)
+                    }}
+                    className="w-full h-2 rounded-lg appearance-none"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="ticket" className="flex justify-between text-foreground mb-2 font-medium">
+                    <span>Ticket Médio</span>
+                    <span className="font-bold text-primary">{formatCurrency(ticket)}</span>
+                  </label>
+                  <input
+                    id="ticket"
+                    type="range"
+                    min="50"
+                    max="2000"
+                    step="10"
+                    value={ticket}
+                    onChange={(e) => {
+                      setTicket(Number(e.target.value))
+                      updateRangeBackground(e.target)
+                    }}
+                    className="w-full h-2 rounded-lg appearance-none"
+                  />
+                </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-8 items-center">
-                <div className="space-y-8">
-                  {/* ROI Controls */}
+              <div className="relative p-8 bg-background/50 rounded-lg border border-border/50 backdrop-blur-sm">
+                <div className="text-center space-y-6">
                   <div>
-                    <label htmlFor="visitors" className="flex justify-between text-foreground mb-2 font-medium">
-                      <span>Tráfego Mensal</span>
-                      <span className="font-bold text-primary">{new Intl.NumberFormat("pt-BR").format(visitors)}</span>
-                    </label>
-                    <input
-                      id="visitors"
-                      type="range"
-                      min="1000"
-                      max="200000"
-                      step="1000"
-                      value={visitors}
-                      onChange={(e) => setVisitors(Number(e.target.value))}
-                      className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
-                    />
+                    <p className="text-muted-foreground text-sm uppercase tracking-wider font-medium mb-2">
+                      Receita Adicional Anual
+                    </p>
+                    <p className="text-3xl lg:text-4xl font-bold font-display text-green-400">
+                      {formatCurrency(roiResult.additionalRevenue)}
+                    </p>
                   </div>
+                  <div className="h-px bg-border" />
                   <div>
-                    <label htmlFor="conversion" className="flex justify-between text-foreground mb-2 font-medium">
-                      <span>Taxa de Conversão Atual</span>
-                      <span className="font-bold text-primary">{conversion.toFixed(1)}%</span>
-                    </label>
-                    <input
-                      id="conversion"
-                      type="range"
-                      min="0.5"
-                      max="10"
-                      step="0.1"
-                      value={conversion}
-                      onChange={(e) => setConversion(Number(e.target.value))}
-                      className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="ticket" className="flex justify-between text-foreground mb-2 font-medium">
-                      <span>Ticket Médio</span>
-                      <span className="font-bold text-primary">{formatCurrency(ticket)}</span>
-                    </label>
-                    <input
-                      id="ticket"
-                      type="range"
-                      min="50"
-                      max="2000"
-                      step="10"
-                      value={ticket}
-                      onChange={(e) => setTicket(Number(e.target.value))}
-                      className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
-                    />
-                  </div>
-                </div>
-
-                <div className="relative">
-                  <div className="absolute inset-0 bg-primary/10 rounded-2xl blur-xl" />
-                  <div className="relative p-8 bg-background/80 rounded-lg border border-border/50 backdrop-blur-sm">
-                    <div className="text-center space-y-6">
-                      <div>
-                        <p className="text-muted-foreground text-sm uppercase tracking-wider font-medium mb-2">
-                          Receita Adicional Anual
-                        </p>
-                        <p className="text-3xl lg:text-4xl font-bold font-display text-green-400">
-                          {formatCurrency(roiResult.additionalRevenue)}
-                        </p>
-                      </div>
-                      <div className="h-px bg-border" />
-                      <div>
-                        <p className="text-muted-foreground text-sm uppercase tracking-wider font-medium mb-2">
-                          ROI Anual Previsto
-                        </p>
-                        <p className="text-3xl lg:text-4xl font-bold font-display text-primary">
-                          +{roiResult.roi.toFixed(0)}%
-                        </p>
-                      </div>
-                    </div>
+                    <p className="text-muted-foreground text-sm uppercase tracking-wider font-medium mb-2">
+                      ROI Anual Previsto
+                    </p>
+                    <p className="text-3xl lg:text-4xl font-bold font-display text-primary">
+                      +{roiResult.roi.toFixed(0)}%
+                    </p>
                   </div>
                 </div>
               </div>
@@ -196,7 +213,7 @@ export function PricingSection() {
           {plans.map((plan, index) => (
             <motion.div
               key={plan.name}
-              className={`relative group ${plan.highlight ? "lg:-mt-4 lg:mb-4" : ""}`}
+              className={cn("relative group", plan.highlight && "lg:-mt-4 lg:mb-4")}
               variants={cardVariants}
               custom={index}
               initial="hidden"
@@ -204,28 +221,30 @@ export function PricingSection() {
               viewport={{ once: true, amount: 0.3 }}
             >
               <div
-                className={`relative p-8 rounded-lg border flex flex-col h-full transition-all duration-300 ${
+                className={cn(
+                  "relative p-8 rounded-2xl border flex flex-col h-full transition-all duration-300",
                   plan.highlight
-                    ? "border-primary/50 bg-secondary/50 shadow-[0_0_60px_hsl(var(--primary)/0.2)]"
-                    : "border-border bg-secondary/30 hover:border-border/80"
-                }`}
+                    ? "bg-secondary/50 border-primary/50 shadow-2xl shadow-primary/10"
+                    : "border-border bg-secondary/30 hover:border-border/80 hover:bg-secondary/50",
+                )}
               >
                 {plan.highlight && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                    <div className="px-6 py-2 bg-primary text-primary-foreground text-sm font-bold rounded-full shadow-lg">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                    <div className="px-6 py-2 bg-primary text-primary-foreground text-sm font-bold rounded-full shadow-lg shadow-primary/30">
                       {plan.badge}
                     </div>
                   </div>
                 )}
 
-                <div className="relative z-10 flex flex-col h-full">
+                <div className="flex flex-col h-full">
                   <div className="mb-6">
                     <h3 className="text-2xl font-bold font-display text-foreground mb-2">{plan.name}</h3>
                     <div className="flex items-baseline gap-2">
                       <span
-                        className={`text-4xl lg:text-5xl font-bold font-display ${
-                          plan.highlight ? "text-primary" : "text-foreground"
-                        }`}
+                        className={cn(
+                          "text-4xl lg:text-5xl font-bold font-display",
+                          plan.highlight ? "text-primary" : "text-foreground",
+                        )}
                       >
                         {plan.price !== "Custom" ? `$${plan.price}` : plan.price}
                       </span>
@@ -237,11 +256,12 @@ export function PricingSection() {
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-start gap-3">
                         <div
-                          className={`w-5 h-5 rounded-full flex items-center justify-center mt-0.5 ${
-                            plan.highlight ? "bg-primary/20" : "bg-green-500/20"
-                          }`}
+                          className={cn(
+                            "w-5 h-5 rounded-full flex items-center justify-center mt-0.5 shrink-0",
+                            plan.highlight ? "bg-primary/20" : "bg-green-500/20",
+                          )}
                         >
-                          <Check className={`h-3 w-3 ${plan.highlight ? "text-primary" : "text-green-400"}`} />
+                          <Check className={cn("h-3 w-3", plan.highlight ? "text-primary" : "text-green-400")} />
                         </div>
                         <span className="text-foreground">{feature}</span>
                       </li>
@@ -251,11 +271,12 @@ export function PricingSection() {
                   <Button
                     asChild
                     size="lg"
-                    className={`w-full font-bold transition-all duration-300 ${
+                    className={cn(
+                      "w-full font-bold transition-all duration-300 mt-auto",
                       plan.highlight
                         ? "bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] hover:scale-105"
-                        : "bg-secondary text-foreground hover:bg-accent"
-                    }`}
+                        : "bg-secondary text-foreground hover:bg-accent",
+                    )}
                   >
                     <Link href="/lista-espera">
                       {plan.price === "Custom" ? "Falar com Especialista" : "Começar Agora"}
