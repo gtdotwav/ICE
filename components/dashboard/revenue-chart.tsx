@@ -1,8 +1,8 @@
 import RevenueChartClientWrapper from "./revenue-chart-client-wrapper"
 
 /**
- * Server Component – streams the client-only chart.
- * We export BOTH named and default to satisfy every import style.
+ * Server Component that renders the client chart wrapper.
+ * Exports both named and default exports for flexibility.
  */
 export function RevenueChart() {
   return <RevenueChartClientWrapper />
