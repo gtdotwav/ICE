@@ -68,7 +68,8 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 768)
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
       if (window.innerWidth < 1024) {
         setIsCollapsed(true)
       }
@@ -88,27 +89,27 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
       <div
         className={cn(
           "flex h-full flex-col glass-card border-r transition-all duration-300 ease-in-out",
-          isCollapsed ? "w-16" : "w-64",
+          isCollapsed && !isMobile ? "w-16" : "w-64",
           className,
         )}
       >
         {/* Header */}
-        <div className="flex h-16 items-center justify-between border-b border-white/10 px-4">
-          {!isCollapsed && (
-            <div className="flex items-center gap-3 animate-fade-in">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20 backdrop-blur-sm ring-1 ring-primary/30">
-                <BarChart3 className="h-5 w-5 text-primary" />
+        <div className="flex h-14 sm:h-16 items-center justify-between border-b border-white/10 px-3 sm:px-4">
+          {(!isCollapsed || isMobile) && (
+            <div className="flex items-center gap-2 sm:gap-3 animate-fade-in">
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-primary/20 backdrop-blur-sm ring-1 ring-primary/30">
+                <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               </div>
               <div className="flex flex-col">
-                <h2 className="text-lg font-bold gradient-primary">IceFunnel</h2>
+                <h2 className="text-base sm:text-lg font-bold gradient-primary">IceFunnel</h2>
                 <span className="text-xs text-muted-foreground">Dashboard</span>
               </div>
             </div>
           )}
 
-          {isCollapsed && (
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20 backdrop-blur-sm ring-1 ring-primary/30 mx-auto">
-              <BarChart3 className="h-5 w-5 text-primary" />
+          {isCollapsed && !isMobile && (
+            <div className="flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-primary/20 backdrop-blur-sm ring-1 ring-primary/30 mx-auto">
+              <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
             </div>
           )}
 
@@ -117,16 +118,20 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
               variant="ghost"
               size="icon"
               onClick={toggleSidebar}
-              className="h-8 w-8 glass-button hover:scale-110 transition-all duration-200"
+              className="h-6 w-6 sm:h-8 sm:w-8 glass-button hover:scale-110 transition-all duration-200"
             >
-              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+              {isCollapsed ? (
+                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+              ) : (
+                <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+              )}
             </Button>
           )}
         </div>
 
         {/* Navigation */}
-        <ScrollArea className="flex-1 px-3 py-4">
-          <nav className="space-y-2">
+        <ScrollArea className="flex-1 px-2 sm:px-3 py-3 sm:py-4">
+          <nav className="space-y-1 sm:space-y-2">
             {navigation.map((item, index) => {
               const isActive = pathname === item.href
               const NavButton = (
@@ -134,8 +139,10 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                   variant="ghost"
                   className={cn(
                     "w-full transition-all duration-200 group relative",
-                    isCollapsed ? "h-12 px-0 justify-center" : "h-12 px-4 justify-start",
-                    "hover:bg-white/10 hover:backdrop-blur-sm hover:scale-[1.02] hover:shadow-lg",
+                    isCollapsed && !isMobile
+                      ? "h-10 sm:h-12 px-0 justify-center"
+                      : "h-10 sm:h-12 px-3 sm:px-4 justify-start",
+                    "hover:bg-white/10 hover:backdrop-blur-sm hover:scale-[1.02] hover:shadow-lg text-xs sm:text-sm",
                     isActive &&
                       "bg-primary/20 text-primary backdrop-blur-sm border border-primary/30 shadow-lg scale-[1.02]",
                     "focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2",
@@ -144,19 +151,19 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                 >
                   <item.icon
                     className={cn(
-                      "h-5 w-5 transition-all duration-200",
-                      isCollapsed ? "mx-auto" : "mr-3",
+                      "h-4 w-4 sm:h-5 sm:w-5 transition-all duration-200",
+                      isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3",
                       isActive && "text-primary scale-110",
                     )}
                   />
 
-                  {!isCollapsed && (
+                  {(!isCollapsed || isMobile) && (
                     <>
                       <span className="flex-1 text-left font-medium">{item.name}</span>
                       {item.badge && (
                         <Badge
                           variant="secondary"
-                          className="ml-auto bg-primary/20 text-primary text-xs px-2 py-0.5 border border-primary/30 animate-pulse"
+                          className="ml-auto bg-primary/20 text-primary text-xs px-1.5 sm:px-2 py-0.5 border border-primary/30 animate-pulse"
                         >
                           {item.badge}
                         </Badge>
@@ -166,21 +173,21 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
 
                   {/* Active indicator */}
                   {isActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-r-full" />
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 sm:h-8 bg-primary rounded-r-full" />
                   )}
                 </Button>
               )
 
               return (
                 <div key={item.name} className="animate-slide-up">
-                  {isCollapsed ? (
+                  {isCollapsed && !isMobile ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Link href={item.href}>{NavButton}</Link>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="glass-card border-white/10">
                         <div className="flex flex-col gap-1">
-                          <span className="font-medium">{item.name}</span>
+                          <span className="font-medium text-sm">{item.name}</span>
                           <span className="text-xs text-muted-foreground">{item.description}</span>
                           {item.badge && (
                             <Badge variant="secondary" className="w-fit bg-primary/20 text-primary text-xs">
@@ -202,7 +209,7 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
         <Separator className="bg-white/10" />
 
         {/* User Section */}
-        <div className="p-3 space-y-2">
+        <div className="p-2 sm:p-3 space-y-1 sm:space-y-2">
           {/* Help Button */}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -210,15 +217,19 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                 variant="ghost"
                 className={cn(
                   "w-full transition-all duration-200",
-                  isCollapsed ? "h-12 px-0 justify-center" : "h-12 px-4 justify-start",
-                  "hover:bg-white/10 hover:backdrop-blur-sm text-muted-foreground hover:text-foreground",
+                  isCollapsed && !isMobile
+                    ? "h-10 sm:h-12 px-0 justify-center"
+                    : "h-10 sm:h-12 px-3 sm:px-4 justify-start",
+                  "hover:bg-white/10 hover:backdrop-blur-sm text-muted-foreground hover:text-foreground text-xs sm:text-sm",
                 )}
               >
-                <HelpCircle className={cn("h-5 w-5", isCollapsed ? "mx-auto" : "mr-3")} />
-                {!isCollapsed && <span className="flex-1 text-left">Ajuda</span>}
+                <HelpCircle
+                  className={cn("h-4 w-4 sm:h-5 sm:w-5", isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3")}
+                />
+                {(!isCollapsed || isMobile) && <span className="flex-1 text-left">Ajuda</span>}
               </Button>
             </TooltipTrigger>
-            <TooltipContent side={isCollapsed ? "right" : "top"} className="glass-card border-white/10">
+            <TooltipContent side={isCollapsed && !isMobile ? "right" : "top"} className="glass-card border-white/10">
               <span>Central de ajuda e suporte</span>
             </TooltipContent>
           </Tooltip>
@@ -230,15 +241,17 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                 variant="ghost"
                 className={cn(
                   "w-full transition-all duration-200",
-                  isCollapsed ? "h-12 px-0 justify-center" : "h-12 px-4 justify-start",
-                  "hover:bg-white/10 hover:backdrop-blur-sm text-muted-foreground hover:text-foreground",
+                  isCollapsed && !isMobile
+                    ? "h-10 sm:h-12 px-0 justify-center"
+                    : "h-10 sm:h-12 px-3 sm:px-4 justify-start",
+                  "hover:bg-white/10 hover:backdrop-blur-sm text-muted-foreground hover:text-foreground text-xs sm:text-sm",
                 )}
               >
-                <User className={cn("h-5 w-5", isCollapsed ? "mx-auto" : "mr-3")} />
-                {!isCollapsed && <span className="flex-1 text-left">Perfil</span>}
+                <User className={cn("h-4 w-4 sm:h-5 sm:w-5", isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3")} />
+                {(!isCollapsed || isMobile) && <span className="flex-1 text-left">Perfil</span>}
               </Button>
             </TooltipTrigger>
-            <TooltipContent side={isCollapsed ? "right" : "top"} className="glass-card border-white/10">
+            <TooltipContent side={isCollapsed && !isMobile ? "right" : "top"} className="glass-card border-white/10">
               <span>Configurações do perfil</span>
             </TooltipContent>
           </Tooltip>
@@ -250,15 +263,19 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                 variant="ghost"
                 className={cn(
                   "w-full transition-all duration-200",
-                  isCollapsed ? "h-12 px-0 justify-center" : "h-12 px-4 justify-start",
-                  "hover:bg-red-500/10 hover:backdrop-blur-sm text-muted-foreground hover:text-red-400",
+                  isCollapsed && !isMobile
+                    ? "h-10 sm:h-12 px-0 justify-center"
+                    : "h-10 sm:h-12 px-3 sm:px-4 justify-start",
+                  "hover:bg-red-500/10 hover:backdrop-blur-sm text-muted-foreground hover:text-red-400 text-xs sm:text-sm",
                 )}
               >
-                <LogOut className={cn("h-5 w-5", isCollapsed ? "mx-auto" : "mr-3")} />
-                {!isCollapsed && <span className="flex-1 text-left">Sair</span>}
+                <LogOut
+                  className={cn("h-4 w-4 sm:h-5 sm:w-5", isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3")}
+                />
+                {(!isCollapsed || isMobile) && <span className="flex-1 text-left">Sair</span>}
               </Button>
             </TooltipTrigger>
-            <TooltipContent side={isCollapsed ? "right" : "top"} className="glass-card border-white/10">
+            <TooltipContent side={isCollapsed && !isMobile ? "right" : "top"} className="glass-card border-white/10">
               <span>Sair da conta</span>
             </TooltipContent>
           </Tooltip>

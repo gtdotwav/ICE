@@ -25,20 +25,29 @@ export default function DashboardLayout({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
         <AnimatedGradient />
-        <div className="relative z-10 flex flex-col items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/20 backdrop-blur-sm ring-1 ring-primary/30 animate-pulse">
-            <div className="h-6 w-6 bg-primary rounded animate-pulse" />
+        <div className="relative z-10 flex flex-col items-center gap-4 text-center">
+          <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl bg-primary/20 backdrop-blur-sm ring-1 ring-primary/30 animate-pulse">
+            <div className="h-5 w-5 sm:h-6 sm:w-6 bg-primary rounded animate-pulse" />
           </div>
           <div className="text-center">
-            <h2 className="text-lg font-semibold gradient-primary">Carregando Dashboard</h2>
-            <p className="text-sm text-muted-foreground">Preparando sua experiência...</p>
+            <h2 className="text-base sm:text-lg font-semibold gradient-primary">Carregando Dashboard</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">Preparando sua experiência...</p>
           </div>
           <div className="flex gap-1">
-            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            <div
+              className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-bounce"
+              style={{ animationDelay: "0ms" }}
+            />
+            <div
+              className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-bounce"
+              style={{ animationDelay: "150ms" }}
+            />
+            <div
+              className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-bounce"
+              style={{ animationDelay: "300ms" }}
+            />
           </div>
         </div>
       </div>
@@ -85,7 +94,10 @@ export default function DashboardLayout({
           <main className="flex-1 overflow-y-auto">
             <div className="h-full">
               <div
-                className={cn("h-full transition-all duration-300 ease-in-out animate-fade-in", "p-4 sm:p-6 lg:p-8")}
+                className={cn(
+                  "h-full transition-all duration-300 ease-in-out animate-fade-in",
+                  "p-3 sm:p-4 lg:p-6 xl:p-8",
+                )}
               >
                 {children}
               </div>
