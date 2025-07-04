@@ -7,6 +7,7 @@ import { AnimatedText } from "@/components/animated-text"
 import type { ModalType } from "@/components/home-page"
 import Link from "next/link"
 import { magicLogin } from "@/app/actions/auth"
+import Image from "next/image"
 
 type HeroSectionProps = {
   onOpenModal: (type: ModalType) => void
@@ -35,8 +36,6 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
 
   return (
     <header className="relative flex items-center justify-center min-h-screen w-full overflow-hidden">
-      {/* Removido o Canvas daqui - agora está no AnimatedGradient global */}
-
       <div className="relative flex items-center min-h-screen w-full px-4 md:px-8 bg-gradient-to-r from-background via-background/70 to-transparent">
         <motion.div
           className="container mx-auto text-left"
@@ -44,16 +43,42 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
           initial="hidden"
           animate="visible"
         >
+          {/* Logo integration in hero section */}
+          <motion.div className="flex items-center gap-4 mb-8" variants={itemVariants}>
+            {/* Main brand logo with glow effect */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl opacity-60" />
+              <div className="relative glass-card backdrop-blur-sm border border-white/20 rounded-2xl p-3">
+                <Image
+                  src="/ice-logo.png"
+                  alt="IceFunnel - AI-Powered Conversion Engine"
+                  width={64}
+                  height={64}
+                  priority
+                  className="object-contain drop-shadow-lg"
+                />
+              </div>
+            </div>
+
+            {/* Brand name alongside logo */}
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold gradient-primary">IceFunnel</span>
+              <span className="text-sm text-muted-foreground">AI-Powered Engine</span>
+            </div>
+          </motion.div>
+
           <motion.h1 className="font-display text-4xl md:text-5xl lg:text-7xl font-bold tracking-tighter">
             <AnimatedText text="Funis com I.A. que" el="span" className="block text-foreground" />
             <motion.span className="text-primary">
               <AnimatedText text="congelam a concorrência." el="span" />
             </motion.span>
           </motion.h1>
+
           <motion.p className="mt-6 max-w-xl text-lg md:text-xl text-muted-foreground" variants={itemVariants}>
             Inteligência Artificial aplicada em cada etapa. ROI previsível por machine learning para escalar seus
             resultados.
           </motion.p>
+
           <motion.div className="mt-8 flex flex-wrap gap-4" variants={itemVariants}>
             {features.map((feature, index) => (
               <div
@@ -65,6 +90,7 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
               </div>
             ))}
           </motion.div>
+
           <motion.div className="mt-10 flex flex-col sm:flex-row gap-4" variants={itemVariants}>
             <Button
               asChild
@@ -91,6 +117,7 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
           </motion.div>
         </motion.div>
       </div>
+
       {/* Floating Action Button for mobile */}
       <Button
         onClick={onOpenChatbot}

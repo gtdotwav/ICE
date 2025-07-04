@@ -4,6 +4,7 @@ import { Inter, Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import { AnimatedGradient } from "@/components/background/animated-gradient"
+import { FloatingLogo } from "@/components/ui/floating-logo"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,8 +40,19 @@ export default function RootLayout({
           spaceGrotesk.variable,
         )}
       >
+        {/* Background gradient animation */}
         <AnimatedGradient />
+
+        {/* Main content container */}
         <div className="relative z-10 flex flex-col min-h-screen">{children}</div>
+
+        {/* Floating logo - positioned in top-right, shows after scrolling */}
+        <FloatingLogo
+          position="top-right"
+          size="md"
+          showOnScroll={true}
+          className="hidden sm:block" // Hide on mobile to avoid clutter
+        />
       </body>
     </html>
   )

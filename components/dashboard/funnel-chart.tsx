@@ -1,64 +1,82 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { TrendingUp, TrendingDown } from "lucide-react"
 
-const data = [
-  { name: "Visitantes", value: 1000, percentage: 100 },
-  { name: "Leads", value: 400, percentage: 40 },
-  { name: "Prospects", value: 200, percentage: 20 },
-  { name: "Clientes", value: 50, percentage: 5 },
+const funnelData = [
+  {
+    stage: "Visitantes",
+    value: 10000,
+    percentage: 100,
+    change: "+5.2%",
+    trend: "up" as const,
+    color: "bg-blue-500",
+  },
+  {
+    stage: "Leads",
+    value: 2500,
+    percentage: 25,
+    change: "+12.1%",
+    trend: "up" as const,
+    color: "bg-green-500",
+  },
+  {
+    stage: "Prospects",
+    value: 750,
+    percentage: 7.5,
+    change: "-2.3%",
+    trend: "down" as const,
+    color: "bg-yellow-500",
+  },
+  {
+    stage: "Clientes",
+    value: 150,
+    percentage: 1.5,
+    change: "+8.7%",
+    trend: "up" as const,
+    color: "bg-purple-500",
+  },
 ]
-
-const colors = ["hsl(var(--primary))", "hsl(180 90% 65%)", "hsl(260 70% 60%)", "hsl(140 70% 50%)"]
 
 export function FunnelChart() {
   return (
-    <Card className="bg-background/40 backdrop-blur-xl border-white/10 hover:bg-background/60 transition-all duration-300">
-      <CardHeader>
-        <CardTitle>Funil de Conversão</CardTitle>
-        <CardDescription>Taxa de conversão por etapa do funil principal</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={350}>
-          <BarChart data={data} layout="horizontal">
-            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
-            <XAxis
-              type="number"
-              stroke="hsl(var(--muted-foreground))"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis
-              type="category"
-              dataKey="name"
-              stroke="hsl(var(--muted-foreground))"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-              width={80}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "hsl(var(--background) / 0.95)",
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "8px",
-                backdropFilter: "blur(12px)",
+    <div className="space-y-4">
+      {funnelData.map((stage, index) => (
+        <div key={stage.stage} className="space-y-2 animate-slide-up" style={{ animationDelay: `${index * 100}ms` }}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`w-3 h-3 rounded-full ${stage.color}`} />
+              <span className="font-medium">{stage.stage}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold">{stage.value.toLocaleString()}</span>
+              <Badge
+                variant={stage.trend === "up" ? "default" : "destructive"}
+                className={`flex items-center gap-1 text-xs ${
+                  stage.trend === "up" ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"
+                }`}
+              >
+                {stage.trend === "up" ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+                {stage.change}
+              </Badge>
+            </div>
+          </div>
+          <div className="space-y-1">
+            <Progress
+              value={stage.percentage}
+              className="h-2"
+              style={{
+                background: `linear-gradient(to right, ${stage.color.replace("bg-", "rgb(var(--")} / 0.2), transparent)`,
               }}
-              formatter={(value: number, name: string, props: any) => [
-                `${value} (${props.payload.percentage}%)`,
-                "Conversões",
-              ]}
             />
-            <Bar dataKey="value" radius={[0, 4, 4, 0]}>
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={colors[index]} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </CardContent>
-    </Card>
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>{stage.percentage}% do total</span>
+              <span>Taxa de conversão</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
