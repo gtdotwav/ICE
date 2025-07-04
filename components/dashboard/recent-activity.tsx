@@ -3,52 +3,54 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const activities = [
   {
-    user: "Usuário Teste",
-    action: "gerou uma nova headline.",
+    user: "João Silva",
+    action: "completou o funil 'Produto Premium'",
+    time: "2 min atrás",
+    avatar: "/placeholder-user.jpg",
+  },
+  {
+    user: "Maria Santos",
+    action: "se inscreveu na lista de espera",
     time: "5 min atrás",
+    avatar: "/placeholder-user.jpg",
   },
   {
-    user: "IA Automática",
-    action: "ajustou o CTA do funil de checkout.",
-    time: "2 horas atrás",
+    user: "Pedro Costa",
+    action: "abandonou carrinho no checkout",
+    time: "10 min atrás",
+    avatar: "/placeholder-user.jpg",
   },
   {
-    user: "Usuário Teste",
-    action: "iniciou um teste A/B.",
-    time: "8 horas atrás",
-  },
-  {
-    user: "IA Automática",
-    action: "identificou um gargalo no funil.",
-    time: "1 dia atrás",
+    user: "Ana Oliveira",
+    action: "visualizou página de preços",
+    time: "15 min atrás",
+    avatar: "/placeholder-user.jpg",
   },
 ]
 
 export function RecentActivity() {
   return (
-    <Card className="bg-background/60 backdrop-blur-sm">
+    <Card>
       <CardHeader>
         <CardTitle>Atividade Recente</CardTitle>
-        <CardDescription>Últimas ações realizadas na sua conta.</CardDescription>
+        <CardDescription>Últimas interações dos usuários</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-6">
-        {activities.map((activity, index) => (
-          <div key={index} className="flex items-center gap-4">
-            <Avatar className="hidden h-9 w-9 sm:flex">
-              <AvatarImage
-                src={activity.user === "IA Automática" ? "/placeholder.svg?query=ai+robot" : "/placeholder-user.jpg"}
-                alt="Avatar"
-              />
-              <AvatarFallback>{activity.user.substring(0, 2)}</AvatarFallback>
-            </Avatar>
-            <div className="grid gap-1">
-              <p className="text-sm font-medium leading-none">
-                {activity.user} <span className="text-muted-foreground">{activity.action}</span>
-              </p>
-              <p className="text-sm text-muted-foreground">{activity.time}</p>
+      <CardContent>
+        <div className="space-y-4">
+          {activities.map((activity, index) => (
+            <div key={index} className="flex items-center space-x-3">
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={activity.avatar || "/placeholder.svg"} />
+                <AvatarFallback>{activity.user[0]}</AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{activity.user}</p>
+                <p className="text-xs text-muted-foreground truncate">{activity.action}</p>
+              </div>
+              <div className="text-xs text-muted-foreground">{activity.time}</div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </CardContent>
     </Card>
   )

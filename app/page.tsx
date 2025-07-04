@@ -1,7 +1,6 @@
 "use client"
-import HomePage from "@/components/home-page"
 
-export type ModalType = "demoVideo" | "signUp" | "contact" | null
+import HomePage from "@/components/home-page"
 
 export default function Page() {
   return <HomePage />

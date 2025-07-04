@@ -1,51 +1,69 @@
 "use client"
 
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { LayoutDashboard, Zap, Package, Settings, LogOut } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { BarChart, Settings, Package, LayoutDashboard, GitFork } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-const navItems = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/dashboard/funnels", icon: GitFork, label: "Funis" },
-  { href: "/dashboard/products", icon: Package, label: "Produtos" },
-  { href: "/dashboard/settings", icon: Settings, label: "Configurações" },
+const navigation = [
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    name: "Funis",
+    href: "/dashboard/funnels",
+    icon: Zap,
+  },
+  {
+    name: "Produtos",
+    href: "/dashboard/products",
+    icon: Package,
+  },
+  {
+    name: "Configurações",
+    href: "/dashboard/settings",
+    icon: Settings,
+  },
 ]
 
-export function Sidebar() {
+export function DashboardSidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="hidden w-16 flex-col border-r border-border bg-background/50 lg:flex">
-      <TooltipProvider>
-        <nav className="flex flex-col items-center gap-4 px-2 py-5">
-          <Link
-            href="#"
-            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
-          >
-            <BarChart className="h-4 w-4 transition-all group-hover:scale-110" />
-            <span className="sr-only">IceFunnel</span>
-          </Link>
-          {navItems.map((item) => (
-            <Tooltip key={item.label}>
-              <TooltipTrigger asChild>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
-                    pathname === item.href && "bg-accent text-accent-foreground",
-                  )}
+    <div className="flex h-full w-64 flex-col bg-card border-r">
+      <div className="flex h-16 items-center border-b px-6">
+        <h2 className="text-lg font-semibold text-primary">IceFunnel</h2>
+      </div>
+
+      <ScrollArea className="flex-1 px-3 py-4">
+        <nav className="space-y-2">
+          {navigation.map((item) => {
+            const isActive = pathname === item.href
+            return (
+              <Link key={item.name} href={item.href}>
+                <Button
+                  variant={isActive ? "secondary" : "ghost"}
+                  className={cn("w-full justify-start", isActive && "bg-secondary text-secondary-foreground")}
                 >
-                  <item.icon className="h-5 w-5" />
-                  <span className="sr-only">{item.label}</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">{item.label}</TooltipContent>
-            </Tooltip>
-          ))}
+                  <item.icon className="mr-2 h-4 w-4" />
+                  {item.name}
+                </Button>
+              </Link>
+            )
+          })}
         </nav>
-      </TooltipProvider>
-    </aside>
+      </ScrollArea>
+
+      <div className="border-t p-3">
+        <Button variant="ghost" className="w-full justify-start text-muted-foreground">
+          <LogOut className="mr-2 h-4 w-4" />
+          Sair
+        </Button>
+      </div>
+    </div>
   )
 }

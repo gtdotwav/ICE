@@ -1,30 +1,18 @@
-import type { ReactNode } from "react"
-import { Inter } from "next/font/google"
-
-import { Sidebar } from "@/components/dashboard/sidebar"
-import { Header } from "@/components/dashboard/header"
-
-const inter = Inter({ subsets: ["latin"] })
+import type React from "react"
+import { DashboardSidebar } from "@/components/dashboard/sidebar"
+import { DashboardHeader } from "@/components/dashboard/header"
 
 export default function DashboardLayout({
   children,
 }: {
-  children: ReactNode
+  children: React.ReactNode
 }) {
   return (
-    <div className={inter.className}>
-      <div className="flex min-h-screen w-full bg-secondary/20">
-        {/* Navegação lateral fixa */}
-        <Sidebar />
-
-        {/* Área principal */}
-        <div className="flex flex-1 flex-col">
-          {/* Cabeçalho global do dashboard */}
-          <Header />
-
-          {/* Conteúdo da rota corrente */}
-          <main className="flex-1 p-4 sm:p-6 lg:p-8">{children}</main>
-        </div>
+    <div className="flex h-screen bg-background">
+      <DashboardSidebar />
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <DashboardHeader />
+        <main className="flex-1 overflow-auto p-6">{children}</main>
       </div>
     </div>
   )

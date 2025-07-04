@@ -5,7 +5,6 @@ import "./globals.css"
 import { cn } from "@/lib/utils"
 import { AnimatedGradient } from "@/components/background/animated-gradient"
 
-// ——— Google fonts via next/font (local, no network fetch) ———
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -23,10 +22,14 @@ export const metadata: Metadata = {
   description:
     "Funis com IA que congelam a concorrência. Inteligência Artificial aplicada em cada etapa para um ROI previsível e crescimento escalável.",
   keywords: ["IA", "SaaS", "Funil de Vendas", "Machine Learning", "Otimização de Conversão", "Next.js"],
-  generator: "v0.dev",
+    generator: 'v0.dev'
 }
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="pt-BR" className="dark">
       <body
@@ -36,7 +39,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           spaceGrotesk.variable,
         )}
       >
-        {/* AnimatedGradient agora inclui o HologramScene como fundo global */}
         <AnimatedGradient />
         <div className="relative z-10 flex flex-col min-h-screen">{children}</div>
       </body>

@@ -10,8 +10,8 @@
     --card-foreground: 213 31% 91%;
     --popover: 224 71% 4%;
     --popover-foreground: 213 31% 91%;
-    --primary: 198 93% 60%; /* ice-blue */
-    --primary-foreground: 224 71% 10%; /* petroleum-blue */
+    --primary: 198 93% 60%;
+    --primary-foreground: 224 71% 10%;
     --secondary: 215 28% 17%;
     --secondary-foreground: 213 31% 91%;
     --muted: 215 28% 17%;
@@ -37,7 +37,6 @@
   }
 }
 
-/* Custom styles for range inputs in the ROI calculator */
 @layer components {
   .range-thumb {
     @apply h-5 w-5 appearance-none rounded-full bg-primary ring-2 ring-primary/50 transition-all duration-150 ease-in-out;
