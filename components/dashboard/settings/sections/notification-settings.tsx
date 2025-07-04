@@ -1,10 +1,10 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import { Separator } from "@/components/ui/separator"
 
 export function NotificationSettings() {
   return (
@@ -13,51 +13,43 @@ export function NotificationSettings() {
         <CardTitle>Notifications</CardTitle>
         <CardDescription>Manage how you receive notifications.</CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-6">
-        <div className="flex items-center justify-between space-x-4 rounded-md border p-4">
-          <div className="flex-1 space-y-1">
-            <p className="text-sm font-medium leading-none">Marketing emails</p>
-            <p className="text-sm text-muted-foreground">Receive emails about new products, features, and more.</p>
-          </div>
-          <Switch defaultChecked />
-        </div>
-        <div className="flex items-center justify-between space-x-4 rounded-md border p-4">
-          <div className="flex-1 space-y-1">
-            <p className="text-sm font-medium leading-none">Security emails</p>
-            <p className="text-sm text-muted-foreground">Receive emails about your account security.</p>
-          </div>
-          <Switch defaultChecked disabled />
-        </div>
+      <CardContent className="space-y-6">
         <div>
-          <h3 className="mb-4 text-lg font-medium">Push Notifications</h3>
-          <div className="space-y-4">
-            <div className="flex flex-row items-start space-x-3 space-y-0">
-              <Checkbox id="push-everything" />
-              <div className="space-y-1 leading-none">
-                <Label htmlFor="push-everything">Everything</Label>
-                <p className="text-sm text-muted-foreground">Email digest, mentions & all activity.</p>
-              </div>
+          <h3 className="text-lg font-medium">Email Notifications</h3>
+          <p className="text-sm text-muted-foreground">Choose which emails you want to receive.</p>
+        </div>
+        <div className="space-y-4">
+          <div className="flex items-start space-x-3">
+            <Checkbox id="newsletter" defaultChecked />
+            <div className="grid gap-1.5 leading-none">
+              <Label htmlFor="newsletter" className="font-medium">
+                Newsletter
+              </Label>
+              <p className="text-sm text-muted-foreground">Receive our weekly newsletter with updates and tips.</p>
             </div>
-            <div className="flex flex-row items-start space-x-3 space-y-0">
-              <Checkbox id="push-mentions" />
-              <div className="space-y-1 leading-none">
-                <Label htmlFor="push-mentions">Available</Label>
-                <p className="text-sm text-muted-foreground">Only mentions and comments.</p>
-              </div>
+          </div>
+          <div className="flex items-start space-x-3">
+            <Checkbox id="product-updates" defaultChecked />
+            <div className="grid gap-1.5 leading-none">
+              <Label htmlFor="product-updates" className="font-medium">
+                Product Updates
+              </Label>
+              <p className="text-sm text-muted-foreground">Get notified about new features and improvements.</p>
             </div>
-            <div className="flex flex-row items-start space-x-3 space-y-0">
-              <Checkbox id="push-nothing" />
-              <div className="space-y-1 leading-none">
-                <Label htmlFor="push-nothing">Ignoring</Label>
-                <p className="text-sm text-muted-foreground">Turn off all notifications.</p>
-              </div>
+          </div>
+          <div className="flex items-start space-x-3">
+            <Checkbox id="security-alerts" />
+            <div className="grid gap-1.5 leading-none">
+              <Label htmlFor="security-alerts" className="font-medium">
+                Security Alerts
+              </Label>
+              <p className="text-sm text-muted-foreground">Receive alerts for suspicious activity on your account.</p>
             </div>
           </div>
         </div>
-      </CardContent>
-      <CardFooter className="border-t bg-muted/50 px-6 py-4">
+        <Separator />
         <Button>Save Preferences</Button>
-      </CardFooter>
+      </CardContent>
     </Card>
   )
 }
