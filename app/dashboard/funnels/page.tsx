@@ -23,10 +23,10 @@ export default function FunnelsPage() {
 
   return (
     <>
-      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+      <>
         <FunnelsHeader onOpenWizard={() => setIsWizardOpen(true)} />
         <FunnelsTable funnels={funnels} onOpenWizard={() => setIsWizardOpen(true)} />
-      </main>
+      </>
       <CreateFunnelWizard isOpen={isWizardOpen} onOpenChange={setIsWizardOpen} onFunnelCreated={handleAddFunnel} />
     </>
   )

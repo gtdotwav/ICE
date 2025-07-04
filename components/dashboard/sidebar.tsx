@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const navItems = [
-  { href: "/dashboard/overview", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/dashboard/funnels", icon: GitFork, label: "Funis" },
   { href: "/dashboard/products", icon: Package, label: "Produtos" },
   { href: "/dashboard/ai-tools", icon: Bot, label: "IA Tools" },
