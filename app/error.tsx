@@ -1,19 +1,33 @@
-"use client" // error.js precisa ser um Client Component
+"use client" // Componentes de erro precisam ser 'use client'
 
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
+import { ShieldAlert } from "lucide-react"
 
-export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    // Loga o erro para um serviço de monitoramento
-    console.error(error)
+    // Idealmente, você logaria este erro em um serviço como Sentry
+    console.error("Erro Global:", error)
   }, [error])
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center p-4">
-      <h2 className="text-3xl font-bold text-destructive mb-4">Oops! Algo deu errado.</h2>
-      <p className="text-lg text-muted-foreground mb-6">Um erro inesperado ocorreu. Você pode tentar novamente.</p>
-      <Button onClick={() => reset()}>Tentar novamente</Button>
-    </div>
+    <html lang="pt-BR">
+      <body>
+        <main className="flex h-screen w-full flex-col items-center justify-center bg-background">
+          <div className="text-center">
+            <ShieldAlert className="mx-auto h-16 w-16 text-destructive" />
+            <h1 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+              Oops! Algo deu muito errado.
+            </h1>
+            <p className="mt-4 text-lg text-muted-foreground">
+              Ocorreu um erro inesperado na aplicação. Nossa equipe já foi notificada.
+            </p>
+            <div className="mt-10">
+              <Button onClick={() => reset()}>Tentar novamente</Button>
+            </div>
+          </div>
+        </main>
+      </body>
+    </html>
   )
 }
