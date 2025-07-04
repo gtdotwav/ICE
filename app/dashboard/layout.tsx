@@ -8,11 +8,25 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="relative min-h-screen">
-      <AnimatedGradient />
-      <div className="relative z-10 flex h-screen bg-transparent">
-        <DashboardSidebar />
-        <main className="flex-1 overflow-auto">{children}</main>
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Animated background */}
+      <div className="fixed inset-0 z-0">
+        <AnimatedGradient />
+      </div>
+
+      {/* Dashboard content */}
+      <div className="relative z-10 flex h-screen">
+        {/* Desktop sidebar */}
+        <div className="hidden md:block">
+          <DashboardSidebar />
+        </div>
+
+        {/* Main content area */}
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <main className="flex-1 overflow-auto">
+            <div className="section-padding content-spacing min-h-full">{children}</div>
+          </main>
+        </div>
       </div>
     </div>
   )

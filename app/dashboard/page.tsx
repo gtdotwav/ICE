@@ -1,3 +1,4 @@
+import { DashboardHeader } from "@/components/dashboard/header"
 import { OverviewCards } from "@/components/dashboard/overview-cards"
 import { RevenueChart } from "@/components/dashboard/revenue-chart"
 import { FunnelChart } from "@/components/dashboard/funnel-chart"
@@ -6,35 +7,25 @@ import { RecentActivity } from "@/components/dashboard/recent-activity"
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
-          Dashboard
-        </h1>
-        <p className="text-lg text-muted-foreground">Visão geral do seu desempenho e métricas principais.</p>
-      </div>
+    <div className="content-spacing">
+      <DashboardHeader title="Dashboard" description="Visão geral completa dos seus funis e performance" />
 
       {/* Overview Cards */}
       <OverviewCards />
 
-      {/* Charts Section */}
-      <div className="grid gap-6 lg:grid-cols-7">
-        <div className="lg:col-span-4">
-          <RevenueChart />
-        </div>
-        <div className="lg:col-span-3">
-          <FunnelChart />
-        </div>
+      {/* Charts Grid */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <RevenueChart />
+        <FunnelChart />
       </div>
 
-      {/* Bottom Section */}
-      <div className="grid gap-6 lg:grid-cols-7">
-        <div className="lg:col-span-4">
-          <AiWidget />
-        </div>
-        <div className="lg:col-span-3">
+      {/* Bottom Grid */}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
           <RecentActivity />
+        </div>
+        <div className="lg:col-span-1">
+          <AiWidget />
         </div>
       </div>
     </div>
