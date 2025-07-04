@@ -1,33 +1,27 @@
 "use client"
 
-import { motion, useInView } from "framer-motion"
-import { useRef } from "react"
-import type { JSX } from "react/jsx-runtime" // Import JSX to fix the undeclared variable error
+import { useEffect, useState } from "react"
 
-type AnimatedTextProps = {
+interface AnimatedTextProps {
   text: string
-  el?: keyof JSX.IntrinsicElements
   className?: string
+  delay?: number
 }
 
-export function AnimatedText({ text, el: Wrapper = "p", className }: AnimatedTextProps) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { amount: 0.5, once: true })
+export function AnimatedText({ text, className = "", delay = 50 }: AnimatedTextProps) {
+  const [displayedText, setDisplayedText] = useState("")
+  const [currentIndex, setCurrentIndex] = useState(0)
 
-  return (
-    <Wrapper className={className}>
-      <span className="sr-only">{text}</span>
-      <motion.span
-        ref={ref}
-        initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        viewport={{ once: true }}
-        aria-hidden
-        className="inline-block bg-gradient-to-r from-cyan-400 to-teal-300 bg-clip-text text-transparent"
-      >
-        {text}
-      </motion.span>
-    </Wrapper>
-  )
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText((prev) => prev + text[currentIndex])
+        setCurrentIndex((prev) => prev + 1)
+      }, delay)
+
+      return () => clearTimeout(timeout)
+    }
+  }, [currentIndex, text, delay])
+
+  return <span className={className}>{displayedText}</span>
 }

@@ -5,7 +5,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react"
 
 /**
  * One global <Canvas>. 3-D views elsewhere on the page use
- * @react-three/drei‘s <View track={ref}> to portal into it.
+ * @react-three/drei's <View track={ref}> to portal into it.
  */
 export function CanvasProvider({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLDivElement>(null)
