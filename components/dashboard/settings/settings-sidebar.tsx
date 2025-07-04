@@ -1,40 +1,99 @@
 "use client"
 
-import { useSettings } from "./settings-context"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { User, Shield, Bell, CreditCard, Plug, Users, Settings, Badge } from "lucide-react"
 
-const sections = [
-  { id: "profile", label: "Profile" },
-  { id: "security", label: "Security" },
-  { id: "notifications", label: "Notifications" },
-  { id: "privacy", label: "Privacy" },
-  { id: "billing", label: "Billing" },
-  { id: "integrations", label: "Integrations" },
-  { id: "team", label: "Team Management" },
-  { id: "advanced", label: "Advanced" },
+interface SettingsSidebarProps {
+  activeSection: string
+  onSectionChange: (section: string) => void
+}
+
+const settingsSections = [
+  {
+    id: "profile",
+    label: "Perfil & Conta",
+    icon: User,
+    description: "Informações pessoais e preferências",
+  },
+  {
+    id: "security",
+    label: "Segurança",
+    icon: Shield,
+    description: "Senha, 2FA e sessões ativas",
+    badge: "2FA",
+  },
+  {
+    id: "notifications",
+    label: "Notificações",
+    icon: Bell,
+    description: "Email, push e preferências",
+  },
+  {
+    id: "billing",
+    label: "Cobrança",
+    icon: CreditCard,
+    description: "Planos, pagamentos e faturas",
+  },
+  {
+    id: "integrations",
+    label: "Integrações",
+    icon: Plug,
+    description: "APIs, webhooks e conexões",
+  },
+  {
+    id: "team",
+    label: "Equipe",
+    icon: Users,
+    description: "Membros e permissões",
+  },
+  {
+    id: "advanced",
+    label: "Avançado",
+    icon: Settings,
+    description: "Configurações do sistema",
+  },
 ]
 
-export function SettingsSidebar() {
-  const { activeSection, setActiveSection } = useSettings()
-
+export function SettingsSidebar({ activeSection, onSectionChange }: SettingsSidebarProps) {
   return (
-    <nav className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0">
-      {sections.map((section) => (
-        <Button
-          key={section.id}
-          variant="ghost"
-          onClick={() => setActiveSection(section.id)}
-          className={cn(
-            "justify-start px-3",
-            activeSection === section.id
-              ? "bg-muted font-semibold text-primary hover:bg-muted"
-              : "hover:bg-transparent hover:underline",
-          )}
-        >
-          {section.label}
-        </Button>
-      ))}
-    </nav>
+    <div className="w-80 border-r bg-muted/30 p-6">
+      <div className="space-y-1">
+        <h2 className="text-lg font-semibold">Configurações</h2>
+        <p className="text-sm text-muted-foreground">Gerencie sua conta e preferências</p>
+      </div>
+
+      <nav className="mt-8 space-y-2">
+        {settingsSections.map((section) => {
+          const Icon = section.icon
+          const isActive = activeSection === section.id
+
+          return (
+            <button
+              key={section.id}
+              onClick={() => onSectionChange(section.id)}
+              className={cn(
+                "w-full flex items-start gap-3 rounded-lg p-3 text-left transition-colors hover:bg-accent",
+                isActive && "bg-accent border-l-4 border-l-primary",
+              )}
+            >
+              <Icon className={cn("h-5 w-5 mt-0.5 shrink-0", isActive ? "text-primary" : "text-muted-foreground")} />
+              <div className="flex-1 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className={cn("font-medium text-sm", isActive ? "text-foreground" : "text-muted-foreground")}>
+                    {section.label}
+                  </span>
+                  {section.badge && (
+                    <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
+                      {section.badge}
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">{section.description}</p>
+              </div>
+            </button>
+          )
+        })}
+      </nav>
+    </div>
   )
 }

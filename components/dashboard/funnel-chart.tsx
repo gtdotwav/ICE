@@ -1,26 +1,37 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import dynamic from "next/dynamic"
-import { Skeleton } from "@/components/ui/skeleton"
+"use client"
 
-const FunnelChartClient = dynamic(() => import("./funnel-chart.client"), {
-  ssr: false,
-  loading: () => (
-    <div className="p-4">
-      <Skeleton className="h-[350px] w-full" />
-    </div>
-  ),
-})
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Funnel, FunnelChart as FunnelChartComponent, LabelList, ResponsiveContainer, Tooltip } from "recharts"
+
+const data = [
+  { value: 12540, name: "Visitantes", fill: "#8884d8" },
+  { value: 9843, name: "Leads", fill: "#83a6ed" },
+  { value: 6432, name: "Qualificados", fill: "#8dd1e1" },
+  { value: 2341, name: "Clientes", fill: "hsl(var(--primary))" },
+]
 
 export function FunnelChart() {
   return (
-    <Card>
+    <Card className="bg-background/60 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle>Desempenho do Funil</CardTitle>
-        <CardDescription>Visualização da conversão em cada etapa.</CardDescription>
+        <CardTitle>Funil de Vendas Principal</CardTitle>
+        <CardDescription>Performance do funil este mês.</CardDescription>
       </CardHeader>
-      <CardContent className="pb-4">
-        <div className="h-[350px] w-full">
-          <FunnelChartClient />
+      <CardContent>
+        <div className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <FunnelChartComponent>
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "hsl(var(--background) / 0.8)",
+                  borderColor: "hsl(var(--border))",
+                }}
+              />
+              <Funnel dataKey="value" data={data} isAnimationActive>
+                <LabelList position="right" fill="#fff" stroke="none" dataKey="name" />
+              </Funnel>
+            </FunnelChartComponent>
+          </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>

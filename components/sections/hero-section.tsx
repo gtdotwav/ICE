@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Bot, Cpu, BarChart } from "lucide-react"
+import { AnimatedText } from "@/components/animated-text"
 import type { ModalType } from "@/components/home-page"
 import Link from "next/link"
 import { magicLogin } from "@/app/actions/auth"
@@ -34,6 +35,8 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
 
   return (
     <header className="relative flex items-center justify-center min-h-screen w-full overflow-hidden">
+      {/* Removido o Canvas daqui - agora está no AnimatedGradient global */}
+
       <div className="relative flex items-center min-h-screen w-full px-4 md:px-8 bg-gradient-to-r from-background via-background/70 to-transparent">
         <motion.div
           className="container mx-auto text-left"
@@ -41,12 +44,11 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
           initial="hidden"
           animate="visible"
         >
-          <motion.h1
-            className="font-display text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter"
-            variants={itemVariants}
-          >
-            <span className="block text-foreground">Funis com I.A. que</span>
-            <span className="text-primary">congelam a concorrência.</span>
+          <motion.h1 className="font-display text-4xl md:text-5xl lg:text-7xl font-bold tracking-tighter">
+            <AnimatedText text="Funis com I.A. que" el="span" className="block text-foreground" />
+            <motion.span className="text-primary">
+              <AnimatedText text="congelam a concorrência." el="span" />
+            </motion.span>
           </motion.h1>
           <motion.p className="mt-6 max-w-xl text-lg md:text-xl text-muted-foreground" variants={itemVariants}>
             Inteligência Artificial aplicada em cada etapa. ROI previsível por machine learning para escalar seus
@@ -67,7 +69,7 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
             <Button
               asChild
               size="lg"
-              className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all duration-300 group shadow-[0_0_20px_hsl(var(--primary)/0.4)] hover:shadow-[0_0_30px_hsl(var(--primary)/0.7)] hover:scale-105"
+              className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all duration-300 group shadow-[0_0_20px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_30px_hsl(var(--primary)/0.8)]"
             >
               <Link href="/lista-espera">
                 Ativar IA Agora
@@ -82,12 +84,17 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
                 Acessar como Teste
               </Button>
             </form>
+            <Button size="lg" variant="ghost" onClick={onOpenChatbot} className="hidden sm:flex">
+              <Bot className="mr-2 h-5 w-5" />
+              Falar com IA
+            </Button>
           </motion.div>
         </motion.div>
       </div>
+      {/* Floating Action Button for mobile */}
       <Button
         onClick={onOpenChatbot}
-        className="sm:hidden fixed bottom-6 right-6 z-30 h-16 w-16 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/40 flex items-center justify-center p-0 active:scale-95 transition-transform"
+        className="sm:hidden fixed bottom-6 right-6 z-30 h-16 w-16 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/40 flex items-center justify-center p-0"
         aria-label="Falar com IA"
       >
         <Bot className="h-8 w-8" />

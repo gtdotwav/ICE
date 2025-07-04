@@ -1,18 +1,18 @@
 "use client"
 
-import { useSettings } from "./settings-context"
 import { ProfileSettings } from "./sections/profile-settings"
 import { SecuritySettings } from "./sections/security-settings"
 import { NotificationSettings } from "./sections/notification-settings"
-import { PrivacySettings } from "./sections/privacy-settings"
 import { BillingSettings } from "./sections/billing-settings"
 import { IntegrationSettings } from "./sections/integration-settings"
 import { TeamSettings } from "./sections/team-settings"
 import { AdvancedSettings } from "./sections/advanced-settings"
 
-export function SettingsContent() {
-  const { activeSection } = useSettings()
+interface SettingsContentProps {
+  activeSection: string
+}
 
+export function SettingsContent({ activeSection }: SettingsContentProps) {
   const renderSection = () => {
     switch (activeSection) {
       case "profile":
@@ -21,8 +21,6 @@ export function SettingsContent() {
         return <SecuritySettings />
       case "notifications":
         return <NotificationSettings />
-      case "privacy":
-        return <PrivacySettings />
       case "billing":
         return <BillingSettings />
       case "integrations":
@@ -36,5 +34,5 @@ export function SettingsContent() {
     }
   }
 
-  return <div className="grid gap-6">{renderSection()}</div>
+  return <div className="flex-1 p-6 overflow-y-auto">{renderSection()}</div>
 }

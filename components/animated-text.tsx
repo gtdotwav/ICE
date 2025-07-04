@@ -1,36 +1,55 @@
 "use client"
 
-import { motion } from "framer-motion"
-import type { ReactNode } from "react"
+import { motion, useInView } from "framer-motion"
+import { useRef } from "react"
+import type { JSX } from "react/jsx-runtime" // Import JSX to fix the undeclared variable error
 
-interface AnimatedTextProps {
-  children: ReactNode
+type AnimatedTextProps = {
+  text: string
+  el?: keyof JSX.IntrinsicElements
   className?: string
-  delay?: number
 }
 
-export function AnimatedText({ children, className = "", delay = 0 }: AnimatedTextProps) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  )
-}
+export function AnimatedText({ text, el: Wrapper = "p", className }: AnimatedTextProps) {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { amount: 0.5, once: true })
 
-export function AnimatedTextReveal({ children, className = "", delay = 0 }: AnimatedTextProps) {
+  const defaultAnimations = {
+    hidden: {
+      opacity: 0,
+      y: 20,
+    },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay: i * 0.05,
+      },
+    }),
+  }
+
+  let charCount = 0
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.8, delay, ease: "easeOut" }}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <Wrapper className={className}>
+      <span className="sr-only">{text}</span>
+      <motion.span ref={ref} initial="hidden" animate={isInView ? "visible" : "hidden"} aria-hidden>
+        {text.split(" ").map((word, wordIndex, arr) => (
+          <span key={wordIndex} className="inline-block">
+            {word.split("").map((char, charIndex) => (
+              <motion.span key={charIndex} className="inline-block text-sky-200" variants={defaultAnimations} custom={charCount++}>
+                {char}
+              </motion.span>
+            ))}
+            {wordIndex < arr.length - 1 && (
+              <motion.span className="inline-block" variants={defaultAnimations} custom={charCount++}>
+                &nbsp;
+              </motion.span>
+            )}
+          </span>
+        ))}
+      </motion.span>
+    </Wrapper>
   )
 }

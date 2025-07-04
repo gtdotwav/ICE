@@ -50,7 +50,6 @@
     "expo-file-system": "latest",
     "expo-gl": "latest",
     "framer-motion": "latest",
-    "gsap": "latest",
     "immer": "latest",
     "input-otp": "latest",
     "lucide-react": "^0.454.0",

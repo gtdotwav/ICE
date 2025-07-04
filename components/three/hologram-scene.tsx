@@ -1,96 +1,46 @@
 "use client"
 
-import { useFrame } from "@react-three/fiber"
-import { Icosahedron, useTexture } from "@react-three/drei"
-import { useRef, useMemo, useEffect } from "react"
-import { gsap } from "gsap"
+import { useRef } from "react"
+import { useFrame, useThree } from "@react-three/fiber"
+import { TorusKnot, Stars, Float } from "@react-three/drei"
 import * as THREE from "three"
 
-/*────────────────── GLSL ──────────────────*/
-const vertex = /* glsl */ `
-  varying vec2 vUv;
-  varying vec3 vNormal;
-  void main(){
-    vUv = uv;
-    vNormal = normal;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.);
-  }`
+export function HologramScene() {
+  const { viewport, mouse } = useThree()
+  const groupRef = useRef<THREE.Group>(null)
 
-const fragment = /* glsl */ `
-  uniform float uTime;
-  uniform float uScan;
-  uniform sampler2D uTex;
-  uniform vec3  uColor;
-  varying vec2 vUv;
-  varying vec3 vNormal;
-
-  float rand(vec2 co){
-    return fract(sin(dot(co, vec2(12.9898,78.233))) * 43758.5453);
-  }
-
-  void main(){
-    vec2 uv = vUv;
-    uv.y += rand(uv+uTime)*.04;          // glitch
-    float scan = sin((uv.y+uScan)*200.)*.02;
-
-    float fres = pow(1.- dot(vNormal, vec3(0.,0.,1.)), 2.);
-    vec4 tex  = texture2D(uTex, uv);
-
-    vec3 col = tex.rgb * uColor + scan + fres*.3;
-    float a  = clamp(tex.a * fres*2., 0., 1.);
-
-    gl_FragColor = vec4(col, a);
-  }`
-
-/*───────────────── Mesh ───────────────────*/
-export function Hologram() {
-  const mesh = useRef<any>(null!)
-  const mat = useRef<any>(null!)
-  const tex = useTexture("/placeholder-logo.png")
-
-  const uniforms = useMemo(
-    () => ({
-      uTime: { value: 0 },
-      uScan: { value: 0 },
-      uTex: { value: tex },
-      uColor: { value: new THREE.Color("#00ffff") },
-    }),
-    [tex],
-  )
-
-  // perpetual scan-line animation
-  useEffect(() => {
-    if (mat.current)
-      gsap.to(mat.current.uniforms.uScan, {
-        value: 1.5,
-        duration: 2,
-        ease: "sine.inOut",
-        yoyo: true,
-        repeat: -1,
-      })
-  }, [])
-
-  useFrame((state, delta) => {
-    if (mat.current) {
-      mat.current.uniforms.uTime.value = state.clock.getElapsedTime()
-    }
-    if (mesh.current) {
-      mesh.current.rotation.x += delta * 0.1
-      mesh.current.rotation.y += delta * 0.15
+  useFrame(() => {
+    if (groupRef.current) {
+      const x = (mouse.x * viewport.width) / 600 // Reduzido para movimento mais sutil
+      const y = (mouse.y * viewport.height) / 600
+      groupRef.current.rotation.y += 0.0005 // Rotação mais lenta
+      groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, x, 0.02)
+      groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, y, 0.02)
     }
   })
 
   return (
-    <Icosahedron ref={mesh} args={[2, 20]} dispose={null}>
-      <shaderMaterial
-        ref={mat}
-        vertexShader={vertex}
-        fragmentShader={fragment}
-        uniforms={uniforms}
-        transparent
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-      />
-    </Icosahedron>
+    <>
+      <ambientLight intensity={0.4} />
+      <pointLight color="#00F0FF" position={[-8, 3, 8]} intensity={15} />
+      <pointLight color="#8B5CF6" position={[8, -3, 8]} intensity={15} />
+      <Stars radius={150} depth={80} count={3000} factor={3} saturation={0} fade speed={0.5} />
+      <group ref={groupRef}>
+        <Float speed={0.8} rotationIntensity={0.6} floatIntensity={0.8}>
+          <TorusKnot args={[1.2, 0.4, 200, 32]} scale={0.8} position={[0, 0, -2]}>
+            <meshStandardMaterial
+              color="#6BB7E7"
+              emissive="#00F0FF"
+              emissiveIntensity={0.6}
+              metalness={0.9}
+              roughness={0.1}
+              wireframe
+              transparent
+              opacity={0.95}
+            />
+          </TorusKnot>
+        </Float>
+      </group>
+    </>
   )
 }
