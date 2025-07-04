@@ -1,33 +1,48 @@
-"use client" // Componentes de erro precisam ser 'use client'
+"use client"
 
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { ShieldAlert } from "lucide-react"
+import { ShieldAlert, Home, RefreshCw } from "lucide-react"
+import Link from "next/link"
 
-export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string }
+  reset: () => void
+}) {
   useEffect(() => {
-    // Idealmente, você logaria este erro em um serviço como Sentry
-    console.error("Erro Global:", error)
+    // Log do erro para debugging
+    console.error("Erro na aplicação:", error)
   }, [error])
 
   return (
-    <html lang="pt-BR">
-      <body>
-        <main className="flex h-screen w-full flex-col items-center justify-center bg-background">
-          <div className="text-center">
-            <ShieldAlert className="mx-auto h-16 w-16 text-destructive" />
-            <h1 className="mt-6 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Oops! Algo deu muito errado.
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Ocorreu um erro inesperado na aplicação. Nossa equipe já foi notificada.
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="max-w-md w-full text-center space-y-6">
+        <div className="space-y-4">
+          <ShieldAlert className="mx-auto h-16 w-16 text-destructive" />
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">Algo deu errado</h1>
+            <p className="text-muted-foreground">
+              Ocorreu um erro inesperado. Tente novamente ou volte à página inicial.
             </p>
-            <div className="mt-10">
-              <Button onClick={() => reset()}>Tentar novamente</Button>
-            </div>
           </div>
-        </main>
-      </body>
-    </html>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button onClick={() => reset()} variant="default" className="flex items-center gap-2">
+            <RefreshCw className="h-4 w-4" />
+            Tentar novamente
+          </Button>
+          <Button asChild variant="outline" className="flex items-center gap-2 bg-transparent">
+            <Link href="/">
+              <Home className="h-4 w-4" />
+              Página inicial
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </div>
   )
 }

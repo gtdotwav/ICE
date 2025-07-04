@@ -1,20 +1,23 @@
 "use client"
 
 import React from "react"
-
-interface ErrorBoundaryProps {
-  children: React.ReactNode
-}
+import { Button } from "@/components/ui/button"
+import { AlertTriangle, RefreshCw } from "lucide-react"
 
 interface ErrorBoundaryState {
   hasError: boolean
-  error: Error | null
+  error?: Error
 }
 
-class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+interface ErrorBoundaryProps {
+  children: React.ReactNode
+  fallback?: React.ComponentType<{ error?: Error; resetError: () => void }>
+}
+
+export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
-    this.state = { hasError: false, error: null }
+    this.state = { hasError: false }
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
@@ -22,30 +25,39 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Você pode logar o erro para um serviço de monitoramento aqui
-    console.error("Erro capturado pelo ErrorBoundary:", error, errorInfo)
+    console.error("ErrorBoundary capturou um erro:", error, errorInfo)
+  }
+
+  resetError = () => {
+    this.setState({ hasError: false, error: undefined })
   }
 
   render() {
     if (this.state.hasError) {
-      return (
-        <div className="flex flex-col items-center justify-center h-screen bg-background text-foreground p-4">
-          <h2 className="text-2xl font-bold mb-2">Algo deu errado.</h2>
-          <p className="text-muted-foreground mb-4">
-            Ocorreu um erro inesperado. Por favor, tente recarregar a página.
-          </p>
-          <button
-            onClick={() => this.setState({ hasError: false, error: null })}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-          >
-            Tentar novamente
-          </button>
-        </div>
-      )
+      const FallbackComponent = this.props.fallback || DefaultErrorFallback
+      return <FallbackComponent error={this.state.error} resetError={this.resetError} />
     }
 
     return this.props.children
   }
+}
+
+function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError: () => void }) {
+  return (
+    <div className="min-h-[400px] flex items-center justify-center p-4">
+      <div className="text-center space-y-4 max-w-md">
+        <AlertTriangle className="mx-auto h-12 w-12 text-destructive" />
+        <div className="space-y-2">
+          <h2 className="text-xl font-semibold">Algo deu errado</h2>
+          <p className="text-muted-foreground text-sm">{error?.message || "Ocorreu um erro inesperado"}</p>
+        </div>
+        <Button onClick={resetError} className="flex items-center gap-2">
+          <RefreshCw className="h-4 w-4" />
+          Tentar novamente
+        </Button>
+      </div>
+    </div>
+  )
 }
 
 export default ErrorBoundary

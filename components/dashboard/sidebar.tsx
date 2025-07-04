@@ -2,51 +2,57 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Bot, BarChart, Settings, Package, LayoutDashboard, GitFork } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Bot, BarChart3, Home, Package, Settings, Zap, Users, CreditCard } from "lucide-react"
 
-const navItems = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/dashboard/funnels", icon: GitFork, label: "Funis" },
-  { href: "/dashboard/products", icon: Package, label: "Produtos" },
-  { href: "/dashboard/ai-tools", icon: Bot, label: "IA Tools" },
-  { href: "/dashboard/settings", icon: Settings, label: "Configurações" },
+import { cn } from "@/lib/utils"
+
+const navigation = [
+  { name: "Dashboard", href: "/dashboard", icon: Home },
+  { name: "Funis", href: "/dashboard/funnels", icon: Zap },
+  { name: "Produtos", href: "/dashboard/products", icon: Package },
+  { name: "IA Tools", href: "/dashboard/ai-tools", icon: Bot },
+  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { name: "Equipe", href: "/dashboard/team", icon: Users },
+  { name: "Faturamento", href: "/dashboard/billing", icon: CreditCard },
+  { name: "Configurações", href: "/dashboard/settings", icon: Settings },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <aside className="hidden w-16 flex-col border-r border-border bg-background/50 lg:flex">
-      <TooltipProvider>
-        <nav className="flex flex-col items-center gap-4 px-2 py-5">
-          <Link
-            href="#"
-            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
-          >
-            <BarChart className="h-4 w-4 transition-all group-hover:scale-110" />
-            <span className="sr-only">IceFunnel</span>
-          </Link>
-          {navItems.map((item) => (
-            <Tooltip key={item.label}>
-              <TooltipTrigger asChild>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
-                    pathname === item.href && "bg-accent text-accent-foreground",
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span className="sr-only">{item.label}</span>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">{item.label}</TooltipContent>
-            </Tooltip>
-          ))}
-        </nav>
-      </TooltipProvider>
+    <aside className="hidden w-64 flex-col border-r bg-background lg:flex">
+      <div className="flex h-16 items-center border-b px-6">
+        <Link href="/" className="flex items-center space-x-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
+            <span className="text-sm font-bold text-primary-foreground">IF</span>
+          </div>
+          <span className="text-lg font-bold">IceFunnel</span>
+        </Link>
+      </div>
+
+      <nav className="flex-1 space-y-1 px-3 py-4">
+        {navigation.map((item) => {
+          const isActive = pathname === item.href
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={cn(
+                "flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+              )}
+            >
+              <item.icon className="mr-3 h-5 w-5" />
+              {item.name}
+            </Link>
+          )
+        })}
+      </nav>
     </aside>
   )
 }
+
+export default Sidebar

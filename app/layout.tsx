@@ -3,10 +3,8 @@ import type { Metadata } from "next"
 import { Inter, Space_Grotesk } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
-// 👇 NEW import — the client wrapper we just added
-import AnimatedGradientClient from "@/components/background/animated-gradient-client"
+import { AnimatedGradient } from "@/components/background/animated-gradient"
 
-// ——— Google fonts via next/font (local, no network fetch) ———
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -37,7 +35,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           spaceGrotesk.variable,
         )}
       >
-        <AnimatedGradientClient />
+        <AnimatedGradient />
         <div className="relative z-10 flex flex-col min-h-screen">{children}</div>
       </body>
     </html>
