@@ -22,12 +22,18 @@ export default function FunnelsPage() {
   }
 
   return (
-    <>
-      <>
-        <FunnelsHeader onOpenWizard={() => setIsWizardOpen(true)} />
-        <FunnelsTable funnels={funnels} onOpenWizard={() => setIsWizardOpen(true)} />
-      </>
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+          Funis de Vendas
+        </h1>
+        <p className="text-lg text-muted-foreground">Gerencie e otimize seus funis de conversão.</p>
+      </div>
+
+      <FunnelsHeader onOpenWizard={() => setIsWizardOpen(true)} />
+      <FunnelsTable funnels={funnels} onOpenWizard={() => setIsWizardOpen(true)} />
+
       <CreateFunnelWizard isOpen={isWizardOpen} onOpenChange={setIsWizardOpen} onFunnelCreated={handleAddFunnel} />
-    </>
+    </div>
   )
 }

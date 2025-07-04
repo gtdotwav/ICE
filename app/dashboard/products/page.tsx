@@ -23,13 +23,22 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="flex-1 space-y-8 p-4 pt-6 md:p-8">
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+          Produtos
+        </h1>
+        <p className="text-lg text-muted-foreground">Gerencie seu catálogo de produtos e ofertas.</p>
+      </div>
+
       <ProductsHeader onNewProduct={handleNewProduct} />
       <StatsCards />
+
       <div className="space-y-6">
         <ProductsToolbar />
         <ProductsGrid onEditProduct={handleEditProduct} />
       </div>
+
       <ProductFormSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} product={selectedProduct} />
     </div>
   )

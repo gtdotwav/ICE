@@ -6,28 +6,34 @@ import { RecentActivity } from "@/components/dashboard/recent-activity"
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">Visão geral do seu desempenho e métricas principais.</p>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="space-y-2">
+        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+          Dashboard
+        </h1>
+        <p className="text-lg text-muted-foreground">Visão geral do seu desempenho e métricas principais.</p>
       </div>
 
+      {/* Overview Cards */}
       <OverviewCards />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      {/* Charts Section */}
+      <div className="grid gap-6 lg:grid-cols-7">
+        <div className="lg:col-span-4">
           <RevenueChart />
         </div>
-        <div>
+        <div className="lg:col-span-3">
           <FunnelChart />
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
+      {/* Bottom Section */}
+      <div className="grid gap-6 lg:grid-cols-7">
+        <div className="lg:col-span-4">
           <AiWidget />
         </div>
-        <div>
+        <div className="lg:col-span-3">
           <RecentActivity />
         </div>
       </div>
