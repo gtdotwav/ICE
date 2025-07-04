@@ -1,131 +1,148 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, Bot, Cpu, BarChart } from "lucide-react"
-import { AnimatedText } from "@/components/animated-text"
-import type { ModalType } from "@/components/home-page"
-import Link from "next/link"
-import { magicLogin } from "@/app/actions/auth"
+import { useState, useEffect } from "react"
 import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { AnimatedText } from "@/components/animated-text"
+import { DemoVideoPopup } from "@/components/popups/demo-video-popup"
+import { ArrowRight, Play, Sparkles } from "lucide-react"
 
-type HeroSectionProps = {
-  onOpenModal: (type: ModalType) => void
-  onOpenChatbot: () => void
-}
+export default function HeroSection() {
+  const [isVideoOpen, setIsVideoOpen] = useState(false)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
-export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
-  const features = [
-    { icon: <Bot className="h-5 w-5 text-primary" />, text: "IA Preditiva" },
-    { icon: <Cpu className="h-5 w-5 text-primary" />, text: "Automação" },
-    { icon: <BarChart className="h-5 w-5 text-primary" />, text: "Analytics" },
-  ]
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY })
+    }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.15, delayChildren: 0.2 },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
-  }
+    window.addEventListener("mousemove", handleMouseMove)
+    return () => window.removeEventListener("mousemove", handleMouseMove)
+  }, [])
 
   return (
-    <header className="relative flex items-center justify-center min-h-screen w-full overflow-hidden">
-      <div className="relative flex items-center min-h-screen w-full px-4 md:px-8 bg-gradient-to-r from-background via-background/70 to-transparent">
-        <motion.div
-          className="container mx-auto text-left"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Logo integration in hero section */}
-          <motion.div className="flex items-center gap-4 mb-8" variants={itemVariants}>
-            {/* Main brand logo with glow effect */}
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-xl opacity-60" />
-              <div className="relative glass-card backdrop-blur-sm border border-white/20 rounded-2xl p-3">
-                <Image
-                  src="/ice-logo.png"
-                  alt="IceFunnel - AI-Powered Conversion Engine"
-                  width={64}
-                  height={64}
-                  priority
-                  className="object-contain drop-shadow-lg"
-                />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-background/80 via-background/60 to-background/40" />
+
+      {/* Interactive Mouse Glow */}
+      <div
+        className="absolute pointer-events-none opacity-20 transition-opacity duration-500"
+        style={{
+          left: mousePosition.x - 150,
+          top: mousePosition.y - 150,
+          width: 300,
+          height: 300,
+          background: "radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 60%)",
+          borderRadius: "50%",
+        }}
+      />
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center max-w-5xl mx-auto">
+          {/* Logo and Brand */}
+          <div className="flex items-center justify-center mb-8 animate-fade-in">
+            <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-500">
+              <div className="flex items-center gap-4">
+                <div className="relative h-16 w-16">
+                  <Image
+                    src="/ice-logo.png"
+                    alt="IceFunnel"
+                    width={64}
+                    height={64}
+                    className="object-contain drop-shadow-lg"
+                    priority
+                  />
+                </div>
+                <div className="text-left">
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
+                    IceFunnel
+                  </h1>
+                  <p className="text-sm text-muted-foreground/80">AI-Powered Engine</p>
+                </div>
               </div>
             </div>
+          </div>
 
-            {/* Brand name alongside logo */}
-            <div className="flex flex-col">
-              <span className="text-2xl font-bold gradient-primary">IceFunnel</span>
-              <span className="text-sm text-muted-foreground">AI-Powered Engine</span>
-            </div>
-          </motion.div>
-
-          <motion.h1 className="font-display text-4xl md:text-5xl lg:text-7xl font-bold tracking-tighter">
-            <AnimatedText text="Funis com I.A. que" el="span" className="block text-foreground" />
-            <motion.span className="text-primary">
-              <AnimatedText text="congelam a concorrência." el="span" />
-            </motion.span>
-          </motion.h1>
-
-          <motion.p className="mt-6 max-w-xl text-lg md:text-xl text-muted-foreground" variants={itemVariants}>
-            Inteligência Artificial aplicada em cada etapa. ROI previsível por machine learning para escalar seus
-            resultados.
-          </motion.p>
-
-          <motion.div className="mt-8 flex flex-wrap gap-4" variants={itemVariants}>
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 px-4 py-2 bg-secondary/50 border border-border rounded-full backdrop-blur-sm"
-              >
-                {feature.icon}
-                <span className="font-medium text-foreground">{feature.text}</span>
-              </div>
-            ))}
-          </motion.div>
-
-          <motion.div className="mt-10 flex flex-col sm:flex-row gap-4" variants={itemVariants}>
-            <Button
-              asChild
-              size="lg"
-              className="bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all duration-300 group shadow-[0_0_20px_hsl(var(--primary)/0.5)] hover:shadow-[0_0_30px_hsl(var(--primary)/0.8)]"
+          {/* Beta Badge */}
+          <div className="flex justify-center mb-8 animate-slide-up">
+            <button
+              onClick={() => (window.location.href = "/dashboard")}
+              className="backdrop-blur-sm bg-primary/10 border border-primary/20 rounded-full px-6 py-2 hover:bg-primary/15 transition-all duration-300 cursor-pointer hover:scale-105"
             >
-              <Link href="/lista-espera">
-                Ativar IA Agora
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-              </Link>
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-primary">Beta Exclusivo • Acesso de Teste</span>
+              </div>
+            </button>
+          </div>
+
+          {/* Main Headline */}
+          <div className="mb-8 animate-slide-up animation-delay-200">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+              <span className="gradient-text">Funis com IA que</span>
+              <br />
+              <AnimatedText text="Congelam a Concorrência" className="gradient-primary" delay={0.5} />
+            </h1>
+
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Inteligência Artificial aplicada em cada etapa do seu funil para um{" "}
+              <span className="text-primary font-semibold">ROI previsível</span> e{" "}
+              <span className="text-primary font-semibold">crescimento escalável</span>.
+            </p>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 animate-slide-up animation-delay-400">
+            <Button
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 text-lg font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg shadow-primary/25"
+              onClick={() => (window.location.href = "/lista-espera")}
+            >
+              Entrar na Lista VIP
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button size="lg" variant="outline" onClick={() => onOpenModal("demoVideo")}>
-              Ver IA em Ação
+
+            <Button
+              variant="outline"
+              size="lg"
+              className="glass-button border-white/20 hover:bg-white/10 px-8 py-4 text-lg font-semibold rounded-xl hover:scale-105 transition-all duration-300 bg-transparent"
+              onClick={() => setIsVideoOpen(true)}
+            >
+              <Play className="mr-2 h-5 w-5" />
+              Ver Demo
             </Button>
-            <form action={magicLogin}>
-              <Button type="submit" size="lg" variant="secondary" className="w-full sm:w-auto">
-                Acessar como Teste
-              </Button>
-            </form>
-            <Button size="lg" variant="ghost" onClick={onOpenChatbot} className="hidden sm:flex">
-              <Bot className="mr-2 h-5 w-5" />
-              Falar com IA
-            </Button>
-          </motion.div>
-        </motion.div>
+          </div>
+
+          {/* Social Proof */}
+          <div className="animate-fade-in animation-delay-600">
+            <p className="text-sm text-muted-foreground mb-4">Já escolhido por mais de 500+ empreendedores</p>
+            <div className="flex justify-center items-center gap-2">
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div
+                    key={i}
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-primary/40 border-2 border-background flex items-center justify-center text-xs font-semibold"
+                  >
+                    {i}
+                  </div>
+                ))}
+              </div>
+              <span className="text-sm text-muted-foreground ml-2">+495 outros</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Floating Action Button for mobile */}
-      <Button
-        onClick={onOpenChatbot}
-        className="sm:hidden fixed bottom-6 right-6 z-30 h-16 w-16 rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/40 flex items-center justify-center p-0"
-        aria-label="Falar com IA"
-      >
-        <Bot className="h-8 w-8" />
-      </Button>
-    </header>
+      {/* Demo Video Popup */}
+      <DemoVideoPopup
+        isOpen={isVideoOpen}
+        onClose={() => setIsVideoOpen(false)}
+        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
+      />
+    </section>
   )
 }
+
+// Named export for compatibility
+export { HeroSection }
