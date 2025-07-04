@@ -1,26 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import dynamic from "next/dynamic"
-import { Skeleton } from "@/components/ui/skeleton"
+import RevenueChartClientWrapper from "./revenue-chart-client-wrapper"
 
-const RevenueChartClient = dynamic(() => import("./revenue-chart.client"), {
-  ssr: false,
-  loading: () => (
-    <div className="p-4">
-      <Skeleton className="h-[350px] w-full" />
-    </div>
-  ),
-})
-
+/**
+ * Server Component – streams the client-only chart.
+ * We export BOTH named and default to satisfy every import style.
+ */
 export function RevenueChart() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Visão Geral da Receita</CardTitle>
-        <CardDescription>Acompanhe a receita gerada ao longo do tempo.</CardDescription>
-      </CardHeader>
-      <CardContent className="pl-2">
-        <RevenueChartClient />
-      </CardContent>
-    </Card>
-  )
+  return <RevenueChartClientWrapper />
 }
+
+export default RevenueChart

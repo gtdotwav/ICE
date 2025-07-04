@@ -1,126 +1,107 @@
 "use client"
 
-import { Canvas as ThreeCanvas, useFrame } from "@react-three/fiber"
-import { useTexture } from "@react-three/drei"
+import { Canvas, useFrame } from "@react-three/fiber"
+import { Icosahedron, useTexture } from "@react-three/drei"
 import { useRef, useMemo, useEffect } from "react"
 import * as THREE from "three"
 import { gsap } from "gsap"
 
-const vertexShader = `
-varying vec2 vUv;
-varying vec3 vNormal;
-void main() {
-  vUv = uv;
-  vNormal = normal;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`
+/*────────────────── GLSL ──────────────────*/
+const vertex = /* glsl */ `
+  varying vec2 vUv;
+  varying vec3 vNormal;
+  void main(){
+    vUv = uv;
+    vNormal = normal;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.);
+  }`
 
-const fragmentShader = `
-uniform float uTime;
-uniform float uScanline;
-uniform sampler2D uTexture;
-uniform vec3 uColor;
-varying vec2 vUv;
-varying vec3 vNormal;
+const fragment = /* glsl */ `
+  uniform float uTime;
+  uniform float uScan;
+  uniform sampler2D uTex;
+  uniform vec3  uColor;
+  varying vec2 vUv;
+  varying vec3 vNormal;
 
-float random(vec2 st) {
-  return fract(sin(dot(st.xy, vec2(12.9898, 78.233))) * 43758.5453123);
-}
+  float rand(vec2 co){
+    return fract(sin(dot(co, vec2(12.9898,78.233))) * 43758.5453);
+  }
 
-void main() {
-  float time = uTime * 0.2;
-  vec2 uv = vUv;
+  void main(){
+    vec2 uv = vUv;
+    uv.y += rand(uv+uTime)*.04;          // glitch
+    float scan = sin((uv.y+uScan)*200.)*.02;
 
-  // Glitch effect
-  float glitch = random(uv + time) * 0.05;
-  uv.y += glitch;
+    float fres = pow(1.- dot(vNormal, vec3(0.,0.,1.)), 2.);
+    vec4 tex  = texture2D(uTex, uv);
 
-  // Scanline effect
-  float scanline = sin((uv.y + uScanline) * 200.0) * 0.02;
-  
-  // Fresnel effect
-  float fresnel = 1.0 - dot(vNormal, vec3(0.0, 0.0, 1.0));
-  fresnel = pow(fresnel, 2.0);
+    vec3 col = tex.rgb * uColor + scan + fres*.3;
+    float a  = clamp(tex.a * fres*2., 0., 1.);
 
-  vec4 texColor = texture2D(uTexture, uv);
-  vec3 finalColor = texColor.rgb * uColor;
+    gl_FragColor = vec4(col, a);
+  }`
 
-  // Combine effects
-  finalColor += scanline;
-  finalColor += fresnel * 0.3;
-  
-  float alpha = texColor.a * fresnel * 2.0;
-  alpha = clamp(alpha, 0.0, 1.0);
-
-  gl_FragColor = vec4(finalColor, alpha);
-}
-`
-
-// Create the geometry once and reuse it
-const icosahedronGeometry = new THREE.IcosahedronGeometry(2, 20)
-
-export const Hologram = () => {
-  const meshRef = useRef<THREE.Mesh>(null!)
-  const materialRef = useRef<THREE.ShaderMaterial>(null!)
-  const texture = useTexture("/placeholder-logo.png")
+/*───────────────── Mesh ───────────────────*/
+export function Hologram() {
+  const mesh = useRef<THREE.Mesh>(null!)
+  const mat = useRef<THREE.ShaderMaterial>(null!)
+  const tex = useTexture("/placeholder-logo.png")
 
   const uniforms = useMemo(
     () => ({
       uTime: { value: 0 },
-      uScanline: { value: 0 },
-      uTexture: { value: texture },
+      uScan: { value: 0 },
+      uTex: { value: tex },
       uColor: { value: new THREE.Color("#00ffff") },
     }),
-    [texture],
+    [tex],
   )
 
+  // perpetual scan-line animation
   useEffect(() => {
-    if (materialRef.current) {
-      gsap.to(materialRef.current.uniforms.uScanline, {
+    if (mat.current)
+      gsap.to(mat.current.uniforms.uScan, {
         value: 1.5,
         duration: 2,
         ease: "sine.inOut",
         yoyo: true,
         repeat: -1,
       })
-    }
   }, [])
 
   useFrame((state, delta) => {
-    if (materialRef.current) {
-      materialRef.current.uniforms.uTime.value = state.clock.getElapsedTime()
-    }
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.1
-      meshRef.current.rotation.y += delta * 0.15
-    }
+    mat.current.uniforms.uTime.value = state.clock.getElapsedTime()
+    mesh.current.rotation.x += delta * 0.1
+    mesh.current.rotation.y += delta * 0.15
   })
 
   return (
-    // Use a group with dispose={null} to prevent R3F from disposing the shared geometry
-    <group dispose={null}>
-      <mesh ref={meshRef} geometry={icosahedronGeometry}>
-        <shaderMaterial
-          ref={materialRef}
-          vertexShader={vertexShader}
-          fragmentShader={fragmentShader}
-          uniforms={uniforms}
-          transparent={true}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
-    </group>
+    <Icosahedron ref={mesh} args={[2, 20]} dispose={null}>
+      <shaderMaterial
+        ref={mat}
+        vertexShader={vertex}
+        fragmentShader={fragment}
+        uniforms={uniforms}
+        transparent
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </Icosahedron>
   )
 }
 
-export function HologramScene() {
-  return (
-    <ThreeCanvas camera={{ position: [0, 0, 5] }}>
-      <ambientLight intensity={0.2} />
-      <directionalLight position={[0, 1, 2]} intensity={0.5} />
-      <Hologram />
-    </ThreeCanvas>
-  )
-}
+/*──────────────── Stand-alone demo (optional) ───────────────*/
+// ───────────────────────────────────────────────────────────
+// Stand-alone demo canvas.  Needed as a **named** export for
+// other pages and as default for local previews.
+export const HologramScene = () => (
+  <Canvas camera={{ position: [0, 0, 5] }}>
+    <ambientLight intensity={0.4} />
+    <directionalLight position={[3, 4, 5]} intensity={1} />
+    <Hologram />
+  </Canvas>
+)
+
+// Exporting as default as well keeps existing imports working.
+export default HologramScene

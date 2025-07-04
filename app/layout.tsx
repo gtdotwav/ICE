@@ -1,37 +1,27 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/sonner"
-import { Analytics } from "@vercel/analytics/react"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import "@/app/globals.css"
 import { CanvasProvider } from "@/components/canvas-provider"
-import { Suspense } from "react"
-
-const inter = Inter({ subsets: ["latin"] })
+import { ThemeProvider } from "@/components/theme-provider"
+import type { Metadata } from "next"
+import type { ReactNode } from "react"
 
 export const metadata: Metadata = {
   title: "IceFunnel",
-  description: "Build, visualize, and deploy marketing funnels with the power of AI.",
+  description: "Marketing funnels driven by AI",
     generator: 'v0.dev'
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+/*  ────────────────────────────────────────────────────────────
+    Disable automatic static prerendering so pages render
+    at request-time (avoids the crashing SSR step for now).
+   ──────────────────────────────────────────────────────────── */
+export const dynamic = "force-dynamic"
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <Suspense fallback={null}>
-            <CanvasProvider>{children}</CanvasProvider>
-            <Toaster />
-          </Suspense>
-          <Analytics />
-          <SpeedInsights />
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <CanvasProvider>{children}</CanvasProvider>
         </ThemeProvider>
       </body>
     </html>

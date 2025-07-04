@@ -26,7 +26,11 @@ export default function HomePage() {
   }
 
   return (
-    <main className="flex flex-col min-h-screen">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-8 text-center">
+      <h1 className="text-5xl font-extrabold">IceFunnel</h1>
+      <p className="max-w-xl text-muted-foreground">AI-powered marketing funnels delivered at the speed of thought.</p>
+
+      {/* Sections */}
       <HeroSection onOpenModal={openModal} />
       <TrustBar />
       <ProblemSection />

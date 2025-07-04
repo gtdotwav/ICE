@@ -1,16 +1,25 @@
 "use client"
 
 import { Canvas } from "@react-three/fiber"
-import { type ReactNode, useRef } from "react"
+import { type ReactNode, useEffect, useRef, useState } from "react"
 
+/**
+ * One global <Canvas>. 3-D views elsewhere on the page use
+ * @react-three/drei‘s <View track={ref}> to portal into it.
+ */
 export function CanvasProvider({ children }: { children: ReactNode }) {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
+  const [mounted, setMounted] = useState(false)
+
+  //  Canvas must only render on the client.
+  useEffect(() => setMounted(true), [])
 
   return (
-    <div ref={containerRef} className="relative w-full h-full">
+    <div ref={rootRef} className="relative min-h-screen">
       {children}
-      {/* The shared canvas for all 3D views, positioned in the background */}
-      <Canvas eventSource={containerRef} className="fixed top-0 left-0 w-screen h-screen -z-10 pointer-events-none" />
+      {mounted && (
+        <Canvas eventSource={rootRef.current ?? undefined} className="fixed inset-0 -z-10 pointer-events-none" />
+      )}
     </div>
   )
 }
