@@ -1,32 +1,24 @@
 "use client"
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { PlusCircle } from "lucide-react"
 import {
   Breadcrumb,
+  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
+  BreadcrumbPage,
 } from "@/components/ui/breadcrumb"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { CreateFunnelWizard } from "./create-funnel-wizard"
+import { Button } from "@/components/ui/button"
+import { PlusCircle, Sparkles } from "lucide-react"
 
-export function FunnelsHeader() {
-  const [open, setOpen] = useState(false)
+interface FunnelsHeaderProps {
+  onOpenWizard: () => void
+}
 
+export function FunnelsHeader({ onOpenWizard }: FunnelsHeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-      <div>
+      <div className="flex-1">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -34,30 +26,18 @@ export function FunnelsHeader() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Funis</BreadcrumbPage>
+              <BreadcrumbPage>Funis de Venda</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <h1 className="font-semibold text-2xl md:text-3xl mt-2">Funis de Venda</h1>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight mt-2">Gerenciamento de Funis</h1>
       </div>
-      <div className="ml-auto flex items-center gap-2">
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogTrigger asChild>
-            <Button size="sm" className="h-9 gap-1">
-              <PlusCircle className="h-4 w-4" />
-              <span className="sm:whitespace-nowrap">Criar Novo Funil</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[800px]">
-            <DialogHeader>
-              <DialogTitle>Criar um Funil Perfeito</DialogTitle>
-              <DialogDescription>
-                Siga os passos para configurar seu novo funil de vendas com assistência da IA.
-              </DialogDescription>
-            </DialogHeader>
-            <CreateFunnelWizard onClose={() => setOpen(false)} />
-          </DialogContent>
-        </Dialog>
+      <div className="flex items-center gap-2">
+        <Button size="lg" onClick={onOpenWizard}>
+          <PlusCircle className="mr-2 h-5 w-5" />
+          Criar Novo Funil
+          
+        </Button>
       </div>
     </div>
   )
