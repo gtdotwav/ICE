@@ -11,11 +11,20 @@ export default function DashboardError({
   reset,
 }: {
   error: Error & { digest?: string }
-  reset: () => void
+  reset?: () => void
 }) {
   useEffect(() => {
     console.error("Erro no dashboard:", error)
   }, [error])
+
+  const handleReset = () => {
+    if (typeof reset === "function") {
+      reset()
+    } else if (typeof window !== "undefined") {
+      // Fallback: recarrega a página se a função reset não estiver disponível
+      window.location.reload()
+    }
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
@@ -29,7 +38,7 @@ export default function DashboardError({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col gap-2">
-            <Button onClick={() => reset()} className="w-full">
+            <Button onClick={handleReset} className="w-full">
               <RefreshCw className="mr-2 h-4 w-4" />
               Tentar novamente
             </Button>

@@ -1,42 +1,38 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Space_Grotesk } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
-import { cn } from "@/lib/utils"
-import { AnimatedGradient } from "@/components/background/animated-gradient"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { CanvasProvider } from "@/components/canvas-provider"
+import { Suspense } from "react"
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-})
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  display: "swap",
-})
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "IceFunnel | AI-Powered Conversion Engine",
-  description:
-    "Funis com IA que congelam a concorrência. Inteligência Artificial aplicada em cada etapa para um ROI previsível e crescimento escalável.",
-  keywords: ["IA", "SaaS", "Funil de Vendas", "Machine Learning", "Otimização de Conversão", "Next.js"],
-  generator: "v0.dev",
+  title: "IceFunnel",
+  description: "Build, visualize, and deploy marketing funnels with the power of AI.",
+    generator: 'v0.dev'
 }
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
   return (
-    <html lang="pt-BR" className="dark">
-      <body
-        className={cn(
-          "min-h-screen bg-background font-body text-foreground antialiased",
-          inter.variable,
-          spaceGrotesk.variable,
-        )}
-      >
-        <AnimatedGradient />
-        <div className="relative z-10 flex flex-col min-h-screen">{children}</div>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+          <Suspense fallback={null}>
+            <CanvasProvider>{children}</CanvasProvider>
+            <Toaster />
+          </Suspense>
+          <Analytics />
+          <SpeedInsights />
+        </ThemeProvider>
       </body>
     </html>
   )
