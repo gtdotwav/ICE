@@ -18,6 +18,7 @@ import {
   ChevronRight,
   User,
   HelpCircle,
+  Webhook,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -48,6 +49,12 @@ const navigation = [
     icon: Bot,
     badge: "Novo",
     description: "Ferramentas de inteligência artificial",
+  },
+  {
+    name: "Webhooks",
+    href: "/dashboard/webhooks",
+    icon: Webhook,
+    description: "Integrações automáticas com sistemas externos",
   },
   {
     name: "Configurações",
