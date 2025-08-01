@@ -2,6 +2,7 @@ import { WebhookConfig, WebhookPayload, WebhookDelivery, RetryConfig } from './t
 import { WebhookQueue } from './webhook-queue'
 import { WebhookSecurity } from './webhook-security'
 import { WebhookLogger } from './webhook-logger'
+import { nanoid } from 'nanoid'
 
 export class WebhookService {
   private queue: WebhookQueue
@@ -215,27 +216,91 @@ export class WebhookService {
 
   // Métodos auxiliares (implementação simplificada)
   private generateId(): string {
-    return `wh_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    return `wh_${Date.now()}_${nanoid(9)}`
   }
 
   private async getActiveWebhookConfigs(userId: string, eventType: string): Promise<WebhookConfig[]> {
-    // Implementar busca no banco de dados
-    return []
+    // Simulação de busca no banco de dados
+    const mockConfigs: WebhookConfig[] = [
+      {
+        id: 'wh_001',
+        name: 'Test Webhook',
+        url: 'https://webhook.site/test',
+        events: [{ type: eventType as any, description: 'Test event' }],
+        secret: 'test_secret',
+        isActive: true,
+        retryConfig: {
+          maxAttempts: 3,
+          backoffMultiplier: 2,
+          initialDelay: 5
+        },
+        headers: {},
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userId
+      }
+    ]
+    return mockConfigs.filter(config => 
+      config.userId === userId && 
+      config.events.some(event => event.type === eventType)
+    )
   }
 
   private async getWebhookConfig(id: string): Promise<WebhookConfig> {
-    // Implementar busca no banco de dados
-    throw new Error('Not implemented')
+    // Simulação de busca no banco de dados
+    return {
+      id,
+      name: 'Test Webhook',
+      url: 'https://webhook.site/test',
+      events: [{ type: 'form.submitted', description: 'Form submitted' }],
+      secret: 'test_secret',
+      isActive: true,
+      retryConfig: {
+        maxAttempts: 3,
+        backoffMultiplier: 2,
+        initialDelay: 5
+      },
+      headers: {},
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      userId: 'user_123'
+    }
   }
 
   private async getWebhookDelivery(id: string): Promise<WebhookDelivery> {
-    // Implementar busca no banco de dados
-    throw new Error('Not implemented')
+    // Simulação de busca no banco de dados
+    return {
+      id,
+      webhookConfigId: 'wh_001',
+      payload: {
+        id: 'payload_123',
+        event: 'form.submitted',
+        timestamp: new Date().toISOString(),
+        data: {},
+        source: 'icefunnel',
+        version: '1.0'
+      },
+      status: 'pending',
+      attempts: 0,
+      createdAt: new Date()
+    }
   }
 
   private async getIncomingWebhookConfig(endpoint: string): Promise<any> {
-    // Implementar busca no banco de dados
-    return null
+    // Simulação de busca no banco de dados
+    return {
+      id: 'incoming_001',
+      name: 'Test Incoming',
+      endpoint,
+      secret: 'incoming_secret',
+      isActive: true,
+      allowedSources: ['*'],
+      eventMapping: {
+        'external_event': 'internal_event'
+      },
+      userId: 'user_123',
+      createdAt: new Date()
+    }
   }
 
   private async updateDeliveryStatus(
@@ -244,15 +309,16 @@ export class WebhookService {
     errorMessage?: string,
     nextRetryAt?: Date
   ): Promise<void> {
-    // Implementar atualização no banco de dados
+    // Simulação de atualização no banco de dados
+    console.log(`Updating delivery ${id} to status: ${status}`, { errorMessage, nextRetryAt })
   }
 
   private mapExternalEvent(payload: any, mapping: Record<string, string>): string | null {
-    // Implementar mapeamento de eventos
-    return mapping[payload.event] || null
+    return mapping[payload.event] || payload.event || null
   }
 
   private async processInternalEvent(event: string, data: any, userId: string): Promise<void> {
-    // Implementar processamento de evento interno
+    // Simulação de processamento de evento interno
+    console.log(`Processing internal event: ${event}`, { data, userId })
   }
 }

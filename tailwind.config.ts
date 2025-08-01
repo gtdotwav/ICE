@@ -88,6 +88,10 @@ const config = {
           DEFAULT: "hsl(0 84% 60%)",
           foreground: "hsl(0 86% 97%)",
         },
+        // Status colors for products/webhooks
+        "status-active": "hsl(142 76% 36%)",
+        "status-draft": "hsl(32 95% 44%)",
+        "status-archived": "hsl(0 84% 60%)",
         // Glass colors
         glass: {
           DEFAULT: "rgba(255, 255, 255, 0.05)",

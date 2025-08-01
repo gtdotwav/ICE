@@ -1,4 +1,4 @@
-import crypto from 'crypto'
+import { createHmac, randomBytes, timingSafeEqual } from 'crypto'
 
 export class WebhookSecurity {
   /**
@@ -6,8 +6,7 @@ export class WebhookSecurity {
    */
   signPayload(payload: any, secret: string): string {
     const payloadString = JSON.stringify(payload)
-    const signature = crypto
-      .createHmac('sha256', secret)
+    const signature = createHmac('sha256', secret)
       .update(payloadString)
       .digest('hex')
     
@@ -21,7 +20,7 @@ export class WebhookSecurity {
     const expectedSignature = this.signPayload(payload, secret)
     
     // Comparação segura para evitar timing attacks
-    return crypto.timingSafeEqual(
+    return timingSafeEqual(
       Buffer.from(signature),
       Buffer.from(expectedSignature)
     )
@@ -31,7 +30,7 @@ export class WebhookSecurity {
    * Gera secret seguro para webhook
    */
   generateSecret(): string {
-    return crypto.randomBytes(32).toString('hex')
+    return randomBytes(32).toString('hex')
   }
 
   /**

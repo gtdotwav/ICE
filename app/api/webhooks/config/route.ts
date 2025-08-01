@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { WebhookSecurity } from '@/lib/webhooks/webhook-security'
+import { nanoid } from 'nanoid'
 
 const security = new WebhookSecurity()
 
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     // Configurações padrão
     const webhookConfig = {
-      id: `wh_${Date.now()}`,
+      id: `wh_${nanoid()}`,
       name: config.name,
       url: config.url,
       events: config.events,

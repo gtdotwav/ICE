@@ -1,4 +1,5 @@
 import { WebhookDelivery } from './types'
+import { nanoid } from 'nanoid'
 
 export class WebhookQueue {
   private queue: Map<string, any> = new Map()
@@ -59,6 +60,6 @@ export class WebhookQueue {
   }
 
   private generateId(): string {
-    return `delivery_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    return `delivery_${Date.now()}_${nanoid(9)}`
   }
 }

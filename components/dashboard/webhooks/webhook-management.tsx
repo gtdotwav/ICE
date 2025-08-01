@@ -31,7 +31,7 @@ import {
   Trash2,
   TestTube
 } from "lucide-react"
-import { toast } from "sonner"
+import { useToast } from "@/hooks/use-toast"
 
 interface WebhookConfig {
   id: string
@@ -52,6 +52,7 @@ export function WebhookManagement() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [selectedWebhook, setSelectedWebhook] = useState<WebhookConfig | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const { toast } = useToast()
 
   const availableEvents = [
     { value: 'form.submitted', label: 'Formulário Submetido' },
@@ -104,7 +105,11 @@ export function WebhookManagement() {
       
       setWebhooks(mockWebhooks)
     } catch (error) {
-      toast.error('Erro ao carregar webhooks')
+      toast({
+        title: "Erro",
+        description: "Erro ao carregar webhooks",
+        variant: "destructive"
+      })
     } finally {
       setIsLoading(false)
     }
@@ -124,9 +129,16 @@ export function WebhookManagement() {
       
       setWebhooks(prev => [...prev, newWebhook])
       setIsCreateDialogOpen(false)
-      toast.success('Webhook criado com sucesso!')
+      toast({
+        title: "Sucesso",
+        description: "Webhook criado com sucesso!"
+      })
     } catch (error) {
-      toast.error('Erro ao criar webhook')
+      toast({
+        title: "Erro",
+        description: "Erro ao criar webhook",
+        variant: "destructive"
+      })
     }
   }
 
@@ -139,12 +151,23 @@ export function WebhookManagement() {
       })
       
       if (response.ok) {
-        toast.success('Webhook de teste enviado com sucesso!')
+        toast({
+          title: "Sucesso",
+          description: "Webhook de teste enviado com sucesso!"
+        })
       } else {
-        toast.error('Erro ao enviar webhook de teste')
+        toast({
+          title: "Erro",
+          description: "Erro ao enviar webhook de teste",
+          variant: "destructive"
+        })
       }
     } catch (error) {
-      toast.error('Erro ao testar webhook')
+      toast({
+        title: "Erro",
+        description: "Erro ao testar webhook",
+        variant: "destructive"
+      })
     }
   }
 
@@ -155,12 +178,18 @@ export function WebhookManagement() {
       )
     )
     
-    toast.success(`Webhook ${isActive ? 'ativado' : 'desativado'} com sucesso!`)
+    toast({
+      title: "Sucesso",
+      description: `Webhook ${isActive ? 'ativado' : 'desativado'} com sucesso!`
+    })
   }
 
   const copySecret = (secret: string) => {
     navigator.clipboard.writeText(secret)
-    toast.success('Secret copiado para a área de transferência!')
+    toast({
+      title: "Sucesso",
+      description: "Secret copiado para a área de transferência!"
+    })
   }
 
   return (
@@ -349,6 +378,7 @@ function WebhookCreateForm({
     initialDelay: 5,
     headers: ''
   })
+  const { toast } = useToast()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -358,7 +388,11 @@ function WebhookCreateForm({
       try {
         headers = JSON.parse(formData.headers)
       } catch {
-        toast.error('Headers devem estar em formato JSON válido')
+        toast({
+          title: "Erro",
+          description: "Headers devem estar em formato JSON válido",
+          variant: "destructive"
+        })
         return
       }
     }

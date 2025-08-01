@@ -5,6 +5,7 @@ import "./globals.css"
 import { cn } from "@/lib/utils"
 import { AnimatedGradient } from "@/components/background/animated-gradient"
 import { FloatingLogo } from "@/components/ui/floating-logo"
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -53,6 +54,9 @@ export default function RootLayout({
           showOnScroll={true}
           className="hidden sm:block" // Hide on mobile to avoid clutter
         />
+
+        {/* Toast notifications */}
+        <Toaster />
       </body>
     </html>
   )

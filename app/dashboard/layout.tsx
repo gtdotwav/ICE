@@ -5,7 +5,7 @@ import type React from "react"
 import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { AnimatedGradient } from "@/components/background/animated-gradient"
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/toaster"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
@@ -107,13 +107,7 @@ export default function DashboardLayout({
       </div>
 
       {/* Toast Notifications */}
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          className: "glass-card border-white/10",
-          duration: 4000,
-        }}
-      />
+      <Toaster />
     </div>
   )
 }
