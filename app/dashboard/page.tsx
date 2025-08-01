@@ -1,4 +1,6 @@
 "use client"
+
+import { Suspense } from "react"
 import { RevenueChart } from "@/components/dashboard/revenue-chart"
 import { FunnelChart } from "@/components/dashboard/funnel-chart"
 import { AIWidget } from "@/components/dashboard/ai-widget"
@@ -98,13 +100,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* Header Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-bold gradient-text">Bem-vindo de volta!</h2>
-          <p className="text-sm sm:text-base text-muted-foreground">Aqui está um resumo da sua performance hoje.</p>
-        </div>
+    <Suspense fallback={<div>Loading dashboard...</div>}>
+      <div className="space-y-4 sm:space-y-6">
+        {/* Header Actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold gradient-text">Bem-vindo de volta!</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">Aqui está um resumo da sua performance hoje.</p>
+          </div>
 
         <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0">
           <Button
@@ -272,6 +275,7 @@ export default function DashboardPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </Suspense>
   )
 }
