@@ -1,6 +1,5 @@
 "use client"
 
-import "@/lib/webhooks/webhook-auto-integration"
 import { useToast } from "@/hooks/use-toast"
 import {
   Toast,
