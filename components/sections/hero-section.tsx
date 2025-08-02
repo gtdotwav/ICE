@@ -4,10 +4,15 @@ import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { AnimatedText } from "@/components/animated-text"
-import { DemoVideoPopup } from "@/components/popups/demo-video-popup"
 import { ArrowRight, Play, Sparkles } from "lucide-react"
+import type { ModalType } from "@/components/home-page"
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  onOpenModal: (modal: ModalType) => void
+  onOpenChatbot: () => void
+}
+
+export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
   const [isVideoOpen, setIsVideoOpen] = useState(false)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
@@ -99,9 +104,9 @@ export default function HeroSection() {
             <Button
               size="lg"
               className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl hover:scale-105 transition-all duration-300 shadow-lg shadow-primary/25 w-full sm:w-auto min-h-[48px]"
-              onClick={() => (window.location.href = "/lista-espera")}
+              onClick={onOpenChatbot}
             >
-              Entrar na Lista VIP
+              Começar Agora (Beta)
               <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
 
@@ -109,7 +114,7 @@ export default function HeroSection() {
               variant="outline"
               size="lg"
               className="glass-button border-white/20 hover:bg-white/10 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl hover:scale-105 transition-all duration-300 bg-transparent w-full sm:w-auto min-h-[48px]"
-              onClick={() => setIsVideoOpen(true)}
+              onClick={() => onOpenModal("demoVideo")}
             >
               <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
               Ver Demo
@@ -138,15 +143,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Demo Video Popup */}
-      <DemoVideoPopup
-        isOpen={isVideoOpen}
-        onClose={() => setIsVideoOpen(false)}
-        videoUrl="https://www.youtube.com/embed/dQw4w9WgXcQ"
-      />
     </section>
   )
 }
 
-// Named export for compatibility
-export { HeroSection }

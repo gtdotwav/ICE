@@ -251,13 +251,17 @@ export function PricingSection() {
                   <Button
                     asChild
                     size="lg"
+                    data-track-conversion="true"
+                    data-funnel-id="pricing"
+                    data-step-id={plan.name.toLowerCase()}
+                    data-value={plan.price !== "Custom" ? plan.price : "0"}
                     className={`w-full font-bold transition-all duration-300 ${
                       plan.highlight
                         ? "bg-primary text-primary-foreground hover:shadow-[0_0_20px_hsl(var(--primary)/0.4)] hover:scale-105"
                         : "bg-secondary text-foreground hover:bg-accent"
                     }`}
                   >
-                    <Link href="/lista-espera">
+                    <Link href={plan.price === "Custom" ? "/dashboard" : "/lista-espera"}>
                       {plan.price === "Custom" ? "Falar com Especialista" : "Começar Agora"}
                     </Link>
                   </Button>

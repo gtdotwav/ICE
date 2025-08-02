@@ -1,6 +1,7 @@
 "use server"
 
 import { z } from "zod"
+import { API } from "@/lib/api-client"
 
 const quizSchema = z.object({
   role: z.string(),
@@ -17,14 +18,30 @@ export async function submitQuiz(data: unknown) {
     throw new Error("Invalid data provided.")
   }
 
-  // Em um aplicativo real, você salvaria isso em seu banco de dados (Supabase, Neon, etc.)
-  // ou enviaria para um CRM.
-  console.log("Novo lead na lista de espera:", parsedData.data)
+  try {
+    // Registrar usuário no sistema
+    await API.registerUser({
+      email: parsedData.data.email,
+      name: parsedData.data.name,
+      source: 'lista_espera'
+    })
 
-  // Simula um atraso de rede
-  await new Promise((resolve) => setTimeout(resolve, 1500))
+    // Qualificar como lead
+    await API.qualifyLead({
+      email: parsedData.data.email,
+      name: parsedData.data.name,
+      score: 85, // Score alto para lista de espera
+      criteria: ['lista_espera', parsedData.data.role, parsedData.data.challenge],
+      source: 'lista_espera',
+      tags: [parsedData.data.role, parsedData.data.challenge, parsedData.data.companySize]
+    })
 
-  // Você pode retornar dados se necessário, mas para este caso,
-  // o estado de sucesso é gerenciado no cliente.
-  return { success: true, message: "Inscrição na lista de espera confirmada!" }
+    // Simula um atraso de rede
+    await new Promise((resolve) => setTimeout(resolve, 1500))
 }
+
+    return { success: true, message: "Inscrição na lista de espera confirmada!" }
+  } catch (error) {
+    console.error('Erro ao processar inscrição:', error)
+    throw new Error("Erro ao processar inscrição. Tente novamente.")
+  }

@@ -117,17 +117,32 @@ export function WebhookManagement() {
 
   const createWebhook = async (webhookData: any) => {
     try {
-      // Simular criação de webhook
-      const newWebhook: WebhookConfig = {
-        id: `wh_${Date.now()}`,
-        ...webhookData,
-        stats: {
-          totalDeliveries: 0,
-          successRate: 0
+      // Criar webhook via API
+      const response = await fetch('/api/webhooks/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...webhookData,
+          userId: 'current-user-id' // Em produção, obter do contexto de auth
+        })
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        const newWebhook: WebhookConfig = {
+          id: result.webhook.id,
+          ...webhookData,
+          stats: {
+            totalDeliveries: 0,
+            successRate: 0
+          }
         }
+        
+        setWebhooks(prev => [...prev, newWebhook])
+      } else {
+        throw new Error('Erro ao criar webhook')
       }
       
-      setWebhooks(prev => [...prev, newWebhook])
       setIsCreateDialogOpen(false)
       toast({
         title: "Sucesso",

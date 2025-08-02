@@ -6,6 +6,7 @@ import { chatFlow, TOTAL_STEPS } from "@/lib/chat-flow"
 import { WelcomeOrchestrator } from "@/components/chat/steps/WelcomeOrchestrator"
 import { BotAnalysis } from "@/components/chat/steps/BotAnalysis"
 import type { ChatState, ChatAction } from "@/lib/chat-reducer"
+import { API } from "@/lib/api-client"
 
 // --- Helper Functions for contextual text ---
 const personalizationService = {
@@ -147,7 +148,16 @@ export const useConversationFlow = (state: ChatState, dispatch: React.Dispatch<C
     dispatch({ type: "ADD_MESSAGE", payload: { sender: "user", content: value } })
     dispatch({ type: "UPDATE_PROFILE", payload: { email: value } })
 
-    console.log("Lead capturado:", { ...profile, email: value })
+    // Capturar lead via API
+    const leadData = { ...profile, email: value }
+    API.qualifyLead({
+      email: value,
+      name: leadData.name || 'Usuário Chat',
+      score: 90, // Score alto para leads do chat
+      criteria: ['chat_interaction', leadData.painPoint, leadData.urgencyLevel],
+      source: 'chatbot',
+      tags: [leadData.painPoint, leadData.urgencyLevel, leadData.techLevel]
+    }).catch(console.error)
 
     const nextStep = currentStep + 1
     setTimeout(() => {
