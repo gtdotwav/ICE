@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils"
 import { AnimatedGradient } from "@/components/background/animated-gradient"
 import { FloatingLogo } from "@/components/ui/floating-logo"
 import { Toaster } from "@/components/ui/toaster"
-import Script from "next/script"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,15 +57,6 @@ export default function RootLayout({
 
         {/* Toast notifications */}
         <Toaster />
-
-        {/* Webhook Auto-Integration Script */}
-        <Script id="webhook-integration" strategy="afterInteractive">
-          {`
-            import('/lib/webhooks/webhook-auto-integration.js').then(module => {
-              module.initializeWebhookIntegrations();
-            }).catch(console.error);
-          `}
-        </Script>
       </body>
     </html>
   )
