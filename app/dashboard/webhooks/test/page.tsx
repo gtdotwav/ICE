@@ -27,7 +27,7 @@ export default function WebhookTestPage() {
         <div className="grid gap-6 lg:grid-cols-2">
           <WebhookTestPanel 
             webhookId="wh_test_001" 
-            webhookUrl="https://webhook.site/test" 
+            webhookUrl="https://webhook.site/unique-test-url" 
           />
           
           <Card className="glass-card">

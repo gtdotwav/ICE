@@ -88,6 +88,7 @@ export function WebhookTestPanel({ webhookId, webhookUrl }: WebhookTestPanelProp
           description: "Payload JSON inválido",
           variant: "destructive"
         })
+        setIsLoading(false)
         return
       }
 

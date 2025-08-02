@@ -181,6 +181,7 @@ export function QuizForm() {
                       {...methods.register("name")}
                       placeholder="Seu nome completo"
                       className="h-12 bg-background"
+                      data-webhook-field="name"
                     />
                     {formState.errors.name && (
                       <p className="text-sm font-medium text-destructive">{formState.errors.name.message}</p>
@@ -189,6 +190,7 @@ export function QuizForm() {
                       {...methods.register("email")}
                       placeholder="Seu melhor e-mail"
                       className="h-12 bg-background"
+                      data-webhook-field="email"
                     />
                     {formState.errors.email && (
                       <p className="text-sm font-medium text-destructive">{formState.errors.email.message}</p>
