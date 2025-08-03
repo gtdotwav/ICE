@@ -1,12 +1,12 @@
-# Documentação Completa de Webhooks - IceFunnel
+# Documentação Completa de Webhooks - HIAS FLOW
 
 ## Introdução aos Webhooks
 
-Webhooks são notificações HTTP em tempo real que o IceFunnel envia para seus sistemas quando eventos importantes acontecem. Eles permitem que você automatize fluxos de trabalho, sincronize dados e mantenha seus sistemas sempre atualizados.
+Webhooks são notificações HTTP em tempo real que o HIAS FLOW envia para seus sistemas quando eventos importantes acontecem. Eles permitem que você automatize fluxos de trabalho, sincronize dados e mantenha seus sistemas sempre atualizados.
 
 ### Como Funcionam
 
-1. **Evento ocorre** no IceFunnel (ex: formulário submetido)
+1. **Evento ocorre** no HIAS FLOW (ex: formulário submetido)
 2. **Webhook é disparado** automaticamente
 3. **Payload é enviado** para sua URL configurada
 4. **Seu sistema processa** os dados recebidos
@@ -41,7 +41,7 @@ Authorization: Bearer sk_live_...
   "initialDelay": 5,
   "headers": {
     "Authorization": "Bearer zapier-token",
-    "X-Source": "icefunnel"
+    "X-Source": "hiasflow"
   }
 }
 ```
@@ -79,9 +79,9 @@ function validateWebhookSignature(payload, signature, secret) {
 }
 
 // Implementação em Express.js
-app.post('/webhook/icefunnel', express.raw({type: 'application/json'}), (req, res) => {
+app.post('/webhook/hiasflow', express.raw({type: 'application/json'}), (req, res) => {
   const signature = req.headers['x-webhook-signature'];
-  const secret = process.env.ICEFUNNEL_WEBHOOK_SECRET;
+  const secret = process.env.HIASFLOW_WEBHOOK_SECRET;
   
   if (!validateWebhookSignature(req.body, signature, secret)) {
     return res.status(401).json({ error: 'Invalid signature' });
@@ -126,7 +126,7 @@ Disparado quando qualquer formulário é submetido na plataforma.
       "campaign": "brand_campaign"
     }
   },
-  "source": "icefunnel",
+  "source": "hiasflow",
   "version": "1.0"
 }
 ```
@@ -170,7 +170,7 @@ Disparado quando um lead converte em qualquer etapa do funil.
     "conversionPath": "google_ads → landing → video → form → checkout",
     "timeToConvert": 600 // segundos
   },
-  "source": "icefunnel",
+  "source": "hiasflow",
   "version": "1.0"
 }
 ```
@@ -198,7 +198,7 @@ Disparado quando um novo usuário se registra na plataforma.
       "companySize": "1-10"
     }
   },
-  "source": "icefunnel",
+  "source": "hiasflow",
   "version": "1.0"
 }
 ```
@@ -237,7 +237,7 @@ Disparado quando um pagamento é processado com sucesso.
       }
     }
   },
-  "source": "icefunnel",
+  "source": "hiasflow",
   "version": "1.0"
 }
 ```
@@ -279,7 +279,7 @@ Disparado quando um lead atinge critérios de qualificação.
       "emailOpens": 8
     }
   },
-  "source": "icefunnel",
+  "source": "hiasflow",
   "version": "1.0"
 }
 ```
@@ -324,7 +324,7 @@ Disparado quando uma automação é acionada.
       }
     ]
   },
-  "source": "icefunnel",
+  "source": "hiasflow",
   "version": "1.0"
 }
 ```
@@ -337,12 +337,12 @@ Disparado quando uma automação é acionada.
 
 #### Configuração no Zapier
 1. **Trigger**: Webhook by Zapier
-2. **URL**: Copie da configuração do webhook no IceFunnel
-3. **Secret**: Use o secret fornecido pelo IceFunnel
+2. **URL**: Copie da configuração do webhook no HIAS FLOW
+3. **Secret**: Use o secret fornecido pelo HIAS FLOW
 
 #### Exemplo de Zap
 ```
-Trigger: IceFunnel Webhook (form.submitted)
+Trigger: HIAS FLOW Webhook (form.submitted)
 ↓
 Filter: Email contains "@empresa.com"
 ↓
@@ -363,7 +363,7 @@ Action: Create HubSpot contact
     "method": "POST",
     "headers": {
       "Content-Type": "application/json",
-      "X-Make-Source": "icefunnel"
+      "X-Make-Source": "hiasflow"
     }
   },
   "events": ["funnel.conversion", "payment.completed"],
@@ -385,7 +385,7 @@ const hubspotClient = new hubspot.Client({
   accessToken: process.env.HUBSPOT_ACCESS_TOKEN
 });
 
-app.post('/webhook/icefunnel', async (req, res) => {
+app.post('/webhook/hiasflow', async (req, res) => {
   const { event, data } = req.body;
 
   switch (event) {
@@ -436,7 +436,7 @@ mailchimp.setConfig({
   server: process.env.MAILCHIMP_SERVER_PREFIX
 });
 
-app.post('/webhook/icefunnel', async (req, res) => {
+app.post('/webhook/hiasflow', async (req, res) => {
   const { event, data } = req.body;
 
   if (event === 'form.submitted' && data.fields.email) {
@@ -456,7 +456,7 @@ async function addToMailchimpList(fields) {
         LNAME: fields.name?.split(' ').slice(1).join(' ') || '',
         COMPANY: fields.company || ''
       },
-      tags: ['icefunnel', 'new_lead']
+      tags: ['hiasflow', 'new_lead']
     });
     
     console.log('Added to Mailchimp:', response.id);
@@ -474,7 +474,7 @@ const { WebClient } = require('@slack/web-api');
 
 const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
 
-app.post('/webhook/icefunnel', async (req, res) => {
+app.post('/webhook/hiasflow', async (req, res) => {
   const { event, data } = req.body;
 
   switch (event) {
@@ -540,7 +540,7 @@ async function sendSlackNotification(channel, message) {
 
 ## Webhooks de Entrada (Incoming)
 
-O IceFunnel também pode receber webhooks de sistemas externos para processar eventos em sua plataforma.
+O HIAS FLOW também pode receber webhooks de sistemas externos para processar eventos em sua plataforma.
 
 ### Configuração
 
@@ -565,7 +565,7 @@ POST /api/webhooks/incoming/config
 
 #### 2. URL Gerada
 ```
-https://app.icefunnel.com/api/webhooks/incoming/zapier-leads
+https://app.hiasflow.com/api/webhooks/incoming/zapier-leads
 ```
 
 ### Exemplo de Payload Recebido
@@ -590,7 +590,7 @@ https://app.icefunnel.com/api/webhooks/incoming/zapier-leads
 
 ### Processamento Automático
 
-O IceFunnel processa automaticamente webhooks recebidos:
+O HIAS FLOW processa automaticamente webhooks recebidos:
 
 1. **Valida assinatura** usando o secret configurado
 2. **Mapeia eventos** externos para eventos internos
@@ -628,7 +628,7 @@ O IceFunnel processa automaticamente webhooks recebidos:
   "headers": {
     "Authorization": "Bearer custom-token",
     "X-API-Version": "v2",
-    "X-Source": "icefunnel",
+    "X-Source": "hiasflow",
     "Content-Type": "application/json"
   }
 }
@@ -917,7 +917,7 @@ class DynamicLeadScoring {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.ICEFUNNEL_API_KEY}`
+        'Authorization': `Bearer ${process.env.HIASFLOW_API_KEY}`
       },
       body: JSON.stringify({
         leadId,
@@ -939,10 +939,10 @@ class DynamicLeadScoring {
 ```javascript
 // Whitelist de IPs permitidos
 const allowedIPs = [
-  '52.89.214.238',  // IceFunnel
-  '52.89.214.239',  // IceFunnel
-  '54.187.174.169', // IceFunnel
-  '54.187.205.235'  // IceFunnel
+  '52.89.214.238',  // HIAS FLOW
+  '52.89.214.239',  // HIAS FLOW
+  '54.187.174.169', // HIAS FLOW
+  '54.187.205.235'  // HIAS FLOW
 ];
 
 const validateIP = (req, res, next) => {
@@ -1044,7 +1044,7 @@ curl -X POST https://seu-endpoint.com/webhook \
   -d '{"test": true}'
 
 # Verificar logs
-curl -X GET "https://app.icefunnel.com/api/webhooks/logs?webhookId=wh_123" \
+curl -X GET "https://app.hiasflow.com/api/webhooks/logs?webhookId=wh_123" \
   -H "Authorization: Bearer sk_live_..."
 ```
 
@@ -1110,7 +1110,7 @@ app.post('/webhook', async (req, res) => {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>IceFunnel Webhook Tester</title>
+    <title>HIAS FLOW Webhook Tester</title>
 </head>
 <body>
     <h1>Webhook Tester</h1>
@@ -1169,22 +1169,22 @@ app.post('/webhook', async (req, res) => {
 
 ```bash
 # Instalar CLI
-npm install -g @icefunnel/cli
+npm install -g @hiasflow/cli
 
 # Configurar
-icefunnel config set api-key sk_live_...
+hiasflow config set api-key sk_live_...
 
 # Listar webhooks
-icefunnel webhooks list
+hiasflow webhooks list
 
 # Testar webhook
-icefunnel webhooks test wh_123 --event form.submitted
+hiasflow webhooks test wh_123 --event form.submitted
 
 # Ver logs
-icefunnel webhooks logs wh_123 --tail
+hiasflow webhooks logs wh_123 --tail
 
 # Criar webhook
-icefunnel webhooks create \
+hiasflow webhooks create \
   --name "My Webhook" \
   --url "https://my-app.com/webhook" \
   --events "form.submitted,funnel.conversion"
@@ -1195,7 +1195,7 @@ icefunnel webhooks create \
 ```json
 {
   "info": {
-    "name": "IceFunnel Webhooks API",
+    "name": "HIAS FLOW Webhooks API",
     "description": "Collection completa para testar webhooks"
   },
   "auth": {
@@ -1234,7 +1234,7 @@ icefunnel webhooks create \
   "variable": [
     {
       "key": "base_url",
-      "value": "https://app.icefunnel.com"
+      "value": "https://app.hiasflow.com"
     },
     {
       "key": "api_key",
@@ -1272,7 +1272,7 @@ class ComplianceHandler {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.ICEFUNNEL_API_KEY}`
+        'Authorization': `Bearer ${process.env.HIASFLOW_API_KEY}`
       },
       body: JSON.stringify({
         event: 'data.exported',
@@ -1422,7 +1422,7 @@ class WebhookMigration {
       "os": "Windows"
     }
   },
-  "source": "icefunnel",
+  "source": "hiasflow",
   "version": "1.0"
 }
 ```
@@ -1432,14 +1432,14 @@ class WebhookMigration {
 ## Recursos Adicionais
 
 ### Documentação Interativa
-- **Swagger UI**: https://api.icefunnel.com/docs
-- **Redoc**: https://api.icefunnel.com/redoc
-- **GraphQL Playground**: https://api.icefunnel.com/graphql
+- **Swagger UI**: https://api.hiasflow.com/docs
+- **Redoc**: https://api.hiasflow.com/redoc
+- **GraphQL Playground**: https://api.hiasflow.com/graphql
 
 ### Comunidade
-- **GitHub**: https://github.com/icefunnel
-- **Stack Overflow**: Tag `icefunnel`
-- **Reddit**: r/icefunnel
+- **GitHub**: https://github.com/hiasflow
+- **Stack Overflow**: Tag `hiasflow`
+- **Reddit**: r/hiasflow
 
 ### Changelog
 - **v1.0**: Lançamento inicial

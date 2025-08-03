@@ -1,4 +1,4 @@
-# Exemplos de Integração - IceFunnel
+# Exemplos de Integração - HIAS FLOW
 
 ## Guias Passo a Passo para Integrações Populares
 
@@ -6,7 +6,7 @@
 
 #### Configuração Inicial
 
-1. **No IceFunnel:**
+1. **No HIAS FLOW:**
    ```
    Dashboard → Webhooks → Novo Webhook
    Nome: "Zapier Automation"

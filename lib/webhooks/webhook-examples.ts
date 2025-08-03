@@ -109,7 +109,7 @@ export const webhookPayloadExamples = {
       ipAddress: '192.168.1.100',
       source: 'landing_page'
     },
-    source: 'icefunnel',
+    source: 'hiasflow',
     version: '1.0'
   },
 
@@ -125,7 +125,7 @@ export const webhookPayloadExamples = {
       convertedAt: '2024-01-20T10:35:00Z',
       previousSteps: ['step_landing', 'step_video', 'step_form']
     },
-    source: 'icefunnel',
+    source: 'hiasflow',
     version: '1.0'
   },
 
@@ -142,7 +142,7 @@ export const webhookPayloadExamples = {
       completedAt: '2024-01-20T10:40:00Z',
       paymentMethod: 'credit_card'
     },
-    source: 'icefunnel',
+    source: 'hiasflow',
     version: '1.0'
   }
 }
@@ -154,5 +154,5 @@ export const webhookSecurityHeaders = {
   'X-Webhook-Event': 'form.submitted',
   'X-Webhook-ID': 'wh_1234567890',
   'X-Webhook-Timestamp': '2024-01-20T10:30:00Z',
-  'User-Agent': 'IceFunnel-Webhooks/1.0'
+  'User-Agent': 'HiasFlow-Webhooks/1.0'
 }

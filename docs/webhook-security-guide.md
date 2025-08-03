@@ -1,8 +1,8 @@
-# Guia de Segurança para Webhooks - IceFunnel
+# Guia de Segurança para Webhooks - HIAS FLOW
 
 ## Visão Geral de Segurança
 
-A segurança dos webhooks é fundamental para proteger dados sensíveis e garantir a integridade das integrações. Este guia aborda todas as práticas de segurança implementadas no IceFunnel e como configurá-las corretamente.
+A segurança dos webhooks é fundamental para proteger dados sensíveis e garantir a integridade das integrações. Este guia aborda todas as práticas de segurança implementadas no HIAS FLOW e como configurá-las corretamente.
 
 ---
 

@@ -1,6 +1,6 @@
-# Documentação IceFunnel - Índice Geral
+# Documentação HIAS FLOW - Índice Geral
 
-Bem-vindo à documentação completa da plataforma IceFunnel. Esta documentação foi criada para desenvolvedores, heads de automação e equipes técnicas que desejam integrar e automatizar processos usando nossa plataforma de funis inteligentes.
+Bem-vindo à documentação completa da plataforma HIAS FLOW. Esta documentação foi criada para desenvolvedores, heads de automação e equipes técnicas que desejam integrar e automatizar processos usando nossa plataforma de funis inteligentes.
 
 ## 📚 Documentação Disponível
 
@@ -60,17 +60,17 @@ Bem-vindo à documentação completa da plataforma IceFunnel. Esta documentaçã
 
 ```bash
 # 1. Instalar SDK
-npm install @icefunnel/sdk
+npm install @hiasflow/sdk
 
 # 2. Configurar cliente
-import { IceFunnel } from '@icefunnel/sdk';
+import { HiasFlow } from '@hiasflow/sdk';
 
-const icefunnel = new IceFunnel({
+const hiasflow = new HiasFlow({
   apiKey: 'sk_live_...'
 });
 
 # 3. Primeiro webhook
-await icefunnel.forms.submit({
+await hiasflow.forms.submit({
   formId: 'contact',
   fields: { email: 'user@example.com' }
 });
@@ -80,7 +80,7 @@ await icefunnel.forms.submit({
 
 ```bash
 # 1. Clonar template de automação
-git clone https://github.com/icefunnel/automation-template.git
+git clone https://github.com/hiasflow/automation-template.git
 
 # 2. Configurar ambiente
 cp .env.example .env
@@ -98,10 +98,10 @@ npm start
 
 ### APIs e SDKs
 - **REST API**: Endpoints completos para todas as funcionalidades
-- **JavaScript SDK**: `@icefunnel/sdk`
-- **Python SDK**: `icefunnel-python`
-- **PHP SDK**: `icefunnel/php-sdk`
-- **CLI Tool**: `@icefunnel/cli`
+- **JavaScript SDK**: `@hiasflow/sdk`
+- **Python SDK**: `hiasflow-python`
+- **PHP SDK**: `hiasflow/php-sdk`
+- **CLI Tool**: `@hiasflow/cli`
 
 ### Integrações No-Code
 - **Zapier**: 50+ triggers e actions

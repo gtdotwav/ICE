@@ -38,7 +38,7 @@ export class WebhookService {
         event: eventType as any,
         timestamp: new Date().toISOString(),
         data,
-        source: 'icefunnel',
+        source: 'hiasflow',
         version: '1.0'
       }
 

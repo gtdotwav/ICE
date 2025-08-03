@@ -1,9 +1,9 @@
 /**
- * Cliente para APIs do IceFunnel
+ * Cliente para APIs do HIAS FLOW
  * Facilita a integração com todas as APIs do sistema
  */
 
-class IceFunnelAPI {
+class HiasFlowAPI {
   private baseUrl: string
   private apiKey?: string
 
@@ -143,35 +143,33 @@ class IceFunnelAPI {
 }
 
 // Instância global para uso fácil
-export const iceFunnelAPI = new IceFunnelAPI()
+export const hiasFlowAPI = new HiasFlowAPI()
 
 // Hook para React
-export function useIceFunnelAPI() {
-  return iceFunnelAPI
+export function useHiasFlowAPI() {
+  return hiasFlowAPI
 }
 
 // Funções de conveniência
 export const API = {
   // Formulários
-  submitForm: (formData: any) => iceFunnelAPI.submitForm(formData),
+  submitForm: (formData: any) => hiasFlowAPI.submitForm(formData),
   
   // Conversões
-  trackConversion: (data: any) => iceFunnelAPI.trackConversion(data),
+  trackConversion: (data: any) => hiasFlowAPI.trackConversion(data),
   
   // Leads
-  qualifyLead: (data: any) => iceFunnelAPI.qualifyLead(data),
+  qualifyLead: (data: any) => hiasFlowAPI.qualifyLead(data),
   
   // Pagamentos
-  completePayment: (data: any) => iceFunnelAPI.completePayment(data),
+  completePayment: (data: any) => hiasFlowAPI.completePayment(data),
   
   // Usuários
-  registerUser: (data: any) => iceFunnelAPI.registerUser(data),
+  registerUser: (data: any) => hiasFlowAPI.registerUser(data),
   
   // Webhooks
-  createWebhook: (data: any) => iceFunnelAPI.createWebhook(data),
-  listWebhooks: (userId: string) => iceFunnelAPI.listWebhooks(userId),
-  testWebhook: (webhookId: string, payload?: any) => iceFunnelAPI.testWebhook(webhookId, payload),
-  triggerWebhook: (event: string, data: any, userId: string) => iceFunnelAPI.triggerWebhook(event, data, userId),
+  createWebhook: (data: any) => hiasFlowAPI.createWebhook(data),
+  listWebhooks: (userId: string) => hiasFlowAPI.listWebhooks(userId),
+  testWebhook: (webhookId: string, payload?: any) => hiasFlowAPI.testWebhook(webhookId, payload),
+  triggerWebhook: (event: string, data: any, userId: string) => hiasFlowAPI.triggerWebhook(event, data, userId),
 }
-
-export default iceFunnelAPI
