@@ -108,7 +108,7 @@ export function PricingSection() {
                 <p className="text-muted-foreground">
                   Arraste os controles e veja o impacto potencial do IceFunnel em tempo real.
                 </p>
-                <p className="text-3xl lg:text-4xl font-bold font-display text-primary">
+              </div>
 
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="space-y-8">
