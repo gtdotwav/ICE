@@ -6,6 +6,7 @@ import { DashboardSidebar } from "@/components/dashboard/sidebar"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { AnimatedGradient } from "@/components/background/animated-gradient"
 import { Toaster } from "@/components/ui/toaster"
+import { ErrorBoundary } from "@/lib/error-handling/error-boundary"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
@@ -55,59 +56,63 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <AnimatedGradient />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-background">
+        <AnimatedGradient />
 
-      <div className="relative z-10 flex h-screen overflow-hidden">
-        {/* Sidebar */}
-        <aside className="hidden lg:flex lg:flex-shrink-0">
-          <DashboardSidebar />
-        </aside>
+        <div className="relative z-10 flex h-screen overflow-hidden">
+          {/* Sidebar */}
+          <aside className="hidden lg:flex lg:flex-shrink-0">
+            <DashboardSidebar />
+          </aside>
 
-        {/* Mobile Sidebar Overlay */}
-        {sidebarOpen && (
-          <div
-            className="fixed inset-0 z-40 lg:hidden bg-black/50 backdrop-blur-sm animate-fade-in"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <div className="fixed inset-y-0 left-0 w-64 animate-slide-up">
-              <DashboardSidebar />
-            </div>
-          </div>
-        )}
-
-        {/* Main Content */}
-        <div className="flex flex-1 flex-col overflow-hidden">
-          {/* Header */}
-          <DashboardHeader
-            title="Dashboard"
-            description="Visão geral das suas métricas e performance"
-            breadcrumbs={[{ label: "Home", href: "/" }, { label: "Dashboard" }]}
-            action={{
-              label: "Novo Funil",
-              onClick: () => console.log("Criar novo funil"),
-              variant: "default",
-            }}
-          />
-
-          {/* Page Content */}
-          <main className="flex-1 overflow-y-auto">
-            <div className="h-full">
-              <div
-                className={cn(
-                  "h-full transition-all duration-300 ease-in-out animate-fade-in",
-                  "p-3 sm:p-4 lg:p-6 xl:p-8",
-                )}
-              >
-                {children}
+          {/* Mobile Sidebar Overlay */}
+          {sidebarOpen && (
+            <div
+              className="fixed inset-0 z-40 lg:hidden bg-black/50 backdrop-blur-sm animate-fade-in"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <div className="fixed inset-y-0 left-0 w-64 animate-slide-up">
+                <DashboardSidebar />
               </div>
             </div>
-          </main>
-        </div>
-      </div>
+          )}
 
-      {/* Toast Notifications */}
-      <Toaster />
-    </div>
+          {/* Main Content */}
+          <div className="flex flex-1 flex-col overflow-hidden">
+            {/* Header */}
+            <DashboardHeader
+              title="Dashboard"
+              description="Visão geral das suas métricas e performance"
+              breadcrumbs={[{ label: "Home", href: "/" }, { label: "Dashboard" }]}
+              action={{
+                label: "Novo Funil",
+                onClick: () => console.log("Criar novo funil"),
+                variant: "default",
+              }}
+            />
+
+            {/* Page Content */}
+            <main className="flex-1 overflow-y-auto">
+              <div className="h-full">
+                <div
+                  className={cn(
+                    "h-full transition-all duration-300 ease-in-out animate-fade-in",
+                    "p-3 sm:p-4 lg:p-6 xl:p-8",
+                  )}
+                >
+                  <ErrorBoundary>
+                    {children}
+                  </ErrorBoundary>
+                </div>
+              </div>
+            </main>
+          </div>
+        </div>
+
+        {/* Toast Notifications */}
+        <Toaster />
+      </div>
+    </ErrorBoundary>
   )
 }

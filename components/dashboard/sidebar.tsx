@@ -138,7 +138,7 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
 
         {/* Navigation */}
         <ScrollArea className="flex-1 px-2 sm:px-3 py-3 sm:py-4">
-          <nav className="space-y-1 sm:space-y-2">
+          <nav className="space-y-1 sm:space-y-2" role="navigation" aria-label="Dashboard navigation">
             {navigation.map((item, index) => {
               const isActive = pathname === item.href
               const NavButton = (
@@ -147,18 +147,19 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                   className={cn(
                     "w-full transition-all duration-200 group relative",
                     isCollapsed && !isMobile
-                      ? "h-10 sm:h-12 px-0 justify-center"
-                      : "h-10 sm:h-12 px-3 sm:px-4 justify-start",
+                      ? "h-12 px-0 justify-center min-h-[48px]"
+                      : "h-12 px-3 sm:px-4 justify-start min-h-[48px]",
                     "hover:bg-white/10 hover:backdrop-blur-sm hover:scale-[1.02] hover:shadow-lg text-xs sm:text-sm",
                     isActive &&
                       "bg-primary/20 text-primary backdrop-blur-sm border border-primary/30 shadow-lg scale-[1.02]",
                     "focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2",
                   )}
                   style={{ animationDelay: `${index * 50}ms` }}
+                  aria-current={isActive ? "page" : undefined}
                 >
                   <item.icon
                     className={cn(
-                      "h-4 w-4 sm:h-5 sm:w-5 transition-all duration-200",
+                      "h-5 w-5 transition-all duration-200 flex-shrink-0",
                       isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3",
                       isActive && "text-primary scale-110",
                     )}
@@ -166,11 +167,11 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
 
                   {(!isCollapsed || isMobile) && (
                     <>
-                      <span className="flex-1 text-left font-medium">{item.name}</span>
+                      <span className="flex-1 text-left font-medium truncate">{item.name}</span>
                       {item.badge && (
                         <Badge
                           variant="secondary"
-                          className="ml-auto bg-primary/20 text-primary text-xs px-1.5 sm:px-2 py-0.5 border border-primary/30 animate-pulse"
+                          className="ml-auto bg-primary/20 text-primary text-xs px-1.5 sm:px-2 py-0.5 border border-primary/30 animate-pulse flex-shrink-0"
                         >
                           {item.badge}
                         </Badge>
@@ -180,7 +181,7 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
 
                   {/* Active indicator */}
                   {isActive && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 sm:h-8 bg-primary rounded-r-full" />
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-r-full" />
                   )}
                 </Button>
               )
@@ -190,7 +191,7 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                   {isCollapsed && !isMobile ? (
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Link href={item.href}>{NavButton}</Link>
+                        <Link href={item.href} className="block">{NavButton}</Link>
                       </TooltipTrigger>
                       <TooltipContent side="right" className="glass-card border-white/10">
                         <div className="flex flex-col gap-1">
@@ -205,7 +206,7 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                       </TooltipContent>
                     </Tooltip>
                   ) : (
-                    <Link href={item.href}>{NavButton}</Link>
+                    <Link href={item.href} className="block">{NavButton}</Link>
                   )}
                 </div>
               )
@@ -216,7 +217,7 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
         <Separator className="bg-white/10" />
 
         {/* User Section */}
-        <div className="p-2 sm:p-3 space-y-1 sm:space-y-2">
+        <div className="p-2 sm:p-3 space-y-1 sm:space-y-2 flex-shrink-0">
           {/* Help Button */}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -225,15 +226,15 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                 className={cn(
                   "w-full transition-all duration-200",
                   isCollapsed && !isMobile
-                    ? "h-10 sm:h-12 px-0 justify-center"
-                    : "h-10 sm:h-12 px-3 sm:px-4 justify-start",
+                    ? "h-12 px-0 justify-center min-h-[48px]"
+                    : "h-12 px-3 sm:px-4 justify-start min-h-[48px]",
                   "hover:bg-white/10 hover:backdrop-blur-sm text-muted-foreground hover:text-foreground text-xs sm:text-sm",
                 )}
               >
                 <HelpCircle
-                  className={cn("h-4 w-4 sm:h-5 sm:w-5", isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3")}
+                  className={cn("h-5 w-5 flex-shrink-0", isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3")}
                 />
-                {(!isCollapsed || isMobile) && <span className="flex-1 text-left">Ajuda</span>}
+                {(!isCollapsed || isMobile) && <span className="flex-1 text-left truncate">Ajuda</span>}
               </Button>
             </TooltipTrigger>
             <TooltipContent side={isCollapsed && !isMobile ? "right" : "top"} className="glass-card border-white/10">
@@ -249,13 +250,13 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                 className={cn(
                   "w-full transition-all duration-200",
                   isCollapsed && !isMobile
-                    ? "h-10 sm:h-12 px-0 justify-center"
-                    : "h-10 sm:h-12 px-3 sm:px-4 justify-start",
+                    ? "h-12 px-0 justify-center min-h-[48px]"
+                    : "h-12 px-3 sm:px-4 justify-start min-h-[48px]",
                   "hover:bg-white/10 hover:backdrop-blur-sm text-muted-foreground hover:text-foreground text-xs sm:text-sm",
                 )}
               >
-                <User className={cn("h-4 w-4 sm:h-5 sm:w-5", isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3")} />
-                {(!isCollapsed || isMobile) && <span className="flex-1 text-left">Perfil</span>}
+                <User className={cn("h-5 w-5 flex-shrink-0", isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3")} />
+                {(!isCollapsed || isMobile) && <span className="flex-1 text-left truncate">Perfil</span>}
               </Button>
             </TooltipTrigger>
             <TooltipContent side={isCollapsed && !isMobile ? "right" : "top"} className="glass-card border-white/10">
@@ -271,15 +272,15 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                 className={cn(
                   "w-full transition-all duration-200",
                   isCollapsed && !isMobile
-                    ? "h-10 sm:h-12 px-0 justify-center"
-                    : "h-10 sm:h-12 px-3 sm:px-4 justify-start",
+                    ? "h-12 px-0 justify-center min-h-[48px]"
+                    : "h-12 px-3 sm:px-4 justify-start min-h-[48px]",
                   "hover:bg-red-500/10 hover:backdrop-blur-sm text-muted-foreground hover:text-red-400 text-xs sm:text-sm",
                 )}
               >
                 <LogOut
-                  className={cn("h-4 w-4 sm:h-5 sm:w-5", isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3")}
+                  className={cn("h-5 w-5 flex-shrink-0", isCollapsed && !isMobile ? "mx-auto" : "mr-2 sm:mr-3")}
                 />
-                {(!isCollapsed || isMobile) && <span className="flex-1 text-left">Sair</span>}
+                {(!isCollapsed || isMobile) && <span className="flex-1 text-left truncate">Sair</span>}
               </Button>
             </TooltipTrigger>
             <TooltipContent side={isCollapsed && !isMobile ? "right" : "top"} className="glass-card border-white/10">

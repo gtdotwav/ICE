@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils"
 import { AnimatedGradient } from "@/components/background/animated-gradient"
 import { FloatingLogo } from "@/components/ui/floating-logo"
 import { Toaster } from "@/components/ui/toaster"
+import { CookieConsentBanner } from "@/components/ui/cookie-consent-banner"
+import { ClientInitializer } from "@/components/client-initializer"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -57,6 +59,12 @@ export default function RootLayout({
 
         {/* Toast notifications */}
         <Toaster />
+
+        {/* Cookie consent banner */}
+        <CookieConsentBanner />
+
+        {/* Client-side initialization */}
+        <ClientInitializer />
       </body>
     </html>
   )
