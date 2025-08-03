@@ -44,3 +44,4 @@ export async function submitQuiz(data: unknown) {
     console.error('Erro ao processar inscrição:', error)
     throw new Error("Erro ao processar inscrição. Tente novamente.")
   }
+}
