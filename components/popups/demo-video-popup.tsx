@@ -17,7 +17,7 @@ export function DemoVideoPopup() {
                 <Sparkles className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h2 className="text-lg sm:text-xl font-bold gradient-text">IceFunnel IA em Ação</h2>
+                <h2 className="text-lg sm:text-xl font-bold gradient-text">HIAS FLOW IA em Ação</h2>
                 <p className="text-xs sm:text-sm text-muted-foreground">Demonstração da Inteligência Artificial</p>
               </div>
             </div>
@@ -46,7 +46,7 @@ export function DemoVideoPopup() {
           <div className="aspect-video w-full rounded-xl overflow-hidden border border-border/50 bg-gradient-to-br from-background/50 to-muted/20 shadow-2xl">
             <Image
               src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg"
-              alt="IceFunnel IA Demo - Inteligência Artificial otimizando funis em tempo real"
+              alt="HIAS FLOW IA Demo - Inteligência Artificial otimizando funis em tempo real"
               width={800}
               height={450}
               className="w-full h-full object-cover"

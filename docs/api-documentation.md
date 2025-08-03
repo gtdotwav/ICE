@@ -1,12 +1,12 @@
-# Documentação Completa da API - IceFunnel
+# Documentação Completa da API - HIAS FLOW
 
 ## Visão Geral
 
-A API do IceFunnel é uma solução RESTful completa que permite integração total com nossa plataforma de funis inteligentes. Nossa API foi projetada para ser simples, poderosa e escalável, oferecendo endpoints para todas as funcionalidades principais da plataforma.
+A API do HIAS FLOW é uma solução RESTful completa que permite integração total com nossa plataforma de funis inteligentes. Nossa API foi projetada para ser simples, poderosa e escalável, oferecendo endpoints para todas as funcionalidades principais da plataforma.
 
 ### Base URL
 ```
-https://app.icefunnel.com/api
+https://app.hiasflow.com/api
 ```
 
 ### Autenticação

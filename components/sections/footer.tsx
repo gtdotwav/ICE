@@ -10,7 +10,7 @@ export function Footer() {
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
           <div>
-            <h3 className="text-xl font-bold font-display text-foreground">IceFunnel</h3>
+            <h3 className="text-xl font-bold font-display text-foreground">HIAS FLOW</h3>
             <p className="text-muted-foreground mt-2">Powered by Artificial Intelligence</p>
           </div>
           <div>
@@ -37,7 +37,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-border text-center text-muted-foreground text-sm">
-          <p>&copy; {year} IceFunnel, Inc. Todos os direitos reservados.</p>
+          <p>&copy; {year} HIAS FLOW, Inc. Todos os direitos reservados.</p>
           <p className="mt-2 flex items-center justify-center gap-1.5">
             Designed with <Heart className="h-4 w-4 text-red-500" /> and coded with{" "}
             <GitCommit className="h-4 w-4 text-primary" />

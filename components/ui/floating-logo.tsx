@@ -78,8 +78,8 @@ export function FloatingLogo({
           }}
         >
           <Image
-            src="/ice-logo.png"
-            alt="IceFunnel"
+            src="/HIAS_BRANCO-removebg-preview.png"
+            alt="HIAS FLOW"
             width={logoSizes[size]}
             height={logoSizes[size]}
             className="object-contain drop-shadow-sm"

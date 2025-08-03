@@ -108,7 +108,7 @@ export function PricingSection() {
                 <p className="text-muted-foreground">
                   Arraste os controles e veja o impacto potencial do IceFunnel em tempo real.
                 </p>
-              </div>
+                <p className="text-3xl lg:text-4xl font-bold font-display text-primary">
 
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="space-y-8">
@@ -227,7 +227,7 @@ export function PricingSection() {
                           plan.highlight ? "text-primary" : "text-foreground"
                         }`}
                       >
-                        {plan.price !== "Custom" ? `$${plan.price}` : plan.price}
+                        {plan.price !== "Custom" ? `R$${plan.price}` : plan.price}
                       </span>
                       {plan.price !== "Custom" && <span className="text-muted-foreground text-lg">/mês</span>}
                     </div>

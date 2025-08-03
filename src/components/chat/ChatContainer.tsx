@@ -61,7 +61,7 @@ export const ChatContainer = ({ onClose }: ChatContainerProps) => {
   const ChatContent = (
     <>
       <header className="p-4 border-b border-border flex justify-between items-center flex-shrink-0">
-        <h1 className="text-lg font-bold text-foreground">Assistente IceFunnel</h1>
+        <h1 className="text-lg font-bold text-foreground">Assistente HIAS FLOW</h1>
         <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
           <X size={20} />
         </button>

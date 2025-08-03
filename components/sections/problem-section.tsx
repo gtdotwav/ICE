@@ -40,7 +40,7 @@ export function ProblemSection() {
             custom={2}
             className="space-y-6 text-left border-primary/50 bg-primary/10 shadow-[0_0_40px_hsl(var(--primary)/0.2)]"
           >
-            <h3 className="text-2xl font-bold font-display text-foreground">IceFunnel com IA</h3>
+            <h3 className="text-2xl font-bold font-display text-foreground">HIAS FLOW com IA</h3>
             <div className="flex items-center gap-4 text-primary">
               <TrendingUp className="h-8 w-8" />
               <span className="text-4xl font-bold">18%</span>

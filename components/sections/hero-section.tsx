@@ -51,8 +51,8 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
               <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4">
                 <div className="relative h-12 w-12 sm:h-16 sm:w-16 flex-shrink-0">
                   <Image
-                    src="/ice-logo.png"
-                    alt="IceFunnel"
+                    src="/HIAS_BRANCO-removebg-preview.png"
+                    alt="HIAS FLOW"
                     width={64}
                     height={64}
                     className="object-contain drop-shadow-lg"
@@ -61,7 +61,7 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
                 </div>
                 <div className="text-center sm:text-left">
                   <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
-                    IceFunnel
+                    HIAS FLOW
                   </h1>
                   <p className="text-xs sm:text-sm text-muted-foreground/80">AI-Powered Engine</p>
                 </div>
@@ -88,7 +88,7 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
               <span className="gradient-text block sm:inline">Funis com IA que</span>
               <br className="hidden sm:block" />
               <span className="block sm:inline mt-2 sm:mt-0">
-                <AnimatedText text="Congelam a Concorrência" className="gradient-primary" delay={0.5} />
+                <AnimatedText text="Otimizam Conversões" className="gradient-primary" delay={0.5} />
               </span>
             </h1>
 

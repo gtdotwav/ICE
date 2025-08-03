@@ -117,10 +117,10 @@ export function DashboardHeader({ title, description, breadcrumbs, action }: Das
           {/* Desktop Logo - Hidden on mobile, shown on larger screens */}
           <div className="hidden lg:flex items-center gap-3 mr-6">
             <div className="relative h-8 w-8 lg:h-10 lg:w-10 glass-card backdrop-blur-sm border border-white/10 rounded-xl p-1.5">
-              <Image src="/ice-logo.png" alt="IceFunnel" width={28} height={28} className="object-contain" />
+              <Image src="/HIAS_BRANCO-removebg-preview.png" alt="HIAS FLOW" width={28} height={28} className="object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-bold gradient-primary">IceFunnel</span>
+              <span className="text-sm font-bold gradient-primary">HIAS FLOW</span>
               <span className="text-xs text-muted-foreground">Dashboard</span>
             </div>
           </div>

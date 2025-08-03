@@ -20,9 +20,9 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: "IceFunnel | AI-Powered Conversion Engine",
+  title: "HIAS FLOW | AI-Powered Conversion Engine",
   description:
-    "Funis com IA que congelam a concorrência. Inteligência Artificial aplicada em cada etapa para um ROI previsível e crescimento escalável.",
+    "Funis com IA que otimizam conversões. Inteligência Artificial aplicada em cada etapa para um ROI previsível e crescimento escalável.",
   keywords: ["IA", "SaaS", "Funil de Vendas", "Machine Learning", "Otimização de Conversão", "Next.js"],
   generator: 'v0.dev'
 }

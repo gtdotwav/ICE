@@ -74,7 +74,7 @@ export const chatFlow = {
   10: {
     name: "AGRADECIMENTO_FINAL",
     message:
-      "❄️ Perfeito! Seu lugar está garantido. Nossa equipe de especialistas analisará seu perfil e entrará em contato em breve com os próximos passos. Você está a um passo de congelar sua concorrência.",
+      "🚀 Perfeito! Seu lugar está garantido. Nossa equipe de especialistas analisará seu perfil e entrará em contato em breve com os próximos passos. Você está a um passo de otimizar suas conversões.",
     options: [{ text: "Obrigado! Voltar ao site", value: "go-home" }],
   },
 }

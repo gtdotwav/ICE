@@ -108,7 +108,7 @@ export function DashboardSidebar({ className }: DashboardSidebarProps) {
                 <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
               </div>
               <div className="flex flex-col">
-                <h2 className="text-base sm:text-lg font-bold gradient-primary">IceFunnel</h2>
+                <h2 className="text-base sm:text-lg font-bold gradient-primary">HIAS FLOW</h2>
                 <span className="text-xs text-muted-foreground">Dashboard</span>
               </div>
             </div>

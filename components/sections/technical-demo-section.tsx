@@ -152,7 +152,7 @@ export function TechnicalDemoSection() {
             Veja a <span className="bg-clip-text bg-gradient-frost text-sky-400">IA em Ação</span> - Ao Vivo
           </h2>
           <p className="mt-4 max-w-3xl mx-auto text-lg text-ice-quantum-300">
-            Demonstração técnica interativa que mostra como nossa IA otimiza funis em tempo real.
+            Demonstração técnica interativa que mostra como a IA do HIAS FLOW otimiza funis em tempo real.
           </p>
         </motion.div>
 
