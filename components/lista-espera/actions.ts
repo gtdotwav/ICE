@@ -38,7 +38,6 @@ export async function submitQuiz(data: unknown) {
 
     // Simula um atraso de rede
     await new Promise((resolve) => setTimeout(resolve, 1500))
-}
 
     return { success: true, message: "Inscrição na lista de espera confirmada!" }
   } catch (error) {
