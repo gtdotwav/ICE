@@ -2,10 +2,20 @@
   "name": "hias-flow-landing-page",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.17.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
-    "build": "next build",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' next build",
+    "build:analyze": "ANALYZE=true npm run build",
+    "build:debug": "DEBUG=* npm run build",
+    "build:clean": "rm -rf .next && npm run build",
     "dev": "next dev",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "postinstall": "npm run type-check",
     "start": "next start"
   },
   "dependencies": {

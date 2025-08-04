@@ -3,7 +3,15 @@ const nextConfig = {
   experimental: {
     missingSuspenseWithCSRBailout: false,
     optimizeCss: true,
-    optimizePackageImports: ['lucide-react', 'framer-motion']
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    }
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -11,6 +19,8 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  output: 'standalone',
+  swcMinify: true,
   images: {
     unoptimized: true,
     domains: ['images.pexels.com', 'localhost'],
@@ -29,13 +39,25 @@ const nextConfig = {
     // Optimize bundle size
     config.optimization = {
       ...config.optimization,
+      minimize: true,
       splitChunks: {
         chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+          common: {
+            name: 'common',
+            minChunks: 2,
+            chunks: 'all',
+            priority: 5,
+            reuseExistingChunk: true,
           },
         },
       },
@@ -50,6 +72,8 @@ const nextConfig = {
         fs: false,
         net: false,
         tls: false,
+        path: false,
+        os: false,
       }
     }
     
@@ -66,6 +90,11 @@ const nextConfig = {
       },
     })
 
+    // Optimize imports
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': require('path').resolve(__dirname),
+    }
     return config
   },
   headers: async () => {

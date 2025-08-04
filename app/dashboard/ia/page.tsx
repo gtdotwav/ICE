@@ -990,7 +990,7 @@ export default function IAPage() {
     </div>
   )
 
-  private getPlaceholderByType(toolId: string): string {
+  const getPlaceholderByType = (toolId: string): string => {
     switch (toolId) {
       case 'copywriter':
         return 'Crie um headline persuasivo para um curso de marketing digital para iniciantes'

@@ -196,6 +196,7 @@ export function AIAutomationForm({ type, onClose }: AIAutomationFormProps) {
                       value={prompt}
                       onChange={(e) => setPrompt(e.target.value)}
                       placeholder={`Ex: ${this.getPlaceholderByType(type)}`}
+                       placeholder={`Ex: ${getPlaceholderByType(type)}`}
                       rows={6}
                       className="resize-none glass-input border-primary/20 focus:border-primary/50 transition-all duration-300 text-base"
                       required
@@ -240,7 +241,7 @@ export function AIAutomationForm({ type, onClose }: AIAutomationFormProps) {
                             <SelectContent className="glass-card border-primary/20">
                               {field.options.map((option) => (
                                 <SelectItem key={option} value={option}>
-                                  {this.formatOptionLabel(option)}
+                                  {formatOptionLabel(option)}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -400,25 +401,20 @@ export function AIAutomationForm({ type, onClose }: AIAutomationFormProps) {
       </Card>
     </motion.div>
   )
+}
 
-  private getPlaceholderByType(type: string): string {
-    switch (type) {
-      case 'copywriter':
-        return 'Crie um headline persuasivo para um curso de marketing digital para iniciantes'
-      case 'images':
-        return 'Banner promocional para Black Friday com cores vibrantes e call-to-action'
-      case 'videos':
-        return 'Vídeo promocional de 30 segundos para lançamento de produto'
-      case 'email':
-        return 'Subject line para newsletter semanal sobre dicas de vendas'
-      default:
-        return 'Descreva o que você precisa...'
-    }
-  }
-
-  private formatOptionLabel(option: string): string {
-    return option.split('_').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
+function getPlaceholderByType(type: string): string {
+  switch (type) {
+    case 'copywriter':
+      return 'Crie um headline persuasivo para um curso de marketing digital para iniciantes'
+    case 'images':
+      return 'Banner promocional para Black Friday com cores vibrantes e call-to-action'
+    case 'videos':
+      return 'Vídeo promocional de 30 segundos para lançamento de produto'
+    case 'email':
+      return 'Subject line para newsletter semanal sobre dicas de vendas'
+    default:
+      return 'Descreva o que você precisa...'
   }
 }
+
