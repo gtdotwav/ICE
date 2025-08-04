@@ -1,13 +1,35 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter, Space_Grotesk } from "next/font/google"
+import dynamic from "next/dynamic"
 import "./globals.css"
 import { cn } from "@/lib/utils"
-import { AnimatedGradient } from "@/components/background/animated-gradient"
-import { FloatingLogo } from "@/components/ui/floating-logo"
-import { Toaster } from "@/components/ui/toaster"
-import { CookieConsentBanner } from "@/components/ui/cookie-consent-banner"
-import { ClientInitializer } from "@/components/client-initializer"
+
+// Dynamically import client-side components with SSR disabled
+const AnimatedGradient = dynamic(
+  () => import("@/components/background/animated-gradient").then(mod => ({ default: mod.AnimatedGradient })),
+  { ssr: false }
+)
+
+const FloatingLogo = dynamic(
+  () => import("@/components/ui/floating-logo").then(mod => ({ default: mod.FloatingLogo })),
+  { ssr: false }
+)
+
+const Toaster = dynamic(
+  () => import("@/components/ui/toaster").then(mod => ({ default: mod.Toaster })),
+  { ssr: false }
+)
+
+const CookieConsentBanner = dynamic(
+  () => import("@/components/ui/cookie-consent-banner").then(mod => ({ default: mod.CookieConsentBanner })),
+  { ssr: false }
+)
+
+const ClientInitializer = dynamic(
+  () => import("@/components/client-initializer").then(mod => ({ default: mod.ClientInitializer })),
+  { ssr: false }
+)
 
 const inter = Inter({
   subsets: ["latin"],
