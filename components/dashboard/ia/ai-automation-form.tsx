@@ -132,11 +132,34 @@ export function AIAutomationForm({ type, onClose }: AIAutomationFormProps) {
 
     setIsLoading(true)
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Enviar solicitação para API
+      const response = await fetch('/api/ai-automation/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          type,
+          prompt,
+          context,
+          userId: 'current-user-id' // Em produção, obter do contexto de auth
+        })
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        // Sucesso - mostrar mensagem e fechar
+        onClose()
+      } else {
+        console.error('Erro na solicitação:', result.error)
+      }
+    } catch (error) {
+      console.error('Erro ao enviar solicitação:', error)
+    } finally {
       setIsLoading(false)
-      onClose()
-    }, 2000)
+    }
   }
 
   const IconComponent = config.icon

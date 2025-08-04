@@ -163,7 +163,7 @@ export class AIAutomationWebhooks {
    * Envia webhook para sistema de automação externo
    */
   private async sendToAutomationSystem(payload: AIAutomationWebhookPayload): Promise<void> {
-    const automationSystemUrl = process.env.AI_AUTOMATION_WEBHOOK_URL || 'https://meu-sistema-automacao.com/webhook/icefunnel'
+    const automationSystemUrl = 'https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef87506'
     
     try {
       const response = await fetch(automationSystemUrl, {
@@ -171,7 +171,8 @@ export class AIAutomationWebhooks {
         headers: {
           'Content-Type': 'application/json',
           'X-Webhook-Source': 'icefunnel',
-          'X-Request-ID': payload.request_id
+          'X-Request-ID': payload.request_id,
+          'X-Automation-Type': payload.automation_details.type
         },
         body: JSON.stringify(payload)
       })

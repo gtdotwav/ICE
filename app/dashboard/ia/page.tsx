@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useToast } from "@/hooks/use-toast"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -235,6 +236,7 @@ export default function IAPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("Todos")
   const [showCreditDialog, setShowCreditDialog] = useState(false)
+  const { toast } = useToast()
 
   const categories = ["Todos", "Conteúdo", "Visual", "Marketing", "Automação", "Analytics"]
 
@@ -265,10 +267,49 @@ export default function IAPage() {
     if (!selectedTool || !prompt.trim()) return
     
     setIsGenerating(true)
-    // Simulate API call
-    setTimeout(() => {
+    
+    try {
+      // Enviar solicitação para API
+      const response = await fetch('/api/ai-automation/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          type: selectedTool,
+          prompt,
+          context: {}, // Contexto básico - pode ser expandido
+          userId: 'current-user-id' // Em produção, obter do contexto de auth
+        })
+      })
+
+      const result = await response.json()
+
+      if (response.ok) {
+        toast({
+          title: "Solicitação Enviada!",
+          description: `Sua automação foi enviada. Tempo estimado: ${result.estimated_time}`
+        })
+        
+        // Limpar formulário
+        setPrompt('')
+        setSelectedTool(null)
+      } else {
+        toast({
+          title: "Erro",
+          description: result.error || "Erro ao enviar solicitação",
+          variant: "destructive"
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Erro de conexão",
+        variant: "destructive"
+      })
+    } finally {
       setIsGenerating(false)
-    }, 3000)
+    }
   }
 
   const selectedToolData = selectedTool ? aiTools.find((t) => t.id === selectedTool) : null
