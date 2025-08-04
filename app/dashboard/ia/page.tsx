@@ -1,8 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { AIAutomationForm } from "@/components/dashboard/ia/ai-automation-form"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
+import { AIAutomationForm } from "@/components/dashboard/ia/ai-automation-form"
 import {
   Dialog,
   DialogContent,
@@ -41,6 +41,12 @@ import {
   Info,
   CheckCircle,
   AlertCircle,
+  Wand2,
+  Palette,
+  PlayCircle,
+  AtSign,
+  Brain,
+  BarChart3,
 } from "lucide-react"
 
 const aiTools = [
@@ -51,9 +57,13 @@ const aiTools = [
     icon: FileText,
     color: "text-blue-500",
     bgColor: "bg-blue-500/20",
+    borderColor: "border-blue-500/30",
+    hoverColor: "hover:bg-blue-500/30",
     category: "Conteúdo",
     credits: 10,
     examples: ["Headlines", "Descrições de produto", "Emails de vendas"],
+    estimatedTime: "30-60s",
+    popularity: 95,
   },
   {
     id: "image-generator",
@@ -62,9 +72,13 @@ const aiTools = [
     icon: ImageIcon,
     color: "text-purple-500",
     bgColor: "bg-purple-500/20",
+    borderColor: "border-purple-500/30",
+    hoverColor: "hover:bg-purple-500/30",
     category: "Visual",
     credits: 25,
     examples: ["Banners", "Posts sociais", "Logos"],
+    estimatedTime: "2-3min",
+    popularity: 88,
   },
   {
     id: "video-creator",
@@ -73,9 +87,13 @@ const aiTools = [
     icon: Video,
     color: "text-red-500",
     bgColor: "bg-red-500/20",
+    borderColor: "border-red-500/30",
+    hoverColor: "hover:bg-red-500/30",
     category: "Visual",
     credits: 50,
     examples: ["Vídeos de vendas", "Tutoriais", "Anúncios"],
+    estimatedTime: "5-10min",
+    popularity: 76,
   },
   {
     id: "email-optimizer",
@@ -84,9 +102,13 @@ const aiTools = [
     icon: Mail,
     color: "text-green-500",
     bgColor: "bg-green-500/20",
+    borderColor: "border-green-500/30",
+    hoverColor: "hover:bg-green-500/30",
     category: "Marketing",
     credits: 15,
     examples: ["Subject lines", "Sequências", "Newsletters"],
+    estimatedTime: "1-2min",
+    popularity: 82,
   },
   {
     id: "chatbot",
@@ -95,9 +117,13 @@ const aiTools = [
     icon: MessageSquare,
     color: "text-orange-500",
     bgColor: "bg-orange-500/20",
+    borderColor: "border-orange-500/30",
+    hoverColor: "hover:bg-orange-500/30",
     category: "Automação",
     credits: 20,
     examples: ["FAQ automático", "Suporte 24/7", "Qualificação de leads"],
+    estimatedTime: "3-5min",
+    popularity: 71,
   },
   {
     id: "analytics",
@@ -106,9 +132,13 @@ const aiTools = [
     icon: TrendingUp,
     color: "text-indigo-500",
     bgColor: "bg-indigo-500/20",
+    borderColor: "border-indigo-500/30",
+    hoverColor: "hover:bg-indigo-500/30",
     category: "Analytics",
     credits: 30,
     examples: ["Previsão de vendas", "Análise de comportamento", "Otimização de campanhas"],
+    estimatedTime: "2-4min",
+    popularity: 79,
   },
 ]
 
@@ -242,28 +272,47 @@ export default function IAPage() {
   const canAfford = selectedToolData ? credits >= selectedToolData.credits : false
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-8 animate-fade-in">
       {/* Page Header */}
-      <div className="space-y-2">
+      <motion.div 
+        className="space-y-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold gradient-text">Inteligência Artificial</h1>
-            <p className="text-muted-foreground">Ferramentas de IA para otimizar seus funis e campanhas</p>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="p-3 rounded-xl bg-gradient-to-br from-primary/20 to-purple-500/20 border border-primary/30">
+                <Brain className="h-8 w-8 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-purple-400 to-blue-400 bg-clip-text text-transparent">
+                  Inteligência Artificial
+                </h1>
+                <p className="text-lg text-muted-foreground">Ferramentas de IA para otimizar seus funis e campanhas</p>
+              </div>
+            </div>
           </div>
           <Dialog open={showCreditDialog} onOpenChange={setShowCreditDialog}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="glass-button bg-transparent">
+              <Button 
+                variant="outline" 
+                className="glass-button bg-transparent hover:scale-105 transition-all duration-300 shadow-lg"
+              >
                 <CreditCard className="h-4 w-4 mr-2" />
                 Comprar Créditos
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl glass-card">
+            <DialogContent className="max-w-5xl glass-card border-primary/20 shadow-2xl">
               <DialogHeader>
-                <DialogTitle className="gradient-text text-2xl flex items-center gap-2">
-                  <Sparkles className="h-6 w-6" />
+                <DialogTitle className="gradient-text text-3xl flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/20">
+                    <Sparkles className="h-6 w-6 text-primary" />
+                  </div>
                   Como Funcionam os Créditos IA
                 </DialogTitle>
-                <DialogDescription className="text-base">
+                <DialogDescription className="text-lg text-muted-foreground">
                   Entenda nosso sistema de créditos e escolha o melhor pacote para suas necessidades
                 </DialogDescription>
               </DialogHeader>
@@ -399,92 +448,141 @@ export default function IAPage() {
               </div>
             </DialogContent>
           </Dialog>
-        </div>
+        </motion.div>
       </div>
 
       {/* Credits & Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card className="glass-card">
+      <motion.div 
+        className="grid gap-6 md:grid-cols-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <Card className="glass-card-hover group">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-              <Zap className="h-4 w-4" />
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2 group-hover:text-primary transition-colors">
+              <div className="p-1.5 rounded-lg bg-yellow-500/20 group-hover:bg-yellow-500/30 transition-colors">
+                <Zap className="h-4 w-4 text-yellow-500" />
+              </div>
               Créditos Disponíveis
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
-              <div className="text-2xl font-bold gradient-primary">{credits}</div>
-              {credits < 50 && <AlertCircle className="h-5 w-5 text-yellow-500" />}
+              <div className="text-3xl font-bold bg-gradient-to-r from-primary to-yellow-400 bg-clip-text text-transparent">
+                {credits}
+              </div>
+              {credits < 50 && (
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <AlertCircle className="h-5 w-5 text-yellow-500" />
+                </motion.div>
+              )}
             </div>
-            <Progress value={(credits / 500) * 100} className="mt-2 h-2" />
+            <Progress value={(credits / 500) * 100} className="mt-3 h-3" />
             <div className="flex items-center justify-between mt-2">
               <p className="text-xs text-muted-foreground">
                 {credits < 50 ? "Créditos baixos" : "Créditos suficientes"}
               </p>
-              <Button variant="ghost" size="sm" className="text-xs h-6 px-2" onClick={() => setShowCreditDialog(true)}>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs h-6 px-2 hover:bg-primary/20 hover:text-primary transition-all" 
+                onClick={() => setShowCreditDialog(true)}
+              >
                 Comprar +
               </Button>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
+        <Card className="glass-card-hover group">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Gerações Hoje</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2 group-hover:text-primary transition-colors">
+              <div className="p-1.5 rounded-lg bg-blue-500/20 group-hover:bg-blue-500/30 transition-colors">
+                <BarChart3 className="h-4 w-4 text-blue-500" />
+              </div>
+              Gerações Hoje
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold gradient-text">24</div>
-            <p className="text-xs text-green-400 mt-1">+12% vs ontem</p>
+            <div className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">24</div>
+            <div className="flex items-center gap-1 mt-1">
+              <TrendingUp className="h-3 w-3 text-green-400" />
+              <p className="text-xs text-green-400">+12% vs ontem</p>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
+        <Card className="glass-card-hover group">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Tempo Economizado</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2 group-hover:text-primary transition-colors">
+              <div className="p-1.5 rounded-lg bg-green-500/20 group-hover:bg-green-500/30 transition-colors">
+                <Clock className="h-4 w-4 text-green-500" />
+              </div>
+              Tempo Economizado
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold gradient-text">8.5h</div>
+            <div className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">8.5h</div>
             <p className="text-xs text-muted-foreground mt-1">Esta semana</p>
           </CardContent>
         </Card>
 
-        <Card className="glass-card">
+        <Card className="glass-card-hover group">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Taxa de Sucesso</CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2 group-hover:text-primary transition-colors">
+              <div className="p-1.5 rounded-lg bg-purple-500/20 group-hover:bg-purple-500/30 transition-colors">
+                <Star className="h-4 w-4 text-purple-500" />
+              </div>
+              Taxa de Sucesso
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold gradient-text">94%</div>
-            <p className="text-xs text-green-400 mt-1">Gerações aprovadas</p>
+            <div className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">94%</div>
+            <div className="flex items-center gap-1 mt-1">
+              <CheckCircle className="h-3 w-3 text-green-400" />
+              <p className="text-xs text-green-400">Gerações aprovadas</p>
+            </div>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
       {/* Main Content */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <motion.div 
+        className="grid gap-8 lg:grid-cols-3"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.4 }}
+      >
         {/* Tools Sidebar */}
-        <Card className="glass-card lg:col-span-1">
+        <Card className="glass-card lg:col-span-1 border-primary/20 shadow-xl">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="gradient-text flex items-center gap-2">
-                <Bot className="h-5 w-5" />
+              <CardTitle className="gradient-text flex items-center gap-3 text-xl">
+                <div className="p-2 rounded-lg bg-primary/20 border border-primary/30">
+                  <Bot className="h-5 w-5 text-primary" />
+                </div>
                 Ferramentas IA
               </CardTitle>
-              <Badge variant="secondary" className="bg-purple-500/20 text-purple-400">
+              <Badge variant="secondary" className="bg-primary/20 text-primary border border-primary/30 px-3 py-1">
                 {filteredTools.length}
               </Badge>
             </div>
-            <CardDescription>Selecione uma ferramenta para começar</CardDescription>
+            <CardDescription className="text-base">Selecione uma ferramenta para começar</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             {/* Search & Filter */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary/60" />
                 <Input
                   placeholder="Buscar ferramentas..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 glass-input"
+                  className="pl-10 glass-input border-primary/20 focus:border-primary/50 transition-all duration-300"
                 />
               </div>
 
@@ -496,7 +594,9 @@ export default function IAPage() {
                     size="sm"
                     onClick={() => setSelectedCategory(category)}
                     className={`text-xs ${
-                      selectedCategory === category ? "bg-primary text-primary-foreground" : "glass-button"
+                      selectedCategory === category 
+                        ? "bg-primary text-primary-foreground shadow-lg scale-105" 
+                        : "glass-button hover:scale-105 hover:bg-primary/10"
                     }`}
                   >
                     {category}
@@ -505,40 +605,66 @@ export default function IAPage() {
               </div>
             </div>
 
-            <Separator className="bg-white/10" />
+            <Separator className="bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
             {/* Tools List */}
-            <ScrollArea className="h-[400px]">
-              <div className="space-y-2">
+            <ScrollArea className="h-[500px] pr-2">
+              <div className="space-y-3">
                 {filteredTools.map((tool, index) => (
-                  <Button
+                  <motion.div
                     key={tool.id}
-                    variant={selectedTool === tool.id ? "default" : "ghost"}
-                    className={`w-full justify-start p-4 h-auto transition-all duration-200 animate-slide-up ${
-                      selectedTool === tool.id
-                        ? "bg-primary/20 text-primary border border-primary/30"
-                        : "hover:bg-white/10"
-                    }`}
-                    style={{ animationDelay: `${index * 50}ms` }}
-                    onClick={() => setSelectedTool(tool.id)}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
                   >
-                    <div className={`p-2 rounded-lg ${tool.bgColor} ${tool.color} mr-3`}>
-                      <tool.icon className="h-4 w-4" />
-                    </div>
-                    <div className="flex-1 text-left">
-                      <div className="font-medium text-sm">{tool.name}</div>
-                      <div className="text-xs text-muted-foreground mt-1">{tool.description}</div>
-                      <div className="flex items-center justify-between mt-2">
-                        <Badge variant="outline" className="text-xs">
-                          {tool.category}
-                        </Badge>
-                        <div className="flex items-center gap-1">
-                          <Zap className="h-3 w-3 text-yellow-500" />
-                          <span className="text-xs text-muted-foreground">{tool.credits}</span>
+                    <Button
+                      variant="ghost"
+                      className={`w-full justify-start p-0 h-auto transition-all duration-300 group ${
+                        selectedTool === tool.id ? "scale-105" : "hover:scale-102"
+                      }`}
+                      onClick={() => setSelectedTool(tool.id)}
+                    >
+                      <div className={`w-full p-4 rounded-xl border-2 transition-all duration-300 ${
+                        selectedTool === tool.id
+                          ? `${tool.bgColor} ${tool.borderColor} shadow-lg`
+                          : `border-white/10 hover:border-primary/20 ${tool.hoverColor}`
+                      }`}>
+                        <div className="flex items-start gap-3">
+                          <div className={`p-3 rounded-xl ${tool.bgColor} ${tool.color} border ${tool.borderColor} group-hover:scale-110 transition-transform duration-300`}>
+                            <tool.icon className="h-5 w-5" />
+                          </div>
+                          <div className="flex-1 text-left space-y-2">
+                            <div className="flex items-center justify-between">
+                              <h3 className="font-semibold text-sm">{tool.name}</h3>
+                              <div className="flex items-center gap-1">
+                                <Zap className="h-3 w-3 text-yellow-500" />
+                                <span className="text-xs font-medium text-muted-foreground">{tool.credits}</span>
+                              </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground leading-relaxed">{tool.description}</p>
+                            <div className="flex items-center justify-between">
+                              <Badge variant="outline" className="text-xs">
+                                {tool.category}
+                              </Badge>
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                <Clock className="h-3 w-3" />
+                                <span>{tool.estimatedTime}</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <div className="flex-1 bg-white/10 rounded-full h-1">
+                                <div 
+                                  className="bg-gradient-to-r from-primary to-purple-400 h-1 rounded-full transition-all duration-500"
+                                  style={{ width: `${tool.popularity}%` }}
+                                />
+                              </div>
+                              <span className="text-xs text-muted-foreground">{tool.popularity}%</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Button>
+                    </Button>
+                  </motion.div>
                 ))}
               </div>
             </ScrollArea>
@@ -548,52 +674,98 @@ export default function IAPage() {
         {/* Main Workspace */}
         <div className="lg:col-span-2 space-y-6">
           {/* Generation Interface */}
-          <Card className="glass-card">
+          <Card className="glass-card border-primary/20 shadow-xl">
             <CardHeader>
-              <CardTitle className="gradient-text flex items-center gap-2">
-                <Sparkles className="h-5 w-5" />
-                {selectedToolData ? selectedToolData.name : "Selecione uma Ferramenta"}
+              <CardTitle className="gradient-text flex items-center gap-3 text-xl">
+                {selectedToolData ? (
+                  <>
+                    <div className={`p-2 rounded-lg ${selectedToolData.bgColor} border ${selectedToolData.borderColor}`}>
+                      <selectedToolData.icon className={`h-5 w-5 ${selectedToolData.color}`} />
+                    </div>
+                    {selectedToolData.name}
+                    <Badge variant="secondary" className="bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                      IA Avançada
+                    </Badge>
+                  </>
+                ) : (
+                  <>
+                    <div className="p-2 rounded-lg bg-muted/20 border border-muted">
+                      <Wand2 className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                    Selecione uma Ferramenta
+                  </>
+                )}
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-base">
                 {selectedToolData
                   ? selectedToolData.description
                   : "Escolha uma ferramenta IA para começar a gerar conteúdo"}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6">
               {selectedToolData ? (
-                <>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="space-y-6"
+                >
                   {/* Tool Examples */}
-                  <div className="glass-card p-3 space-y-2">
-                    <h4 className="text-sm font-medium flex items-center gap-2">
-                      <Info className="h-4 w-4 text-blue-500" />
+                  <div className="glass-card p-4 space-y-3 border border-blue-500/20">
+                    <h4 className="text-sm font-semibold flex items-center gap-2">
+                      <div className="p-1.5 rounded-lg bg-blue-500/20">
+                        <Info className="h-4 w-4 text-blue-500" />
+                      </div>
                       Exemplos do que você pode criar:
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {selectedToolData.examples.map((example, index) => (
-                        <Badge key={index} variant="outline" className="text-xs">
+                        <Badge 
+                          key={index} 
+                          variant="outline" 
+                          className="text-xs hover:bg-primary/10 transition-colors cursor-default"
+                        >
                           {example}
                         </Badge>
                       ))}
                     </div>
+                    <div className="flex items-center justify-between text-xs text-muted-foreground pt-2 border-t border-white/10">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        <span>Tempo estimado: {selectedToolData.estimatedTime}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <TrendingUp className="h-3 w-3" />
+                        <span>{selectedToolData.popularity}% de aprovação</span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Descreva o que você precisa</label>
+                  <div className="space-y-3">
+                    <label className="text-sm font-semibold flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      Descreva o que você precisa
+                    </label>
                     <Textarea
-                      placeholder="Ex: Crie um headline persuasivo para uma landing page de curso de marketing digital..."
+                      placeholder={`Ex: ${this.getPlaceholderByType(selectedToolData.id)}`}
                       value={prompt}
                       onChange={(e) => setPrompt(e.target.value)}
-                      className="min-h-[100px] glass-input resize-none"
+                      className="min-h-[120px] glass-input resize-none border-primary/20 focus:border-primary/50 transition-all duration-300"
                     />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>{prompt.length} caracteres</span>
+                      <span>Seja específico para melhores resultados</span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm">
-                      <div className="flex items-center gap-1">
-                        <Zap className="h-4 w-4 text-yellow-500" />
-                        <span className="text-muted-foreground">Custo:</span>
-                        <span className={canAfford ? "text-green-400" : "text-red-400"}>
+                  <div className="flex items-center justify-between p-4 glass-card border border-primary/20">
+                    <div className="flex items-center gap-3 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="p-1.5 rounded-lg bg-yellow-500/20">
+                          <Zap className="h-4 w-4 text-yellow-500" />
+                        </div>
+                        <span className="text-muted-foreground font-medium">Custo:</span>
+                        <span className={`font-bold ${canAfford ? "text-green-400" : "text-red-400"}`}>
                           {selectedToolData.credits} créditos
                         </span>
                       </div>
@@ -601,7 +773,7 @@ export default function IAPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="text-xs h-6 px-2 text-primary"
+                          className="text-xs h-7 px-3 text-primary hover:bg-primary/20 transition-all"
                           onClick={() => setShowCreditDialog(true)}
                         >
                           Comprar créditos
@@ -611,11 +783,15 @@ export default function IAPage() {
                     <Button
                       onClick={handleGenerate}
                       disabled={!prompt.trim() || isGenerating || !canAfford}
-                      className="bg-primary hover:bg-primary/90"
+                      className="bg-gradient-to-r from-primary to-purple-500 hover:from-primary/90 hover:to-purple-500/90 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
                       {isGenerating ? (
                         <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                          <motion.div 
+                            className="rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          />
                           Gerando...
                         </>
                       ) : (
@@ -628,66 +804,93 @@ export default function IAPage() {
                   </div>
 
                   {isGenerating && (
-                    <div className="space-y-3 p-4 glass-card animate-fade-in">
+                    <motion.div 
+                      className="space-y-4 p-6 glass-card border border-primary/30 bg-gradient-to-r from-primary/5 to-purple-500/5"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.4 }}
+                    >
                       <div className="flex items-center gap-2">
-                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent" />
-                        <span className="text-sm">Processando sua solicitação...</span>
+                        <motion.div 
+                          className="rounded-full h-5 w-5 border-2 border-primary border-t-transparent"
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        />
+                        <span className="text-sm font-medium">Processando sua solicitação...</span>
                       </div>
-                      <Progress value={33} className="h-2" />
+                      <Progress value={33} className="h-3" />
                       <p className="text-xs text-muted-foreground">
                         Isso pode levar alguns segundos. Nossa IA está trabalhando para você!
                       </p>
-                    </div>
+                    </motion.div>
                   )}
-                </>
+                </motion.div>
               ) : (
-                <div className="text-center py-12">
-                  <Bot className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="font-medium mb-2">Nenhuma ferramenta selecionada</h3>
-                  <p className="text-sm text-muted-foreground">
+                <motion.div 
+                  className="text-center py-16"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="p-4 rounded-2xl bg-muted/20 border border-muted w-fit mx-auto mb-6">
+                    <Bot className="h-16 w-16 text-muted-foreground mx-auto" />
+                  </div>
+                  <h3 className="font-semibold text-lg mb-2">Nenhuma ferramenta selecionada</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto">
                     Escolha uma ferramenta IA na barra lateral para começar
                   </p>
-                </div>
+                </motion.div>
               )}
             </CardContent>
           </Card>
 
           {/* Tabs for Templates and History */}
-          <Tabs defaultValue="templates" className="space-y-4">
-            <TabsList className="glass-card">
+          <Tabs defaultValue="templates" className="space-y-6">
+            <TabsList className="glass-card border border-primary/20 p-1">
               <TabsTrigger value="templates">Templates</TabsTrigger>
               <TabsTrigger value="history">Histórico</TabsTrigger>
             </TabsList>
 
             <TabsContent value="templates">
-              <Card className="glass-card">
+              <Card className="glass-card border-primary/20 shadow-xl">
                 <CardHeader>
-                  <CardTitle className="gradient-text">Biblioteca de Templates</CardTitle>
-                  <CardDescription>Templates prontos para acelerar sua criação</CardDescription>
+                  <CardTitle className="gradient-text flex items-center gap-3 text-xl">
+                    <div className="p-2 rounded-lg bg-primary/20 border border-primary/30">
+                      <Palette className="h-5 w-5 text-primary" />
+                    </div>
+                    Biblioteca de Templates
+                  </CardTitle>
+                  <CardDescription className="text-base">Templates prontos para acelerar sua criação</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-6 md:grid-cols-2">
                     {templates.map((template, index) => (
-                      <div
+                      <motion.div
                         key={template.id}
-                        className="p-4 glass-card-hover cursor-pointer animate-slide-up"
-                        style={{ animationDelay: `${index * 100}ms` }}
+                        className="p-6 glass-card-hover cursor-pointer border border-white/10 hover:border-primary/30 transition-all duration-300 hover:scale-105"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: index * 0.1 }}
+                        whileHover={{ y: -5 }}
                       >
-                        <div className="flex items-start justify-between mb-2">
-                          <h4 className="font-medium">{template.name}</h4>
-                          <div className="flex items-center gap-1">
+                        <div className="flex items-start justify-between mb-3">
+                          <h4 className="font-semibold text-lg">{template.name}</h4>
+                          <div className="flex items-center gap-1 bg-yellow-500/20 px-2 py-1 rounded-full">
                             <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                            <span className="text-xs text-muted-foreground">{template.rating}</span>
+                            <span className="text-xs font-medium text-yellow-400">{template.rating}</span>
                           </div>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-3">{template.description}</p>
-                        <div className="flex items-center justify-between">
-                          <Badge variant="outline" className="text-xs">
+                        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{template.description}</p>
+                        <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                          <Badge variant="outline" className="text-xs border-primary/30">
                             {template.category}
                           </Badge>
-                          <span className="text-xs text-muted-foreground">{template.uses} usos</span>
+                          <div className="flex items-center gap-1">
+                            <TrendingUp className="h-3 w-3 text-green-400" />
+                            <span className="text-xs text-green-400 font-medium">{template.uses} usos</span>
+                          </div>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </CardContent>
@@ -695,45 +898,77 @@ export default function IAPage() {
             </TabsContent>
 
             <TabsContent value="history">
-              <Card className="glass-card">
+              <Card className="glass-card border-primary/20 shadow-xl">
                 <CardHeader>
-                  <CardTitle className="gradient-text">Histórico de Gerações</CardTitle>
-                  <CardDescription>Suas gerações recentes e resultados</CardDescription>
+                  <CardTitle className="gradient-text flex items-center gap-3 text-xl">
+                    <div className="p-2 rounded-lg bg-primary/20 border border-primary/30">
+                      <Clock className="h-5 w-5 text-primary" />
+                    </div>
+                    Histórico de Gerações
+                  </CardTitle>
+                  <CardDescription className="text-base">Suas gerações recentes e resultados</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {recentGenerations.map((generation, index) => (
-                      <div
+                      <motion.div
                         key={generation.id}
-                        className="flex items-center justify-between p-4 glass-card-hover animate-slide-up"
-                        style={{ animationDelay: `${index * 100}ms` }}
+                        className="flex items-center justify-between p-5 glass-card-hover border border-white/10 hover:border-primary/30 transition-all duration-300"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: index * 0.1 }}
                       >
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-medium text-sm">{generation.tool}</h4>
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="font-semibold">{generation.tool}</h4>
                             <Badge
                               variant={generation.status === "completed" ? "default" : "secondary"}
                               className={`text-xs ${
                                 generation.status === "completed"
-                                  ? "bg-green-500/20 text-green-400"
-                                  : "bg-yellow-500/20 text-yellow-400"
+                                  ? "bg-green-500/20 text-green-400 border border-green-500/30"
+                                  : "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
                               }`}
                             >
-                              {generation.status === "completed" ? "Concluído" : "Processando"}
+                              {generation.status === "completed" ? (
+                                <div className="flex items-center gap-1">
+                                  <CheckCircle className="h-3 w-3" />
+                                  Concluído
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-1">
+                                  <motion.div
+                                    className="h-2 w-2 bg-yellow-400 rounded-full"
+                                    animate={{ scale: [1, 1.2, 1] }}
+                                    transition={{ duration: 1, repeat: Infinity }}
+                                  />
+                                  Processando
+                                </div>
+                              )}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground">{generation.content}</p>
-                          <p className="text-xs text-muted-foreground mt-1">{generation.timestamp}</p>
+                          <p className="text-sm text-muted-foreground leading-relaxed mb-2">{generation.content}</p>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Clock className="h-3 w-3" />
+                            <span>{generation.timestamp}</span>
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-9 w-9 hover:bg-primary/20 hover:scale-110 transition-all duration-200"
+                          >
                             <Copy className="h-3 w-3" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-9 w-9 hover:bg-primary/20 hover:scale-110 transition-all duration-200"
+                          >
                             <Download className="h-3 w-3" />
                           </Button>
                         </div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
                 </CardContent>
@@ -741,11 +976,11 @@ export default function IAPage() {
             </TabsContent>
           </Tabs>
         </div>
-      </div>
+      </motion.div>
 
       {/* Dialog para Formulário de Automação */}
       <Dialog open={showAutomationForm} onOpenChange={setShowAutomationForm}>
-        <DialogContent className="max-w-4xl">
+        <DialogContent className="max-w-4xl glass-card border-primary/20 shadow-2xl">
           <AIAutomationForm 
             type={automationType} 
             onClose={() => setShowAutomationForm(false)} 
@@ -754,4 +989,19 @@ export default function IAPage() {
       </Dialog>
     </div>
   )
+
+  private getPlaceholderByType(toolId: string): string {
+    switch (toolId) {
+      case 'copywriter':
+        return 'Crie um headline persuasivo para um curso de marketing digital para iniciantes'
+      case 'image-generator':
+        return 'Banner promocional para Black Friday com cores vibrantes e call-to-action'
+      case 'video-creator':
+        return 'Vídeo promocional de 30 segundos para lançamento de produto'
+      case 'email-optimizer':
+        return 'Subject line para newsletter semanal sobre dicas de vendas'
+      default:
+        return 'Descreva o que você precisa...'
+    }
+  }
 }
