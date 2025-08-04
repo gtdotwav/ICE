@@ -271,6 +271,21 @@ export default function IAPage() {
   const selectedToolData = selectedTool ? aiTools.find((t) => t.id === selectedTool) : null
   const canAfford = selectedToolData ? credits >= selectedToolData.credits : false
 
+  const getPlaceholderByType = (toolId: string): string => {
+    switch (toolId) {
+      case 'copywriter':
+        return 'Crie um headline persuasivo para um curso de marketing digital para iniciantes'
+      case 'image-generator':
+        return 'Banner promocional para Black Friday com cores vibrantes e call-to-action'
+      case 'video-creator':
+        return 'Vídeo promocional de 30 segundos para lançamento de produto'
+      case 'email-optimizer':
+        return 'Subject line para newsletter semanal sobre dicas de vendas'
+      default:
+        return 'Descreva o que você precisa...'
+    }
+  }
+
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Page Header */}
@@ -747,7 +762,7 @@ export default function IAPage() {
                       Descreva o que você precisa
                     </label>
                     <Textarea
-                      placeholder={`Ex: ${this.getPlaceholderByType(selectedToolData.id)}`}
+                      placeholder={`Ex: ${getPlaceholderByType(selectedToolData.id)}`}
                       value={prompt}
                       onChange={(e) => setPrompt(e.target.value)}
                       className="min-h-[120px] glass-input resize-none border-primary/20 focus:border-primary/50 transition-all duration-300"
@@ -989,19 +1004,4 @@ export default function IAPage() {
       </Dialog>
     </div>
   )
-
-  const getPlaceholderByType = (toolId: string): string => {
-    switch (toolId) {
-      case 'copywriter':
-        return 'Crie um headline persuasivo para um curso de marketing digital para iniciantes'
-      case 'image-generator':
-        return 'Banner promocional para Black Friday com cores vibrantes e call-to-action'
-      case 'video-creator':
-        return 'Vídeo promocional de 30 segundos para lançamento de produto'
-      case 'email-optimizer':
-        return 'Subject line para newsletter semanal sobre dicas de vendas'
-      default:
-        return 'Descreva o que você precisa...'
-    }
-  }
 }
