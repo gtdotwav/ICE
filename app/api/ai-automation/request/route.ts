@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       success: true,
       request_id: requestId,
       message: 'Solicitação de automação enviada com sucesso',
-      estimated_time: this.getEstimatedTime(requestData.type)
+      estimated_time: getEstimatedTime(requestData.type)
     })
 
   } catch (error) {
@@ -43,19 +43,19 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
+}
 
-  private getEstimatedTime(type: string): string {
-    switch (type) {
-      case 'copywriter':
-        return '30-60 segundos'
-      case 'images':
-        return '2-3 minutos'
-      case 'videos':
-        return '5-10 minutos'
-      case 'email':
-        return '1-2 minutos'
-      default:
-        return '1-5 minutos'
-    }
+function getEstimatedTime(type: string): string {
+  switch (type) {
+    case 'copywriter':
+      return '30-60 segundos'
+    case 'images':
+      return '2-3 minutos'
+    case 'videos':
+      return '5-10 minutos'
+    case 'email':
+      return '1-2 minutos'
+    default:
+      return '1-5 minutos'
   }
 }
