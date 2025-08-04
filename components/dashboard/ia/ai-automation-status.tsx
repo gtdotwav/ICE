@@ -288,6 +288,7 @@ export function AIAutomationStatus({ requestId, onComplete }: AIAutomationStatus
               <Zap className="h-3 w-3 text-yellow-500" />
               <span>ID da Solicitação: {status.request_id}</span>
             </div>
+          </div>
               <Progress value={66} className="h-3" />
               <p className="text-xs text-muted-foreground text-center">
       </Card>

@@ -195,8 +195,7 @@ export function AIAutomationForm({ type, onClose }: AIAutomationFormProps) {
                       id="prompt"
                       value={prompt}
                       onChange={(e) => setPrompt(e.target.value)}
-                      placeholder={`Ex: ${this.getPlaceholderByType(type)}`}
-                       placeholder={`Ex: ${getPlaceholderByType(type)}`}
+                      placeholder={`Ex: ${getPlaceholderByType(type)}`}
                       rows={6}
                       className="resize-none glass-input border-primary/20 focus:border-primary/50 transition-all duration-300 text-base"
                       required
@@ -403,6 +402,12 @@ export function AIAutomationForm({ type, onClose }: AIAutomationFormProps) {
   )
 }
 
+function formatOptionLabel(option: string): string {
+  return option.split('_').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ')
+}
+
 function getPlaceholderByType(type: string): string {
   switch (type) {
     case 'copywriter':
@@ -417,4 +422,3 @@ function getPlaceholderByType(type: string): string {
       return 'Descreva o que você precisa...'
   }
 }
-
