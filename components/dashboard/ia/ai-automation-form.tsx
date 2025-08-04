@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Separator } from '@/components/ui/separator'
-import { useAIAutomation } from '@/hooks/use-ai-automation'
 import { FileText, ImageIcon, Video, Mail, Send, Sparkles, Zap, Clock, Target, Wand2, CheckCircle } from 'lucide-react'
 
 interface AIAutomationFormProps {
@@ -91,13 +90,34 @@ const automationConfig = {
   }
 }
 
+function formatOptionLabel(option: string): string {
+  return option.split('_').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ')
+}
+
+function getPlaceholderByType(type: string): string {
+  switch (type) {
+    case 'copywriter':
+      return 'Crie um headline persuasivo para um curso de marketing digital para iniciantes'
+    case 'images':
+      return 'Banner promocional para Black Friday com cores vibrantes e call-to-action'
+    case 'videos':
+      return 'Vídeo promocional de 30 segundos para lançamento de produto'
+    case 'email':
+      return 'Subject line para newsletter semanal sobre dicas de vendas'
+    default:
+      return 'Descreva o que você precisa...'
+  }
+}
+
 export function AIAutomationForm({ type, onClose }: AIAutomationFormProps) {
   const config = automationConfig[type]
   const [prompt, setPrompt] = useState('')
   const [context, setContext] = useState<Record<string, any>>({})
   const [step, setStep] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
   const totalSteps = 3
-  const { requestAutomation, isLoading } = useAIAutomation('current-user-id') // Em produção, obter do contexto de auth
 
   const handleContextChange = (key: string, value: any) => {
     setContext(prev => ({ ...prev, [key]: value }))
@@ -110,16 +130,13 @@ export function AIAutomationForm({ type, onClose }: AIAutomationFormProps) {
       return
     }
 
-    const requestId = await requestAutomation({
-      type,
-      prompt: prompt.trim(),
-      context,
-      userEmail: 'usuario@exemplo.com' // Em produção, obter do contexto de auth
-    })
-
-    if (requestId) {
+    setIsLoading(true)
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false)
       onClose()
-    }
+    }, 2000)
   }
 
   const IconComponent = config.icon
@@ -400,25 +417,4 @@ export function AIAutomationForm({ type, onClose }: AIAutomationFormProps) {
       </Card>
     </motion.div>
   )
-}
-
-function formatOptionLabel(option: string): string {
-  return option.split('_').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join(' ')
-}
-
-function getPlaceholderByType(type: string): string {
-  switch (type) {
-    case 'copywriter':
-      return 'Crie um headline persuasivo para um curso de marketing digital para iniciantes'
-    case 'images':
-      return 'Banner promocional para Black Friday com cores vibrantes e call-to-action'
-    case 'videos':
-      return 'Vídeo promocional de 30 segundos para lançamento de produto'
-    case 'email':
-      return 'Subject line para newsletter semanal sobre dicas de vendas'
-    default:
-      return 'Descreva o que você precisa...'
-  }
 }

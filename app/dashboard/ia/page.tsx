@@ -11,7 +11,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
-import { AIAutomationForm } from "@/components/dashboard/ia/ai-automation-form"
 import {
   Dialog,
   DialogContent,
@@ -43,8 +42,7 @@ import {
   AlertCircle,
   Wand2,
   Palette,
-  PlayCircle,
-  AtSign,
+  Clock,
   Brain,
   BarChart3,
 } from "lucide-react"
@@ -231,8 +229,6 @@ const recentGenerations = [
 
 export default function IAPage() {
   const [selectedTool, setSelectedTool] = useState<string | null>(null)
-  const [showAutomationForm, setShowAutomationForm] = useState(false)
-  const [automationType, setAutomationType] = useState<'copywriter' | 'images' | 'videos' | 'email'>('copywriter')
   const [prompt, setPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [credits] = useState(247)
@@ -250,27 +246,6 @@ export default function IAPage() {
     return matchesSearch && matchesCategory
   })
 
-  const handleGenerate = async () => {
-    if (!selectedTool || !prompt.trim()) return
-
-    // Abrir formulário de automação baseado na ferramenta selecionada
-    const toolTypeMap: Record<string, 'copywriter' | 'images' | 'videos' | 'email'> = {
-      'copywriter': 'copywriter',
-      'image-generator': 'images',
-      'video-creator': 'videos',
-      'email-optimizer': 'email'
-    }
-    
-    const type = toolTypeMap[selectedTool]
-    if (type) {
-      setAutomationType(type)
-      setShowAutomationForm(true)
-    }
-  }
-
-  const selectedToolData = selectedTool ? aiTools.find((t) => t.id === selectedTool) : null
-  const canAfford = selectedToolData ? credits >= selectedToolData.credits : false
-
   const getPlaceholderByType = (toolId: string): string => {
     switch (toolId) {
       case 'copywriter':
@@ -285,6 +260,19 @@ export default function IAPage() {
         return 'Descreva o que você precisa...'
     }
   }
+
+  const handleGenerate = async () => {
+    if (!selectedTool || !prompt.trim()) return
+    
+    setIsGenerating(true)
+    // Simulate API call
+    setTimeout(() => {
+      setIsGenerating(false)
+    }, 3000)
+  }
+
+  const selectedToolData = selectedTool ? aiTools.find((t) => t.id === selectedTool) : null
+  const canAfford = selectedToolData ? credits >= selectedToolData.credits : false
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -463,8 +451,8 @@ export default function IAPage() {
               </div>
             </DialogContent>
           </Dialog>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
 
       {/* Credits & Stats */}
       <motion.div 
@@ -812,7 +800,7 @@ export default function IAPage() {
                       ) : (
                         <>
                           <Send className="h-4 w-4 mr-2" />
-                          Solicitar Automação
+                          Gerar Conteúdo
                         </>
                       )}
                     </Button>
@@ -992,16 +980,6 @@ export default function IAPage() {
           </Tabs>
         </div>
       </motion.div>
-
-      {/* Dialog para Formulário de Automação */}
-      <Dialog open={showAutomationForm} onOpenChange={setShowAutomationForm}>
-        <DialogContent className="max-w-4xl glass-card border-primary/20 shadow-2xl">
-          <AIAutomationForm 
-            type={automationType} 
-            onClose={() => setShowAutomationForm(false)} 
-          />
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

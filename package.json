@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "NODE_OPTIONS='--max-old-space-size=4096' next build",
+    "export": "next export",
     "build:analyze": "ANALYZE=true npm run build",
     "build:debug": "DEBUG=* npm run build",
     "build:clean": "rm -rf .next && npm run build",

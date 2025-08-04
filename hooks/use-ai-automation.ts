@@ -2,10 +2,16 @@
 
 import { useState } from 'react'
 import { useToast } from '@/hooks/use-toast'
-import type { AIAutomationRequest } from '@/lib/webhooks/ai-automation-webhooks'
+
+export interface AIAutomationRequest {
+  type: 'copywriter' | 'images' | 'videos' | 'email'
+  prompt: string
+  context: Record<string, any>
+  userEmail?: string
+}
 
 export interface AIAutomationHookResult {
-  requestAutomation: (request: Omit<AIAutomationRequest, 'userId'>) => Promise<string | null>
+  requestAutomation: (request: AIAutomationRequest) => Promise<string | null>
   isLoading: boolean
   error: string | null
 }
@@ -15,34 +21,22 @@ export function useAIAutomation(userId: string): AIAutomationHookResult {
   const [error, setError] = useState<string | null>(null)
   const { toast } = useToast()
 
-  const requestAutomation = async (request: Omit<AIAutomationRequest, 'userId'>): Promise<string | null> => {
+  const requestAutomation = async (request: AIAutomationRequest): Promise<string | null> => {
     setIsLoading(true)
     setError(null)
 
     try {
-      const response = await fetch('/api/ai-automation/request', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          ...request,
-          userId
-        })
-      })
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Erro ao solicitar automação')
-      }
+      const requestId = `req_${Date.now()}`
 
       toast({
         title: 'Automação Solicitada!',
-        description: `Sua solicitação foi enviada. Tempo estimado: ${result.estimated_time}`
+        description: 'Sua solicitação foi enviada. Tempo estimado: 2-3 minutos'
       })
 
-      return result.request_id
+      return requestId
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido'
       setError(errorMessage)
