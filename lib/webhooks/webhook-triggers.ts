@@ -133,4 +133,18 @@ export class WebhookTriggers {
       ipAddress: clickData.ipAddress
     }, userId)
   }
+
+  /**
+   * Dispara quando automação de IA é completada
+   */
+  static async onAIAutomationCompleted(automationData: any, userId: string): Promise<void> {
+    await webhookService.triggerWebhook('ai_automation_completed', {
+      requestId: automationData.requestId,
+      automationType: automationData.automationType,
+      success: automationData.success,
+      result: automationData.result,
+      files: automationData.files || [],
+      completedAt: new Date().toISOString()
+    }, userId)
+  }
 }

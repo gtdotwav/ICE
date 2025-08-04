@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { AIAutomationForm } from "@/components/dashboard/ia/ai-automation-form"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -199,6 +201,8 @@ const recentGenerations = [
 
 export default function IAPage() {
   const [selectedTool, setSelectedTool] = useState<string | null>(null)
+  const [showAutomationForm, setShowAutomationForm] = useState(false)
+  const [automationType, setAutomationType] = useState<'copywriter' | 'images' | 'videos' | 'email'>('copywriter')
   const [prompt, setPrompt] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
   const [credits] = useState(247)
@@ -219,11 +223,19 @@ export default function IAPage() {
   const handleGenerate = async () => {
     if (!selectedTool || !prompt.trim()) return
 
-    setIsGenerating(true)
-    // Simulate AI generation
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-    setIsGenerating(false)
-    setPrompt("")
+    // Abrir formulário de automação baseado na ferramenta selecionada
+    const toolTypeMap: Record<string, 'copywriter' | 'images' | 'videos' | 'email'> = {
+      'copywriter': 'copywriter',
+      'image-generator': 'images',
+      'video-creator': 'videos',
+      'email-optimizer': 'email'
+    }
+    
+    const type = toolTypeMap[selectedTool]
+    if (type) {
+      setAutomationType(type)
+      setShowAutomationForm(true)
+    }
   }
 
   const selectedToolData = selectedTool ? aiTools.find((t) => t.id === selectedTool) : null
@@ -609,7 +621,7 @@ export default function IAPage() {
                       ) : (
                         <>
                           <Send className="h-4 w-4 mr-2" />
-                          Gerar Conteúdo
+                          Solicitar Automação
                         </>
                       )}
                     </Button>
@@ -730,6 +742,16 @@ export default function IAPage() {
           </Tabs>
         </div>
       </div>
+
+      {/* Dialog para Formulário de Automação */}
+      <Dialog open={showAutomationForm} onOpenChange={setShowAutomationForm}>
+        <DialogContent className="max-w-4xl">
+          <AIAutomationForm 
+            type={automationType} 
+            onClose={() => setShowAutomationForm(false)} 
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

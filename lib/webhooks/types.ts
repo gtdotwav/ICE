@@ -28,6 +28,8 @@ export type WebhookEventType =
   | 'campaign.started'
   | 'email.opened'
   | 'email.clicked'
+  | 'ai_automation_requested'
+  | 'ai_automation_completed'
 
 export interface RetryConfig {
   maxAttempts: number
