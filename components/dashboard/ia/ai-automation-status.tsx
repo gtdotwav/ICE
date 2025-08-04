@@ -119,35 +119,36 @@ export function AIAutomationStatus({ requestId, onComplete }: AIAutomationStatus
                 </div>
               )}
             </Badge>
-        </CardTitle>
-      </CardHeader>
+          </CardTitle>
+        </CardHeader>
 
-      <CardContent className="space-y-6">
-        {status.status === 'completed' && status.result && (
-          <div className="space-y-4">
-            {status.result.content && (
-              <div className="p-4 bg-muted/20 rounded-lg border">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-medium">Conteúdo Gerado</h4>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => copyContent(status.result!.content!)}
-                  >
-                    <Copy className="h-3 w-3 mr-1" />
-                    Copiar
-                  </Button>
+        <CardContent className="space-y-6">
+          {status.status === 'completed' && status.result && (
+            <div className="space-y-4">
+              {status.result.content && (
+                <div className="p-4 bg-muted/20 rounded-lg border">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium">Conteúdo Gerado</h4>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyContent(status.result!.content!)}
+                    >
+                      <Copy className="h-3 w-3 mr-1" />
+                      Copiar
+                    </Button>
+                  </div>
+                  <p className="text-sm whitespace-pre-wrap">{status.result.content}</p>
                 </div>
-                <p className="text-sm whitespace-pre-wrap">{status.result.content}</p>
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
 
-        <div className="text-xs text-muted-foreground">
-          ID da Solicitação: {status.request_id}
-        </div>
-      </CardContent>
+          <div className="text-xs text-muted-foreground">
+            ID da Solicitação: {status.request_id}
+          </div>
+        </CardContent>
+      </Card>
     </motion.div>
   )
 }
