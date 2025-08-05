@@ -4,7 +4,7 @@
  */
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js"
-import type { DatabaseConfig } from "./types"
+import type { DatabaseConfig, ConnectionStatus } from "./types"
 
 export class DatabaseManager {
   private static instance: DatabaseManager
@@ -12,6 +12,7 @@ export class DatabaseManager {
   private adminClient: SupabaseClient | null = null
   private connectionPool: Map<string, SupabaseClient> = new Map()
   private config: DatabaseConfig | null = null
+  private status: ConnectionStatus = { isConnected: false }
   private isInitialized = false
 
   static getInstance(): DatabaseManager {
@@ -29,15 +30,8 @@ export class DatabaseManager {
       return // Already initialized
     }
 
-    this.config = config
-
     try {
-      // Validate required environment variables
-      if (!config.url || !config.anonKey) {
-        throw new Error("Missing required database configuration: url and anonKey are required")
-      }
-
-      // Main client for regular operations
+      this.config = config
       this.client = createClient(config.url, config.anonKey, {
         auth: {
           autoRefreshToken: true,
@@ -71,13 +65,23 @@ export class DatabaseManager {
 
       // Test connection with a simple query
       const connectionTestResult = await this.testConnection()
+      this.status = {
+        isConnected: connectionTestResult,
+        lastConnected: new Date(),
+        error: connectionTestResult ? "" : "Connection test failed",
+      }
+
       if (!connectionTestResult) {
-        throw new Error("Connection test failed")
+        console.warn("Database connection test failed:", this.status.error)
       }
 
       this.isInitialized = true
       console.log("✅ Database connection established")
     } catch (error) {
+      this.status = {
+        isConnected: false,
+        error: error instanceof Error ? error.message : "Unknown error",
+      }
       console.error("❌ Database connection failed:", error)
       // Don't throw error to prevent app from breaking
       this.isInitialized = false
@@ -126,15 +130,14 @@ export class DatabaseManager {
 
     try {
       // Simple query to test connection
-      const { error } = await this.client.from("products").select("count").limit(1)
+      const { error } = await this.client.from("_health_check").select("*").limit(1)
 
-      if (error && error.code !== "PGRST116") {
-        // PGRST116 = table not found (acceptable)
+      if (error) {
         throw error
       }
       return true
     } catch (error: any) {
-      // If products table doesn't exist, try a different approach
+      // If _health_check table doesn't exist, try a different approach
       try {
         const { error: authError } = await this.client.auth.getSession()
         if (authError) {
@@ -211,36 +214,41 @@ export class DatabaseManager {
   /**
    * Health check for monitoring
    */
-  async healthCheck(): Promise<{
-    status: "healthy" | "degraded" | "unhealthy"
-    latency: number
-    details: Record<string, any>
-  }> {
-    const startTime = Date.now()
+  async healthCheck(): Promise<boolean> {
+    if (!this.client) return false
 
     try {
-      await this.testConnection()
-      const latency = Date.now() - startTime
+      const { error } = await this.client.from("_health_check").select("*").limit(1)
+      return !error
+    } catch {
+      return false
+    }
+  }
 
-      return {
-        status: latency < 1000 ? "healthy" : "degraded",
-        latency,
-        details: {
-          connectionPool: this.connectionPool.size,
-          initialized: this.isInitialized,
-          lastCheck: new Date().toISOString(),
-        },
-      }
-    } catch (error) {
-      return {
-        status: "unhealthy",
-        latency: Date.now() - startTime,
-        details: {
-          error: (error as Error).message,
-          initialized: this.isInitialized,
-          lastCheck: new Date().toISOString(),
-        },
-      }
+  /**
+   * Check if database is initialized
+   */
+  isReady(): boolean {
+    return this.client !== null && this.status.isConnected
+  }
+
+  getStatus(): ConnectionStatus {
+    return { ...this.status }
+  }
+
+  async disconnect(): Promise<void> {
+    if (this.client) {
+      // Supabase client doesn't have explicit disconnect
+      this.client = null
+      this.status = { isConnected: false }
+    }
+  }
+
+  async reconnect(): Promise<void> {
+    if (this.config) {
+      await this.initialize(this.config)
+    } else {
+      throw new Error("No configuration available for reconnection")
     }
   }
 
@@ -254,14 +262,8 @@ export class DatabaseManager {
     this.client = null
     this.adminClient = null
     this.isInitialized = false
+    this.status = { isConnected: false }
     console.log("🔌 Database connections closed")
-  }
-
-  /**
-   * Check if database is initialized
-   */
-  isReady(): boolean {
-    return this.isInitialized && this.client !== null
   }
 }
 

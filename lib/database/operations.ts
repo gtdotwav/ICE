@@ -124,7 +124,7 @@ export class DatabaseOperations {
 
     const { data: result, error } = await client.from(table).insert(data).select()
     if (error) throw error
-    return result
+    return result || []
   }
 
   async bulkUpdate<T>(table: string, updates: Array<{ id: string; data: Partial<T> }>): Promise<T[]> {
@@ -133,19 +133,13 @@ export class DatabaseOperations {
       throw new Error("Database not initialized")
     }
 
-    const operations = updates.map(
-      ({ id, data }) =>
-        (client: SupabaseClient) =>
-          client.from(table).update(data).eq("id", id).select().single(),
-    )
-
     const results = []
-    for (const operation of operations) {
-      const result = await operation(client)
-      if (result.error) {
-        throw result.error
+    for (const { id, data } of updates) {
+      const { data: result, error } = await client.from(table).update(data).eq("id", id).select().single()
+      if (error) {
+        throw error
       }
-      results.push(result.data)
+      results.push(result)
     }
     return results
   }
@@ -191,7 +185,7 @@ export class DatabaseOperations {
       return {}
     }
 
-    let query = client.from(table)
+    let query = client.from(table).select("*")
 
     // Apply filters
     if (filters) {
@@ -200,29 +194,38 @@ export class DatabaseOperations {
       })
     }
 
-    // Build select with aggregations
-    const selectColumns = Object.entries(aggregations)
-      .map(([column, func]) => {
+    const { data, error } = await query
+    if (error) throw error
+
+    // Calculate aggregations manually since Supabase doesn't support all SQL aggregations directly
+    const result: Record<string, number> = {}
+
+    if (data && data.length > 0) {
+      Object.entries(aggregations).forEach(([column, func]) => {
+        const values = data.map((row) => row[column]).filter((val) => val !== null && val !== undefined)
+
         switch (func) {
           case "count":
-            return `${column}.count()`
+            result[column] = values.length
+            break
           case "sum":
-            return `${column}.sum()`
+            result[column] = values.reduce((sum, val) => sum + (Number(val) || 0), 0)
+            break
           case "avg":
-            return `${column}.avg()`
+            result[column] =
+              values.length > 0 ? values.reduce((sum, val) => sum + (Number(val) || 0), 0) / values.length : 0
+            break
           case "min":
-            return `${column}.min()`
+            result[column] = values.length > 0 ? Math.min(...values.map(Number)) : 0
+            break
           case "max":
-            return `${column}.max()`
-          default:
-            return column
+            result[column] = values.length > 0 ? Math.max(...values.map(Number)) : 0
+            break
         }
       })
-      .join(",")
+    }
 
-    query = query.select(selectColumns)
-    const result = await query.single()
-    return result.data || {}
+    return result
   }
 
   /**

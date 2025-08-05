@@ -2,11 +2,10 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import type { JSX } from "react/jsx-runtime"
 
 type AnimatedTextProps = {
   text: string
-  el?: keyof JSX.IntrinsicElements
+  el?: "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "div"
   className?: string
 }
 

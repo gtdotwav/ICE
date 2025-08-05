@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Loader2 } from "lucide-react"
-import { useForm } from "react-hook-form"
+import { useForm, type SubmitHandler } from "react-hook-form"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -37,12 +37,12 @@ export function ProductFormSidebar({ open, onOpenChange, product }: ProductFormS
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
-      name: product?.name || "",
-      category: product?.category || "",
-      description: product?.description || "",
-      price: product?.price || 0,
-      promoPrice: product?.promoPrice || undefined,
-      status: product?.status || "draft",
+      name: "",
+      category: "",
+      description: "",
+      price: 0,
+      promoPrice: undefined,
+      status: "draft",
     },
   })
 
@@ -70,7 +70,7 @@ export function ProductFormSidebar({ open, onOpenChange, product }: ProductFormS
     }
   }, [product, form])
 
-  async function onSubmit(data: ProductFormData) {
+  const onSubmit: SubmitHandler<ProductFormData> = async (data) => {
     const result = await createProduct(data)
     if (result.success) {
       toast({
@@ -169,7 +169,12 @@ export function ProductFormSidebar({ open, onOpenChange, product }: ProductFormS
                       <FormItem>
                         <FormLabel>Preço (BRL)</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="Ex: 297.00" {...field} />
+                          <Input
+                            type="number"
+                            placeholder="Ex: 297.00"
+                            {...field}
+                            onChange={(e) => field.onChange(Number.parseFloat(e.target.value) || 0)}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -182,7 +187,14 @@ export function ProductFormSidebar({ open, onOpenChange, product }: ProductFormS
                       <FormItem>
                         <FormLabel>Preço Promocional</FormLabel>
                         <FormControl>
-                          <Input type="number" placeholder="Opcional" {...field} />
+                          <Input
+                            type="number"
+                            placeholder="Opcional"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(e.target.value ? Number.parseFloat(e.target.value) : undefined)
+                            }
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
