@@ -58,7 +58,7 @@ Bem-vindo à documentação completa da plataforma HIAS FLOW. Esta documentaçã
 
 ### Para Desenvolvedores
 
-```bash
+\`\`\`bash
 # 1. Instalar SDK
 npm install @hiasflow/sdk
 
@@ -74,11 +74,11 @@ await hiasflow.forms.submit({
   formId: 'contact',
   fields: { email: 'user@example.com' }
 });
-```
+\`\`\`
 
 ### Para Heads de Automação
 
-```bash
+\`\`\`bash
 # 1. Clonar template de automação
 git clone https://github.com/hiasflow/automation-template.git
 
@@ -90,7 +90,7 @@ cp .env.example .env
 npm install
 npm run setup:webhooks
 npm start
-```
+\`\`\`
 
 ---
 

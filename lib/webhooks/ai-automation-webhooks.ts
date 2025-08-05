@@ -1,232 +1,105 @@
-/**
- * AI Automation Webhook System
- * Handles outgoing webhooks for AI automation requests and incoming responses
- */
+import crypto from "crypto"
 
-import { WebhookService } from './webhook-service'
-import { nanoid } from 'nanoid'
+// Tipos de automação de IA suportados
+export type AIAutomationType = "copywriter" | "images" | "videos" | "email"
 
+// Interface para solicitação de automação de IA
 export interface AIAutomationRequest {
-  type: 'copywriter' | 'images' | 'videos' | 'email'
+  type: AIAutomationType
   prompt: string
-  context: Record<string, any>
+  context?: Record<string, any>
   userId: string
   userEmail?: string
 }
 
-export interface AIAutomationWebhookPayload {
-  event_type: 'ai_automation_requested'
-  request_id: string
-  user_id: string
-  timestamp: string
-  automation_details: {
-    type: string
-    prompt: string
-    context: Record<string, any>
-  }
-  callback_config: {
-    return_url: string
-    user_interface_url: string
-    notification_email?: string
-  }
-}
-
+// Interface para resposta de automação de IA
 export interface AIAutomationResponse {
   success: boolean
   request_id: string
-  automation_type: string
-  result: {
+  automation_type: AIAutomationType
+  result?: {
     content?: string
-    metadata?: Record<string, any>
+    metadata?: {
+      processing_time?: string
+      tokens_used?: number
+    }
   }
   files?: string[]
   timestamp: string
 }
 
 export class AIAutomationWebhooks {
-  private webhookService: WebhookService
-  private pendingRequests: Map<string, AIAutomationRequest> = new Map()
-
-  constructor() {
-    this.webhookService = new WebhookService()
-  }
+  private static readonly WEBHOOK_URL =
+    process.env.AI_AUTOMATION_WEBHOOK_URL || "https://meu-sistema-automacao.com/webhook/icefunnel"
+  private static readonly WEBHOOK_SECRET = process.env.AI_AUTOMATION_WEBHOOK_SECRET || "webhook_secret_key"
 
   /**
-   * Dispara webhook quando usuário solicita automação de IA
+   * Envia uma solicitação de automação de IA para o webhook configurado
    */
-  async requestAIAutomation(request: AIAutomationRequest): Promise<string> {
-    const requestId = this.generateRequestId()
-    
-    // Armazena a solicitação para referência futura
-    this.pendingRequests.set(requestId, request)
-
-    // Prepara o payload do webhook
-    const payload: AIAutomationWebhookPayload = {
-      event_type: 'ai_automation_requested',
-      request_id: requestId,
-      user_id: request.userId,
-      timestamp: new Date().toISOString(),
-      automation_details: {
-        type: request.type,
-        prompt: request.prompt,
-        context: this.formatContextByType(request.type, request.context)
-      },
-      callback_config: {
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/webhooks/ai-automation/callback`,
-        user_interface_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/ia`,
-        notification_email: request.userEmail
-      }
-    }
-
-    // Envia webhook para sistema de automação externo
-    await this.sendToAutomationSystem(payload)
-
-    return requestId
-  }
-
-  /**
-   * Processa resposta do sistema de automação
-   */
-  async processAutomationResponse(response: AIAutomationResponse): Promise<void> {
-    const originalRequest = this.pendingRequests.get(response.request_id)
-    
-    if (!originalRequest) {
-      console.error('Request not found for response:', response.request_id)
-      return
-    }
-
-    // Remove da lista de pendentes
-    this.pendingRequests.delete(response.request_id)
-
-    // Salva o resultado no sistema
-    await this.saveAutomationResult(response, originalRequest)
-
-    // Notifica o usuário via webhook interno
-    await this.webhookService.triggerWebhook('ai_automation_completed', {
-      requestId: response.request_id,
-      automationType: response.automation_type,
-      success: response.success,
-      result: response.result,
-      files: response.files || [],
-      userId: originalRequest.userId
-    }, originalRequest.userId)
-  }
-
-  /**
-   * Formata contexto específico por tipo de automação
-   */
-  private formatContextByType(type: string, context: Record<string, any>): Record<string, any> {
-    switch (type) {
-      case 'copywriter':
-        return {
-          copy_type: context.copyType || 'headline',
-          target_audience: context.targetAudience || '',
-          tone: context.tone || 'professional',
-          product_name: context.productName || '',
-          length: context.length || 'medium',
-          ...context
-        }
-
-      case 'images':
-        return {
-          style: context.style || 'professional',
-          dimensions: context.dimensions || '1024x1024',
-          format: context.format || 'png',
-          quantity: context.quantity || 1,
-          ...context
-        }
-
-      case 'videos':
-        return {
-          duration: context.duration || 30,
-          style: context.style || 'promotional',
-          voice_type: context.voiceType || 'professional',
-          include_music: context.includeMusic || true,
-          ...context
-        }
-
-      case 'email':
-        return {
-          email_type: context.emailType || 'marketing',
-          target_audience: context.targetAudience || '',
-          tone: context.tone || 'professional',
-          call_to_action: context.callToAction || '',
-          ...context
-        }
-
-      default:
-        return context
-    }
-  }
-
-  /**
-   * Envia webhook para sistema de automação externo
-   */
-  private async sendToAutomationSystem(payload: AIAutomationWebhookPayload): Promise<void> {
-    const automationSystemUrl = 'https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef87506'
-    
+  static async sendAutomationRequest(requestData: AIAutomationRequest): Promise<string> {
     try {
-      const response = await fetch(automationSystemUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Webhook-Source': 'icefunnel',
-          'X-Request-ID': payload.request_id,
-          'X-Automation-Type': payload.automation_details.type
+      // Gerar ID único para a solicitação
+      const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+
+      // Preparar payload do webhook
+      const webhookPayload = {
+        event_type: "ai_automation_requested",
+        request_id: requestId,
+        user_id: requestData.userId,
+        timestamp: new Date().toISOString(),
+        automation_details: {
+          type: requestData.type,
+          prompt: requestData.prompt,
+          context: requestData.context || {},
         },
-        body: JSON.stringify(payload)
+        callback_config: {
+          return_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/webhooks/ai-automation/callback`,
+          user_interface_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/dashboard/ia`,
+          notification_email: requestData.userEmail || "usuario@email.com",
+        },
+      }
+
+      // Gerar assinatura para o webhook
+      const signature = this.generateSignature(webhookPayload)
+
+      // Enviar para o webhook configurado
+      const response = await fetch(this.WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Webhook-Signature": signature,
+          "X-Request-ID": requestId,
+          "X-Automation-Type": requestData.type,
+        },
+        body: JSON.stringify(webhookPayload),
       })
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        throw new Error(`Webhook failed: ${response.status} ${response.statusText}`)
       }
 
-      console.log('AI automation webhook sent successfully:', payload.request_id)
+      console.log(`Webhook de automação enviado com sucesso: ${requestId}`)
+      return requestId
     } catch (error) {
-      console.error('Failed to send AI automation webhook:', error)
+      console.error("Erro ao enviar webhook de automação:", error)
       throw error
     }
   }
 
   /**
-   * Salva resultado da automação no sistema
+   * Verifica a assinatura de um webhook recebido
    */
-  private async saveAutomationResult(response: AIAutomationResponse, originalRequest: AIAutomationRequest): Promise<void> {
-    // Em produção, salvar no banco de dados
-    console.log('Saving AI automation result:', {
-      requestId: response.request_id,
-      type: response.automation_type,
-      success: response.success,
-      result: response.result,
-      files: response.files,
-      userId: originalRequest.userId
-    })
-
-    // Aqui você implementaria a lógica para salvar no banco de dados
-    // Por exemplo: await dbOps.create('ai_automation_results', resultData)
+  static verifySignature(payload: any, signature: string): boolean {
+    const expectedSignature = this.generateSignature(payload)
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))
   }
 
   /**
-   * Gera ID único para solicitação
+   * Gera uma assinatura para o payload do webhook
    */
-  private generateRequestId(): string {
-    return `req_${Date.now()}_${nanoid(8)}`
-  }
-
-  /**
-   * Obtém solicitações pendentes para um usuário
-   */
-  getPendingRequests(userId: string): AIAutomationRequest[] {
-    return Array.from(this.pendingRequests.values()).filter(req => req.userId === userId)
-  }
-
-  /**
-   * Cancela solicitação pendente
-   */
-  cancelRequest(requestId: string): boolean {
-    return this.pendingRequests.delete(requestId)
+  private static generateSignature(payload: any): string {
+    const hmac = crypto.createHmac("sha256", this.WEBHOOK_SECRET)
+    hmac.update(JSON.stringify(payload))
+    return hmac.digest("hex")
   }
 }
-
-// Export singleton instance
-export const aiAutomationWebhooks = new AIAutomationWebhooks()

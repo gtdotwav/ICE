@@ -1,42 +1,53 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { aiAutomationWebhooks } from '@/lib/webhooks/ai-automation-webhooks'
+import { type NextRequest, NextResponse } from "next/server"
 
 /**
- * API para verificar status de solicitação de automação
+ * Endpoint para consultar o status de uma automação de IA
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { requestId: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { requestId: string } }) {
   try {
-    const { requestId } = params
-    
+    const requestId = params.requestId
+
     if (!requestId) {
-      return NextResponse.json(
-        { error: 'Request ID é obrigatório' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: "ID da solicitação não fornecido" }, { status: 400 })
     }
 
-    // Verificar se a solicitação ainda está pendente
-    const pendingRequests = aiAutomationWebhooks.getPendingRequests('current-user-id')
-    const isPending = pendingRequests.some(req => req.userId === 'current-user-id')
+    // Em um ambiente real, consultaríamos o banco de dados ou um serviço externo
+    // para obter o status atual da automação
 
-    // Em produção, você consultaria o banco de dados para obter o status real
-    const status = isPending ? 'processing' : 'completed'
-
-    return NextResponse.json({
+    // Simulação de resposta para fins de demonstração
+    const mockStatus = {
       request_id: requestId,
-      status,
-      estimated_completion: isPending ? new Date(Date.now() + 60000).toISOString() : null,
-      message: isPending ? 'Automação em processamento' : 'Automação concluída'
-    })
+      status: Math.random() > 0.3 ? "completed" : "processing",
+      automation_type: getRandomType(),
+      created_at: new Date(Date.now() - 60000).toISOString(),
+      updated_at: new Date().toISOString(),
+      result:
+        Math.random() > 0.3
+          ? {
+              content: "Conteúdo gerado pela automação de IA",
+              metadata: {
+                processing_time: "2.5s",
+                tokens_used: 150,
+              },
+            }
+          : null,
+      estimated_completion: new Date(Date.now() + 30000).toISOString(),
+    }
 
+    return NextResponse.json(mockStatus)
   } catch (error) {
-    console.error('Erro ao verificar status da automação:', error)
+    console.error("Erro ao consultar status da automação:", error)
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
+      {
+        error: "Erro ao consultar status",
+        details: error instanceof Error ? error.message : "Erro desconhecido",
+      },
+      { status: 500 },
     )
   }
+}
+
+function getRandomType() {
+  const types = ["copywriter", "images", "videos", "email"]
+  return types[Math.floor(Math.random() * types.length)]
 }

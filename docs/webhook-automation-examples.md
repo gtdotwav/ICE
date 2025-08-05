@@ -3,9 +3,9 @@
 ## Endpoint Configurado
 
 **URL do Webhook n8n:**
-```
+\`\`\`
 https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef87506
-```
+\`\`\`
 
 ## Estrutura dos Payloads
 
@@ -13,7 +13,7 @@ https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef8
 
 **Evento:** Solicitação de geração de texto
 
-```json
+\`\`\`json
 {
   "request_id": "req_1642680000123_abc123",
   "type": "copywriter",
@@ -29,7 +29,7 @@ https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef8
   "timestamp": "2024-01-20T10:30:00Z",
   "callback_url": "https://app.hiasflow.com/api/webhooks/ai-automation/callback"
 }
-```
+\`\`\`
 
 **Opções de Context:**
 - `copy_type`: "headline", "landing_page", "ad_copy", "email_subject", "product_description"
@@ -42,7 +42,7 @@ https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef8
 
 **Evento:** Solicitação de geração de imagem
 
-```json
+\`\`\`json
 {
   "request_id": "req_1642680000124_def456",
   "type": "images",
@@ -59,7 +59,7 @@ https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef8
   "timestamp": "2024-01-20T10:35:00Z",
   "callback_url": "https://app.hiasflow.com/api/webhooks/ai-automation/callback"
 }
-```
+\`\`\`
 
 **Opções de Context:**
 - `style`: "professional", "creative", "minimalist", "modern", "vintage"
@@ -73,7 +73,7 @@ https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef8
 
 **Evento:** Solicitação de geração de vídeo
 
-```json
+\`\`\`json
 {
   "request_id": "req_1642680000125_ghi789",
   "type": "videos",
@@ -90,7 +90,7 @@ https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef8
   "timestamp": "2024-01-20T10:40:00Z",
   "callback_url": "https://app.hiasflow.com/api/webhooks/ai-automation/callback"
 }
-```
+\`\`\`
 
 **Opções de Context:**
 - `duration`: number (15-300 segundos)
@@ -104,7 +104,7 @@ https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef8
 
 **Evento:** Solicitação de otimização de email
 
-```json
+\`\`\`json
 {
   "request_id": "req_1642680000126_jkl012",
   "type": "email",
@@ -121,7 +121,7 @@ https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef8
   "timestamp": "2024-01-20T10:45:00Z",
   "callback_url": "https://app.hiasflow.com/api/webhooks/ai-automation/callback"
 }
-```
+\`\`\`
 
 **Opções de Context:**
 - `email_type`: "marketing", "transactional", "newsletter", "welcome", "abandoned_cart"
@@ -135,18 +135,18 @@ https://duduquadrado.app.n8n.cloud/webhook-test/b488f551-9141-422f-9a7e-10347ef8
 
 Todos os webhooks incluem os seguintes headers:
 
-```http
+\`\`\`http
 Content-Type: application/json
 X-Webhook-Source: hiasflow
 X-Request-ID: req_1642680000123_abc123
 X-Automation-Type: copywriter
-```
+\`\`\`
 
 ## Resposta Esperada do n8n
 
 O sistema n8n deve processar a solicitação e retornar uma resposta para o callback URL:
 
-```json
+\`\`\`json
 {
   "success": true,
   "request_id": "req_1642680000123_abc123",
@@ -162,7 +162,7 @@ O sistema n8n deve processar a solicitação e retornar uma resposta para o call
   "files": [], // URLs de arquivos gerados (para imagens/vídeos)
   "timestamp": "2024-01-20T10:31:00Z"
 }
-```
+\`\`\`
 
 ## Configuração no n8n
 
@@ -174,7 +174,7 @@ O sistema n8n deve processar a solicitação e retornar uma resposta para o call
 ### 2. Processamento por Tipo
 
 #### Para Copywriter:
-```javascript
+\`\`\`javascript
 // Node de processamento no n8n
 const { type, prompt, context } = $json;
 
@@ -194,10 +194,10 @@ if (type === 'copywriter') {
     }
   };
 }
-```
+\`\`\`
 
 #### Para Imagens:
-```javascript
+\`\`\`javascript
 if (type === 'images') {
   // Processar com IA de imagem
   const result = await processImageGeneration(prompt, context);
@@ -215,18 +215,18 @@ if (type === 'images') {
     files: result.image_urls
   };
 }
-```
+\`\`\`
 
 ### 3. Callback Response
 O n8n deve enviar a resposta para:
-```
+\`\`\`
 POST https://app.hiasflow.com/api/webhooks/ai-automation/callback
-```
+\`\`\`
 
 ## Exemplos de Uso
 
 ### Exemplo 1: Headline para Landing Page
-```json
+\`\`\`json
 {
   "type": "copywriter",
   "prompt": "Crie um headline para uma landing page de um curso de programação Python",
@@ -238,10 +238,10 @@ POST https://app.hiasflow.com/api/webhooks/ai-automation/callback
     "length": "medium"
   }
 }
-```
+\`\`\`
 
 ### Exemplo 2: Banner para Redes Sociais
-```json
+\`\`\`json
 {
   "type": "images",
   "prompt": "Banner para Instagram promovendo curso online de marketing",
@@ -254,10 +254,10 @@ POST https://app.hiasflow.com/api/webhooks/ai-automation/callback
     "include_text": true
   }
 }
-```
+\`\`\`
 
 ### Exemplo 3: Vídeo Explicativo
-```json
+\`\`\`json
 {
   "type": "videos",
   "prompt": "Vídeo explicativo sobre os benefícios do produto",
@@ -270,10 +270,10 @@ POST https://app.hiasflow.com/api/webhooks/ai-automation/callback
     "quality": "hd"
   }
 }
-```
+\`\`\`
 
 ### Exemplo 4: Subject Line de Email
-```json
+\`\`\`json
 {
   "type": "email",
   "prompt": "Subject line para email de carrinho abandonado",
@@ -286,7 +286,7 @@ POST https://app.hiasflow.com/api/webhooks/ai-automation/callback
     "urgency_level": "high"
   }
 }
-```
+\`\`\`
 
 ## Monitoramento
 
@@ -300,7 +300,7 @@ Para monitorar as automações, você pode:
 
 Se o n8n não conseguir processar a solicitação, deve retornar:
 
-```json
+\`\`\`json
 {
   "success": false,
   "request_id": "req_1642680000123_abc123",
@@ -312,4 +312,4 @@ Se o n8n não conseguir processar a solicitação, deve retornar:
   },
   "timestamp": "2024-01-20T10:31:00Z"
 }
-```
+\`\`\`

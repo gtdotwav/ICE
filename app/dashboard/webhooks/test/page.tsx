@@ -1,74 +1,43 @@
-"use client"
-
-import { Suspense } from "react"
 import { WebhookTestPanel } from "@/components/dashboard/webhooks/webhook-test-panel"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
-import Link from "next/link"
+import { WebhookTestButton } from "@/components/dashboard/webhooks/webhook-test-button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Separator } from "@/components/ui/separator"
 
 export default function WebhookTestPage() {
   return (
-    <Suspense fallback={<div>Carregando teste de webhook...</div>}>
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/dashboard/webhooks">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
-            </Link>
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold">Teste de Webhook</h1>
-            <p className="text-muted-foreground">Valide suas integrações com webhooks de teste</p>
-          </div>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-2">
-          <WebhookTestPanel 
-            webhookId="wh_test_001" 
-            webhookUrl="https://webhook.site/unique-test-url" 
-          />
-          
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle>Documentação</CardTitle>
-              <CardDescription>
-                Guia rápido para configurar webhooks
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <h4 className="font-medium">1. Configure o Endpoint</h4>
-                <p className="text-sm text-muted-foreground">
-                  Defina a URL que receberá os webhooks do IceFunnel
-                </p>
-              </div>
-              
-              <div className="space-y-2">
-                <h4 className="font-medium">2. Valide a Assinatura</h4>
-                <p className="text-sm text-muted-foreground">
-                  Use o header X-Webhook-Signature para validar a autenticidade
-                </p>
-              </div>
-              
-              <div className="space-y-2">
-                <h4 className="font-medium">3. Responda Rapidamente</h4>
-                <p className="text-sm text-muted-foreground">
-                  Retorne status 200 em menos de 30 segundos
-                </p>
-              </div>
-              
-              <div className="space-y-2">
-                <h4 className="font-medium">4. Implemente Idempotência</h4>
-                <p className="text-sm text-muted-foreground">
-                  Use o ID do webhook para evitar processamento duplicado
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+    <div className="container mx-auto py-6 space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold">Teste de Webhooks</h1>
+        <p className="text-muted-foreground mt-2">
+          Teste os webhooks do sistema para garantir que estão funcionando corretamente.
+        </p>
       </div>
-    </Suspense>
+
+      <Separator />
+
+      <Tabs defaultValue="general" className="w-full">
+        <TabsList className="mb-6">
+          <TabsTrigger value="general">Webhooks Gerais</TabsTrigger>
+          <TabsTrigger value="ai">Webhooks de IA</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="general">
+          <WebhookTestPanel />
+        </TabsContent>
+
+        <TabsContent value="ai">
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Teste de Webhooks de Automação de IA</h2>
+              <p className="text-muted-foreground">
+                Simule o envio de webhooks para automações de IA (Copywriter, Imagens, Vídeos, Email).
+              </p>
+            </div>
+
+            <WebhookTestButton className="mt-4" />
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
   )
 }

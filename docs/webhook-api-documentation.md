@@ -10,7 +10,7 @@ Todos os webhooks são assinados usando HMAC-SHA256 para garantir autenticidade 
 
 ### Verificação de Assinatura
 
-```javascript
+\`\`\`javascript
 const crypto = require('crypto')
 
 function verifyWebhookSignature(payload, signature, secret) {
@@ -21,7 +21,7 @@ function verifyWebhookSignature(payload, signature, secret) {
   
   return signature === `sha256=${expectedSignature}`
 }
-```
+\`\`\`
 
 ## Webhooks de Saída
 
@@ -41,7 +41,7 @@ function verifyWebhookSignature(payload, signature, secret) {
 
 ### Estrutura do Payload
 
-```json
+\`\`\`json
 {
   "id": "wh_1234567890",
   "event": "form.submitted",
@@ -52,18 +52,18 @@ function verifyWebhookSignature(payload, signature, secret) {
   "source": "icefunnel",
   "version": "1.0"
 }
-```
+\`\`\`
 
 ### Headers de Segurança
 
-```
+\`\`\`
 Content-Type: application/json
 X-Webhook-Signature: sha256=a1b2c3d4e5f6...
 X-Webhook-Event: form.submitted
 X-Webhook-ID: wh_1234567890
 X-Webhook-Timestamp: 2024-01-20T10:30:00Z
 User-Agent: IceFunnel-Webhooks/1.0
-```
+\`\`\`
 
 ### Configuração de Retry
 
@@ -76,13 +76,13 @@ User-Agent: IceFunnel-Webhooks/1.0
 
 ### Endpoint Base
 
-```
+\`\`\`
 POST https://app.icefunnel.com/api/webhooks/incoming/[endpoint]
-```
+\`\`\`
 
 ### Exemplo de Configuração
 
-```javascript
+\`\`\`javascript
 // Configurar webhook de entrada
 const incomingWebhook = {
   name: 'Zapier Integration',
@@ -94,11 +94,11 @@ const incomingWebhook = {
     'contact_updated': 'user.updated'
   }
 }
-```
+\`\`\`
 
 ### Exemplo de Payload Recebido
 
-```json
+\`\`\`json
 {
   "event": "lead_created",
   "timestamp": "2024-01-20T10:30:00Z",
@@ -109,13 +109,13 @@ const incomingWebhook = {
     "tags": ["hot_lead", "enterprise"]
   }
 }
-```
+\`\`\`
 
 ## APIs de Gerenciamento
 
 ### Criar Webhook
 
-```http
+\`\`\`http
 POST /api/webhooks/config
 Content-Type: application/json
 
@@ -129,17 +129,17 @@ Content-Type: application/json
     "Authorization": "Bearer token"
   }
 }
-```
+\`\`\`
 
 ### Listar Webhooks
 
-```http
+\`\`\`http
 GET /api/webhooks/config?userId=user_123
-```
+\`\`\`
 
 ### Testar Webhook
 
-```http
+\`\`\`http
 POST /api/webhooks/test
 Content-Type: application/json
 
@@ -149,7 +149,7 @@ Content-Type: application/json
     "message": "Teste personalizado"
   }
 }
-```
+\`\`\`
 
 ## Monitoramento e Logs
 
@@ -194,7 +194,7 @@ Content-Type: application/json
 
 ### Zapier
 
-```javascript
+\`\`\`javascript
 // Webhook para Zapier
 const zapierWebhook = {
   name: 'Zapier - Novos Leads',
@@ -204,11 +204,11 @@ const zapierWebhook = {
     'X-Zapier-Source': 'icefunnel'
   }
 }
-```
+\`\`\`
 
 ### Make (Integromat)
 
-```javascript
+\`\`\`javascript
 // Webhook para Make
 const makeWebhook = {
   name: 'Make - Automações',
@@ -216,11 +216,11 @@ const makeWebhook = {
   events: ['funnel.conversion', 'payment.completed'],
   maxAttempts: 5
 }
-```
+\`\`\`
 
 ### CRM Personalizado
 
-```javascript
+\`\`\`javascript
 // Webhook para CRM próprio
 const crmWebhook = {
   name: 'CRM Interno',
@@ -231,7 +231,7 @@ const crmWebhook = {
     'X-API-Version': 'v2'
   }
 }
-```
+\`\`\`
 
 ## Troubleshooting
 

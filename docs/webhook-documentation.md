@@ -28,7 +28,7 @@ Webhooks são notificações HTTP em tempo real que o HIAS FLOW envia para seus 
    - **Configurações avançadas**: Retry, headers customizados
 
 #### Via API
-```http
+\`\`\`http
 POST /api/webhooks/config
 Content-Type: application/json
 Authorization: Bearer sk_live_...
@@ -44,10 +44,10 @@ Authorization: Bearer sk_live_...
     "X-Source": "hiasflow"
   }
 }
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "success": true,
   "webhook": {
@@ -60,13 +60,13 @@ Authorization: Bearer sk_live_...
     "createdAt": "2024-01-20T10:30:00Z"
   }
 }
-```
+\`\`\`
 
 ### 2. Validação de Segurança
 
 Todos os webhooks incluem uma assinatura HMAC-SHA256 para validação:
 
-```javascript
+\`\`\`javascript
 const crypto = require('crypto');
 
 function validateWebhookSignature(payload, signature, secret) {
@@ -92,7 +92,7 @@ app.post('/webhook/hiasflow', express.raw({type: 'application/json'}), (req, res
   
   res.status(200).json({ received: true });
 });
-```
+\`\`\`
 
 ---
 
@@ -102,7 +102,7 @@ app.post('/webhook/hiasflow', express.raw({type: 'application/json'}), (req, res
 Disparado quando qualquer formulário é submetido na plataforma.
 
 **Payload:**
-```json
+\`\`\`json
 {
   "id": "wh_1642680000123",
   "event": "form.submitted",
@@ -129,7 +129,7 @@ Disparado quando qualquer formulário é submetido na plataforma.
   "source": "hiasflow",
   "version": "1.0"
 }
-```
+\`\`\`
 
 **Casos de Uso:**
 - Adicionar lead ao CRM
@@ -141,7 +141,7 @@ Disparado quando qualquer formulário é submetido na plataforma.
 Disparado quando um lead converte em qualquer etapa do funil.
 
 **Payload:**
-```json
+\`\`\`json
 {
   "id": "wh_1642680000124",
   "event": "funnel.conversion",
@@ -173,13 +173,13 @@ Disparado quando um lead converte em qualquer etapa do funil.
   "source": "hiasflow",
   "version": "1.0"
 }
-```
+\`\`\`
 
 ### 3. user.registered
 Disparado quando um novo usuário se registra na plataforma.
 
 **Payload:**
-```json
+\`\`\`json
 {
   "id": "wh_1642680000125",
   "event": "user.registered",
@@ -201,13 +201,13 @@ Disparado quando um novo usuário se registra na plataforma.
   "source": "hiasflow",
   "version": "1.0"
 }
-```
+\`\`\`
 
 ### 4. payment.completed
 Disparado quando um pagamento é processado com sucesso.
 
 **Payload:**
-```json
+\`\`\`json
 {
   "id": "wh_1642680000126",
   "event": "payment.completed",
@@ -240,13 +240,13 @@ Disparado quando um pagamento é processado com sucesso.
   "source": "hiasflow",
   "version": "1.0"
 }
-```
+\`\`\`
 
 ### 5. lead.qualified
 Disparado quando um lead atinge critérios de qualificação.
 
 **Payload:**
-```json
+\`\`\`json
 {
   "id": "wh_1642680000127",
   "event": "lead.qualified",
@@ -282,13 +282,13 @@ Disparado quando um lead atinge critérios de qualificação.
   "source": "hiasflow",
   "version": "1.0"
 }
-```
+\`\`\`
 
 ### 6. automation.triggered
 Disparado quando uma automação é acionada.
 
 **Payload:**
-```json
+\`\`\`json
 {
   "id": "wh_1642680000128",
   "event": "automation.triggered",
@@ -327,7 +327,7 @@ Disparado quando uma automação é acionada.
   "source": "hiasflow",
   "version": "1.0"
 }
-```
+\`\`\`
 
 ---
 
@@ -341,7 +341,7 @@ Disparado quando uma automação é acionada.
 3. **Secret**: Use o secret fornecido pelo HIAS FLOW
 
 #### Exemplo de Zap
-```
+\`\`\`
 Trigger: HIAS FLOW Webhook (form.submitted)
 ↓
 Filter: Email contains "@empresa.com"
@@ -351,12 +351,12 @@ Action: Add to Google Sheets
 Action: Send Slack notification
 ↓
 Action: Create HubSpot contact
-```
+\`\`\`
 
 ### 2. Make (Integromat)
 
 #### Configuração no Make
-```json
+\`\`\`json
 {
   "webhook": {
     "url": "https://hook.integromat.com/abc123def456",
@@ -373,11 +373,11 @@ Action: Create HubSpot contact
     }
   }
 }
-```
+\`\`\`
 
 ### 3. HubSpot CRM
 
-```javascript
+\`\`\`javascript
 // Integração com HubSpot
 const hubspot = require('@hubspot/api-client');
 
@@ -423,11 +423,11 @@ async function createHubSpotContact(formData) {
     console.error('Error creating HubSpot contact:', error);
   }
 }
-```
+\`\`\`
 
 ### 4. Mailchimp
 
-```javascript
+\`\`\`javascript
 // Integração com Mailchimp
 const mailchimp = require('@mailchimp/mailchimp_marketing');
 
@@ -464,11 +464,11 @@ async function addToMailchimpList(fields) {
     console.error('Mailchimp error:', error);
   }
 }
-```
+\`\`\`
 
 ### 5. Slack
 
-```javascript
+\`\`\`javascript
 // Integração com Slack
 const { WebClient } = require('@slack/web-api');
 
@@ -534,7 +534,7 @@ async function sendSlackNotification(channel, message) {
     console.error('Slack notification error:', error);
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -545,11 +545,11 @@ O HIAS FLOW também pode receber webhooks de sistemas externos para processar ev
 ### Configuração
 
 #### 1. Criar Endpoint de Entrada
-```http
+\`\`\`http
 POST /api/webhooks/incoming/config
-```
+\`\`\`
 
-```json
+\`\`\`json
 {
   "name": "Zapier Incoming",
   "endpoint": "zapier-leads",
@@ -561,16 +561,16 @@ POST /api/webhooks/incoming/config
     "payment_received": "payment.completed"
   }
 }
-```
+\`\`\`
 
 #### 2. URL Gerada
-```
+\`\`\`
 https://app.hiasflow.com/api/webhooks/incoming/zapier-leads
-```
+\`\`\`
 
 ### Exemplo de Payload Recebido
 
-```json
+\`\`\`json
 {
   "event": "lead_created",
   "timestamp": "2024-01-20T11:00:00Z",
@@ -586,7 +586,7 @@ https://app.hiasflow.com/api/webhooks/incoming/zapier-leads
     }
   }
 }
-```
+\`\`\`
 
 ### Processamento Automático
 
@@ -603,7 +603,7 @@ O HIAS FLOW processa automaticamente webhooks recebidos:
 
 ### 1. Retry Logic
 
-```json
+\`\`\`json
 {
   "retryConfig": {
     "maxAttempts": 5,
@@ -612,7 +612,7 @@ O HIAS FLOW processa automaticamente webhooks recebidos:
     "maxDelay": 300
   }
 }
-```
+\`\`\`
 
 **Sequência de Retry:**
 - Tentativa 1: Imediato
@@ -623,7 +623,7 @@ O HIAS FLOW processa automaticamente webhooks recebidos:
 
 ### 2. Headers Customizados
 
-```json
+\`\`\`json
 {
   "headers": {
     "Authorization": "Bearer custom-token",
@@ -632,11 +632,11 @@ O HIAS FLOW processa automaticamente webhooks recebidos:
     "Content-Type": "application/json"
   }
 }
-```
+\`\`\`
 
 ### 3. Filtros de Evento
 
-```json
+\`\`\`json
 {
   "filters": {
     "value": {
@@ -650,11 +650,11 @@ O HIAS FLOW processa automaticamente webhooks recebidos:
     }
   }
 }
-```
+\`\`\`
 
 ### 4. Transformação de Dados
 
-```javascript
+\`\`\`javascript
 // Middleware para transformar dados antes do envio
 const transformWebhookData = (event, data) => {
   switch (event) {
@@ -683,7 +683,7 @@ const transformWebhookData = (event, data) => {
       return data;
   }
 };
-```
+\`\`\`
 
 ---
 
@@ -692,12 +692,12 @@ const transformWebhookData = (event, data) => {
 ### 1. Logs de Webhook
 
 #### Consultar Logs
-```http
+\`\`\`http
 GET /api/webhooks/logs?webhookId=wh_123&limit=100&status=error
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "logs": [
     {
@@ -727,16 +727,16 @@ GET /api/webhooks/logs?webhookId=wh_123&limit=100&status=error
     "hasMore": true
   }
 }
-```
+\`\`\`
 
 ### 2. Métricas de Performance
 
-```http
+\`\`\`http
 GET /api/webhooks/stats?webhookId=wh_123&period=7d
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "stats": {
     "period": "7d",
@@ -757,13 +757,13 @@ GET /api/webhooks/stats?webhookId=wh_123&period=7d
     ]
   }
 }
-```
+\`\`\`
 
 ### 3. Alertas Automáticos
 
 Configure alertas para monitorar a saúde dos webhooks:
 
-```json
+\`\`\`json
 {
   "alerts": {
     "successRateBelow": 95,
@@ -776,7 +776,7 @@ Configure alertas para monitorar a saúde dos webhooks:
     }
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -784,7 +784,7 @@ Configure alertas para monitorar a saúde dos webhooks:
 
 ### 1. E-commerce Completo
 
-```javascript
+\`\`\`javascript
 // Automação completa para e-commerce
 class EcommerceAutomation {
   constructor() {
@@ -828,11 +828,11 @@ class EcommerceAutomation {
     console.log(`Adding ${customerId} to VIP list`);
   }
 }
-```
+\`\`\`
 
 ### 2. SaaS Onboarding
 
-```javascript
+\`\`\`javascript
 // Automação de onboarding para SaaS
 class SaaSOnboardingAutomation {
   constructor() {
@@ -874,11 +874,11 @@ class SaaSOnboardingAutomation {
     }
   }
 }
-```
+\`\`\`
 
 ### 3. Lead Scoring Dinâmico
 
-```javascript
+\`\`\`javascript
 // Sistema de lead scoring em tempo real
 class DynamicLeadScoring {
   constructor() {
@@ -928,7 +928,7 @@ class DynamicLeadScoring {
     });
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -936,7 +936,7 @@ class DynamicLeadScoring {
 
 ### 1. Validação de IP
 
-```javascript
+\`\`\`javascript
 // Whitelist de IPs permitidos
 const allowedIPs = [
   '52.89.214.238',  // HIAS FLOW
@@ -956,11 +956,11 @@ const validateIP = (req, res, next) => {
 };
 
 app.use('/webhook', validateIP);
-```
+\`\`\`
 
 ### 2. Rate Limiting por Webhook
 
-```javascript
+\`\`\`javascript
 const rateLimit = require('express-rate-limit');
 
 const webhookLimiter = rateLimit({
@@ -976,11 +976,11 @@ const webhookLimiter = rateLimit({
 });
 
 app.use('/webhook', webhookLimiter);
-```
+\`\`\`
 
 ### 3. Criptografia de Payload
 
-```javascript
+\`\`\`javascript
 const crypto = require('crypto');
 
 class WebhookEncryption {
@@ -1020,7 +1020,7 @@ class WebhookEncryption {
     return JSON.parse(decrypted);
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -1037,7 +1037,7 @@ class WebhookEncryption {
 - Firewall bloqueando requisições
 
 **Soluções:**
-```bash
+\`\`\`bash
 # Testar conectividade
 curl -X POST https://seu-endpoint.com/webhook \
   -H "Content-Type: application/json" \
@@ -1046,12 +1046,12 @@ curl -X POST https://seu-endpoint.com/webhook \
 # Verificar logs
 curl -X GET "https://app.hiasflow.com/api/webhooks/logs?webhookId=wh_123" \
   -H "Authorization: Bearer sk_live_..."
-```
+\`\`\`
 
 #### 2. Assinatura inválida
 
 **Verificação:**
-```javascript
+\`\`\`javascript
 // Debug da assinatura
 const debugSignature = (payload, receivedSignature, secret) => {
   const calculatedSignature = crypto
@@ -1063,12 +1063,12 @@ const debugSignature = (payload, receivedSignature, secret) => {
   console.log('Calculated:', `sha256=${calculatedSignature}`);
   console.log('Match:', receivedSignature === `sha256=${calculatedSignature}`);
 };
-```
+\`\`\`
 
 #### 3. Timeouts frequentes
 
 **Otimizações:**
-```javascript
+\`\`\`javascript
 // Processamento assíncrono
 app.post('/webhook', async (req, res) => {
   // Responder imediatamente
@@ -1098,7 +1098,7 @@ app.post('/webhook', async (req, res) => {
   await webhookQueue.add('process', req.body);
   res.status(200).json({ queued: true });
 });
-```
+\`\`\`
 
 ---
 
@@ -1106,7 +1106,7 @@ app.post('/webhook', async (req, res) => {
 
 ### 1. Webhook Tester
 
-```html
+\`\`\`html
 <!DOCTYPE html>
 <html>
 <head>
@@ -1163,11 +1163,11 @@ app.post('/webhook', async (req, res) => {
     </script>
 </body>
 </html>
-```
+\`\`\`
 
 ### 2. CLI Tool
 
-```bash
+\`\`\`bash
 # Instalar CLI
 npm install -g @hiasflow/cli
 
@@ -1188,11 +1188,11 @@ hiasflow webhooks create \
   --name "My Webhook" \
   --url "https://my-app.com/webhook" \
   --events "form.submitted,funnel.conversion"
-```
+\`\`\`
 
 ### 3. Postman Collection
 
-```json
+\`\`\`json
 {
   "info": {
     "name": "HIAS FLOW Webhooks API",
@@ -1242,7 +1242,7 @@ hiasflow webhooks create \
     }
   ]
 }
-```
+\`\`\`
 
 ---
 
@@ -1250,7 +1250,7 @@ hiasflow webhooks create \
 
 ### LGPD/GDPR
 
-```javascript
+\`\`\`javascript
 // Implementação de compliance
 class ComplianceHandler {
   async handleDataRequest(type, userEmail) {
@@ -1287,11 +1287,11 @@ class ComplianceHandler {
     return userData;
   }
 }
-```
+\`\`\`
 
 ### Auditoria
 
-```javascript
+\`\`\`javascript
 // Log de auditoria para webhooks
 const auditLog = {
   async logWebhookEvent(webhookId, event, data, result) {
@@ -1319,7 +1319,7 @@ const auditLog = {
     });
   }
 };
-```
+\`\`\`
 
 ---
 
@@ -1327,7 +1327,7 @@ const auditLog = {
 
 ### Versionamento de API
 
-```http
+\`\`\`http
 # Versão específica
 GET /api/v1/webhooks/config
 
@@ -1336,11 +1336,11 @@ GET /api/webhooks/config
 
 # Header de versão
 X-API-Version: 2024-01-20
-```
+\`\`\`
 
 ### Migração de Webhooks
 
-```javascript
+\`\`\`javascript
 // Script de migração
 class WebhookMigration {
   async migrateFromV1ToV2(webhookId) {
@@ -1365,14 +1365,14 @@ class WebhookMigration {
     await this.deprecateV1Webhook(webhookId);
   }
 }
-```
+\`\`\`
 
 ---
 
 ## Exemplos de Payload Completos
 
 ### Formulário de Contato Completo
-```json
+\`\`\`json
 {
   "id": "wh_1642680000123",
   "event": "form.submitted",
@@ -1425,7 +1425,7 @@ class WebhookMigration {
   "source": "hiasflow",
   "version": "1.0"
 }
-```
+\`\`\`
 
 ---
 

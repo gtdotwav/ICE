@@ -10,7 +10,7 @@ Este playbook fornece estratégias, implementações e melhores práticas para a
 
 ### Visão Geral do Sistema
 
-```mermaid
+\`\`\`mermaid
 graph TD
     A[IceFunnel Events] --> B[Webhook Router]
     B --> C[Event Processor]
@@ -26,11 +26,11 @@ graph TD
     F --> K[Email Marketing]
     F --> L[Slack/Teams]
     F --> M[Customer Support]
-```
+\`\`\`
 
 ### Stack Tecnológico Recomendado
 
-```yaml
+\`\`\`yaml
 # automation-stack.yml
 infrastructure:
   webhook_processor: "Node.js + Express"
@@ -50,7 +50,7 @@ automation_tools:
   no_code: "Zapier / Make"
   low_code: "n8n / Pipedream"
   custom: "Node.js + TypeScript"
-```
+\`\`\`
 
 ---
 
@@ -58,7 +58,7 @@ automation_tools:
 
 ### Setup do Ambiente
 
-```bash
+\`\`\`bash
 # 1. Clonar repositório de automações
 git clone https://github.com/empresa/icefunnel-automations.git
 cd icefunnel-automations
@@ -68,9 +68,9 @@ npm install
 
 # 3. Configurar variáveis de ambiente
 cp .env.example .env
-```
+\`\`\`
 
-```bash
+\`\`\`bash
 # .env
 # IceFunnel
 ICEFUNNEL_API_KEY=sk_live_...
@@ -93,11 +93,11 @@ SLACK_WEBHOOK_URL=https://hooks.slack.com/...
 # Infraestrutura
 REDIS_URL=redis://localhost:6379
 DATABASE_URL=postgresql://user:pass@localhost:5432/automations
-```
+\`\`\`
 
 ### Estrutura do Projeto
 
-```
+\`\`\`
 icefunnel-automations/
 ├── src/
 │   ├── webhooks/
@@ -130,7 +130,7 @@ icefunnel-automations/
 ├── tests/
 ├── docs/
 └── scripts/
-```
+\`\`\`
 
 ---
 
@@ -138,7 +138,7 @@ icefunnel-automations/
 
 ### 3.1 Captura e Qualificação Automática
 
-```javascript
+\`\`\`javascript
 // src/automations/lead-generation/lead-qualifier.js
 class LeadQualifier {
   constructor() {
@@ -265,11 +265,11 @@ class LeadQualifier {
     }
   }
 }
-```
+\`\`\`
 
 ### 3.2 Enriquecimento de Dados
 
-```javascript
+\`\`\`javascript
 // src/automations/lead-generation/data-enrichment.js
 class DataEnrichment {
   constructor() {
@@ -368,7 +368,7 @@ class DataEnrichment {
     return results;
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -376,7 +376,7 @@ class DataEnrichment {
 
 ### 4.1 Notificações Inteligentes para Vendas
 
-```javascript
+\`\`\`javascript
 // src/automations/sales/sales-notifications.js
 class SalesNotifications {
   constructor() {
@@ -523,11 +523,11 @@ class SalesNotifications {
     return assignedRep;
   }
 }
-```
+\`\`\`
 
 ### 4.2 Pipeline de Vendas Automatizado
 
-```javascript
+\`\`\`javascript
 // src/automations/sales/sales-pipeline.js
 class SalesPipelineAutomation {
   constructor() {
@@ -639,7 +639,7 @@ class SalesPipelineAutomation {
     });
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -647,7 +647,7 @@ class SalesPipelineAutomation {
 
 ### 5.1 Sequências de Nutrição Inteligentes
 
-```javascript
+\`\`\`javascript
 // src/automations/marketing/nurturing-sequences.js
 class NurturingSequences {
   constructor() {
@@ -784,11 +784,11 @@ class NurturingSequences {
     }
   }
 }
-```
+\`\`\`
 
 ### 5.2 Segmentação Dinâmica
 
-```javascript
+\`\`\`javascript
 // src/automations/marketing/dynamic-segmentation.js
 class DynamicSegmentation {
   constructor() {
@@ -890,7 +890,7 @@ class DynamicSegmentation {
     }
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -898,7 +898,7 @@ class DynamicSegmentation {
 
 ### 6.1 Onboarding Automatizado
 
-```javascript
+\`\`\`javascript
 // src/automations/customer-success/onboarding.js
 class CustomerOnboarding {
   constructor() {
@@ -1021,11 +1021,11 @@ class CustomerOnboarding {
     };
   }
 }
-```
+\`\`\`
 
 ### 6.2 Retenção e Upsell
 
-```javascript
+\`\`\`javascript
 // src/automations/customer-success/retention-upsell.js
 class RetentionUpsellAutomation {
   constructor() {
@@ -1196,7 +1196,7 @@ class RetentionUpsellAutomation {
     });
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -1204,7 +1204,7 @@ class RetentionUpsellAutomation {
 
 ### 7.1 Triagem Automática de Tickets
 
-```javascript
+\`\`\`javascript
 // src/automations/support/ticket-automation.js
 class SupportTicketAutomation {
   constructor() {
@@ -1311,11 +1311,11 @@ class SupportTicketAutomation {
     }
   }
 }
-```
+\`\`\`
 
 ### 7.2 Feedback e Satisfação
 
-```javascript
+\`\`\`javascript
 // src/automations/support/feedback-automation.js
 class FeedbackAutomation {
   constructor() {
@@ -1401,7 +1401,7 @@ class FeedbackAutomation {
     }
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -1409,7 +1409,7 @@ class FeedbackAutomation {
 
 ### 8.1 Relatórios Automáticos
 
-```javascript
+\`\`\`javascript
 // src/automations/analytics/automated-reporting.js
 class AutomatedReporting {
   constructor() {
@@ -1533,11 +1533,11 @@ class AutomatedReporting {
     };
   }
 }
-```
+\`\`\`
 
 ### 8.2 Alertas Inteligentes
 
-```javascript
+\`\`\`javascript
 // src/automations/analytics/intelligent-alerts.js
 class IntelligentAlerts {
   constructor() {
@@ -1631,7 +1631,7 @@ class IntelligentAlerts {
     return recommendations[alertName] || [];
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -1639,7 +1639,7 @@ class IntelligentAlerts {
 
 ### 9.1 LGPD/GDPR Automático
 
-```javascript
+\`\`\`javascript
 // src/automations/compliance/gdpr-automation.js
 class GDPRAutomation {
   constructor() {
@@ -1733,7 +1733,7 @@ class GDPRAutomation {
     return auditReport;
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -1741,7 +1741,7 @@ class GDPRAutomation {
 
 ### 10.1 Health Monitoring
 
-```javascript
+\`\`\`javascript
 // src/automations/monitoring/health-monitor.js
 class AutomationHealthMonitor {
   constructor() {
@@ -1828,11 +1828,11 @@ class AutomationHealthMonitor {
     };
   }
 }
-```
+\`\`\`
 
 ### 10.2 Performance Optimization
 
-```javascript
+\`\`\`javascript
 // src/automations/optimization/performance-optimizer.js
 class PerformanceOptimizer {
   constructor() {
@@ -1898,7 +1898,7 @@ class PerformanceOptimizer {
     }
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -1906,7 +1906,7 @@ class PerformanceOptimizer {
 
 ### 11.1 Setup Inicial Completo
 
-```bash
+\`\`\`bash
 #!/bin/bash
 # scripts/setup-automation-environment.sh
 
@@ -1938,11 +1938,11 @@ pm2 start ecosystem.config.js
 echo "✅ Ambiente configurado com sucesso!"
 echo "📊 Dashboard: http://localhost:3001/dashboard"
 echo "📝 Logs: pm2 logs"
-```
+\`\`\`
 
 ### 11.2 Configuração de Webhooks
 
-```javascript
+\`\`\`javascript
 // scripts/setup-webhooks.js
 const { IceFunnel } = require('../src/lib/icefunnel-client');
 
@@ -1989,11 +1989,11 @@ async function setupWebhooks() {
 }
 
 setupWebhooks().catch(console.error);
-```
+\`\`\`
 
 ### 11.3 Configuração do PM2
 
-```javascript
+\`\`\`javascript
 // ecosystem.config.js
 module.exports = {
   apps: [
@@ -2038,7 +2038,7 @@ module.exports = {
     }
   ]
 };
-```
+\`\`\`
 
 ---
 
@@ -2046,7 +2046,7 @@ module.exports = {
 
 ### 12.1 KPIs de Automação
 
-```javascript
+\`\`\`javascript
 // src/analytics/automation-kpis.js
 class AutomationKPIs {
   async calculateKPIs(timeframe = '30d') {
@@ -2108,7 +2108,7 @@ class AutomationKPIs {
     };
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -2116,7 +2116,7 @@ class AutomationKPIs {
 
 ### 13.1 Diagnóstico Automático
 
-```javascript
+\`\`\`javascript
 // src/diagnostics/auto-diagnostics.js
 class AutoDiagnostics {
   async runDiagnostics() {
@@ -2192,7 +2192,7 @@ class AutoDiagnostics {
     }
   }
 }
-```
+\`\`\`
 
 ---
 

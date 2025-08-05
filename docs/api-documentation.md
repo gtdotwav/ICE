@@ -5,17 +5,17 @@
 A API do HIAS FLOW é uma solução RESTful completa que permite integração total com nossa plataforma de funis inteligentes. Nossa API foi projetada para ser simples, poderosa e escalável, oferecendo endpoints para todas as funcionalidades principais da plataforma.
 
 ### Base URL
-```
+\`\`\`
 https://app.hiasflow.com/api
-```
+\`\`\`
 
 ### Autenticação
 
 Todas as requisições à API devem incluir uma chave de API válida no header de autorização:
 
-```http
+\`\`\`http
 Authorization: Bearer sk_live_1234567890abcdef
-```
+\`\`\`
 
 #### Tipos de Chaves API
 
@@ -55,12 +55,12 @@ Authorization: Bearer sk_live_1234567890abcdef
 #### Submeter Formulário
 Registra a submissão de um formulário e dispara webhooks automaticamente.
 
-```http
+\`\`\`http
 POST /api/forms/submit
-```
+\`\`\`
 
 **Parâmetros:**
-```json
+\`\`\`json
 {
   "formId": "contact_form",
   "fields": {
@@ -72,20 +72,20 @@ POST /api/forms/submit
   "userId": "user_123",
   "source": "landing_page"
 }
-```
+\`\`\`
 
 **Resposta de Sucesso (201):**
-```json
+\`\`\`json
 {
   "success": true,
   "id": "form_1642680000123",
   "message": "Formulário enviado com sucesso",
   "webhookTriggered": true
 }
-```
+\`\`\`
 
 **Exemplo de Integração:**
-```javascript
+\`\`\`javascript
 // JavaScript/TypeScript
 const response = await fetch('/api/forms/submit', {
   method: 'POST',
@@ -106,9 +106,9 @@ const response = await fetch('/api/forms/submit', {
 
 const result = await response.json();
 console.log('Form submitted:', result);
-```
+\`\`\`
 
-```python
+\`\`\`python
 # Python
 import requests
 
@@ -131,7 +131,7 @@ response = requests.post(
 
 result = response.json()
 print(f"Form submitted: {result}")
-```
+\`\`\`
 
 ---
 
@@ -140,12 +140,12 @@ print(f"Form submitted: {result}")
 #### Rastrear Conversão
 Registra uma conversão no funil e calcula métricas automaticamente.
 
-```http
+\`\`\`http
 POST /api/funnels/conversion
-```
+\`\`\`
 
 **Parâmetros:**
-```json
+\`\`\`json
 {
   "funnelId": "main_sales_funnel",
   "stepId": "checkout_completed",
@@ -154,10 +154,10 @@ POST /api/funnels/conversion
   "userId": "user_123",
   "previousSteps": ["landing", "video", "form"]
 }
-```
+\`\`\`
 
 **Resposta de Sucesso (201):**
-```json
+\`\`\`json
 {
   "success": true,
   "conversionId": "conv_1642680000456",
@@ -168,10 +168,10 @@ POST /api/funnels/conversion
     "averageValue": 285.50
   }
 }
-```
+\`\`\`
 
 **Exemplo de Integração:**
-```javascript
+\`\`\`javascript
 // Rastrear conversão em checkout
 const trackConversion = async (orderId, amount) => {
   try {
@@ -200,7 +200,7 @@ const trackConversion = async (orderId, amount) => {
     console.error('Error tracking conversion:', error);
   }
 };
-```
+\`\`\`
 
 ---
 
@@ -209,12 +209,12 @@ const trackConversion = async (orderId, amount) => {
 #### Qualificar Lead
 Qualifica um lead com base em critérios definidos e dispara automações.
 
-```http
+\`\`\`http
 POST /api/leads/qualify
-```
+\`\`\`
 
 **Parâmetros:**
-```json
+\`\`\`json
 {
   "email": "lead@exemplo.com",
   "name": "Lead Qualificado",
@@ -224,10 +224,10 @@ POST /api/leads/qualify
   "tags": ["hot_lead", "enterprise", "q1_2024"],
   "userId": "user_123"
 }
-```
+\`\`\`
 
 **Resposta de Sucesso (201):**
-```json
+\`\`\`json
 {
   "success": true,
   "leadId": "lead_1642680000789",
@@ -236,7 +236,7 @@ POST /api/leads/qualify
   "message": "Lead qualificado com sucesso",
   "automationsTriggered": ["welcome_sequence", "sales_notification"]
 }
-```
+\`\`\`
 
 **Sistema de Pontuação:**
 | Score | Qualificação | Ações Automáticas |
@@ -253,12 +253,12 @@ POST /api/leads/qualify
 #### Registrar Pagamento
 Registra um pagamento completado e atualiza métricas de receita.
 
-```http
+\`\`\`http
 POST /api/payments/complete
-```
+\`\`\`
 
 **Parâmetros:**
-```json
+\`\`\`json
 {
   "amount": 297.00,
   "currency": "BRL",
@@ -267,10 +267,10 @@ POST /api/payments/complete
   "paymentMethod": "credit_card",
   "userId": "user_123"
 }
-```
+\`\`\`
 
 **Resposta de Sucesso (201):**
-```json
+\`\`\`json
 {
   "success": true,
   "paymentId": "pay_1642680000012",
@@ -281,7 +281,7 @@ POST /api/payments/complete
     "timestamp": "2024-01-20T10:30:00Z"
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -290,29 +290,29 @@ POST /api/payments/complete
 #### Registrar Usuário
 Cria um novo usuário no sistema e inicia sequências de onboarding.
 
-```http
+\`\`\`http
 POST /api/users/register
-```
+\`\`\`
 
 **Parâmetros:**
-```json
+\`\`\`json
 {
   "email": "novo@usuario.com",
   "name": "Novo Usuário",
   "source": "organic",
   "plan": "free"
 }
-```
+\`\`\`
 
 **Resposta de Sucesso (201):**
-```json
+\`\`\`json
 {
   "success": true,
   "userId": "user_1642680000345",
   "message": "Usuário registrado com sucesso",
   "onboardingStarted": true
 }
-```
+\`\`\`
 
 ---
 
@@ -320,11 +320,11 @@ POST /api/users/register
 
 ### JavaScript/TypeScript SDK
 
-```bash
+\`\`\`bash
 npm install @icefunnel/sdk
-```
+\`\`\`
 
-```javascript
+\`\`\`javascript
 import { IceFunnel } from '@icefunnel/sdk';
 
 const icefunnel = new IceFunnel({
@@ -349,15 +349,15 @@ await icefunnel.leads.qualify({
   email: 'lead@example.com',
   score: 85
 });
-```
+\`\`\`
 
 ### Python SDK
 
-```bash
+\`\`\`bash
 pip install icefunnel-python
-```
+\`\`\`
 
-```python
+\`\`\`python
 from icefunnel import IceFunnel
 
 client = IceFunnel(api_key='sk_live_...')
@@ -382,15 +382,15 @@ lead = client.leads.qualify(
     score=85,
     tags=['enterprise', 'hot']
 )
-```
+\`\`\`
 
 ### PHP SDK
 
-```bash
+\`\`\`bash
 composer require icefunnel/php-sdk
-```
+\`\`\`
 
-```php
+\`\`\`php
 <?php
 use IceFunnel\Client;
 
@@ -412,7 +412,7 @@ $conversion = $client->conversions->track([
     'stepId' => 'purchase',
     'value' => 99.99
 ]);
-```
+\`\`\`
 
 ---
 
@@ -420,7 +420,7 @@ $conversion = $client->conversions->track([
 
 ### Estrutura de Erro Padrão
 
-```json
+\`\`\`json
 {
   "error": {
     "type": "validation_error",
@@ -434,7 +434,7 @@ $conversion = $client->conversions->track([
     "requestId": "req_1642680000123"
   }
 }
-```
+\`\`\`
 
 ### Tipos de Erro Comuns
 
@@ -448,7 +448,7 @@ $conversion = $client->conversions->track([
 
 ### Implementação de Retry
 
-```javascript
+\`\`\`javascript
 const apiCall = async (endpoint, data, retries = 3) => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -479,7 +479,7 @@ const apiCall = async (endpoint, data, retries = 3) => {
     }
   }
 };
-```
+\`\`\`
 
 ---
 
@@ -488,12 +488,12 @@ const apiCall = async (endpoint, data, retries = 3) => {
 ### Métricas Disponíveis
 
 #### Endpoint de Métricas
-```http
+\`\`\`http
 GET /api/analytics/metrics?period=30d&userId=user_123
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "period": "30d",
   "metrics": {
@@ -509,17 +509,17 @@ GET /api/analytics/metrics?period=30d&userId=user_123
     ]
   }
 }
-```
+\`\`\`
 
 ### Logs de API
 
 #### Consultar Logs
-```http
+\`\`\`http
 GET /api/logs?limit=100&offset=0&userId=user_123
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "logs": [
     {
@@ -540,7 +540,7 @@ GET /api/logs?limit=100&offset=0&userId=user_123
     "hasMore": true
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -548,7 +548,7 @@ GET /api/logs?limit=100&offset=0&userId=user_123
 
 ### Next.js
 
-```javascript
+\`\`\`javascript
 // pages/api/icefunnel-webhook.js
 import { IceFunnel } from '@icefunnel/sdk';
 
@@ -571,11 +571,11 @@ export default async function handler(req, res) {
     }
   }
 }
-```
+\`\`\`
 
 ### React Hook
 
-```javascript
+\`\`\`javascript
 // hooks/useIceFunnel.js
 import { useState } from 'react';
 import { IceFunnel } from '@icefunnel/sdk';
@@ -603,11 +603,11 @@ export function useIceFunnel() {
 
   return { submitForm, trackConversion, loading };
 }
-```
+\`\`\`
 
 ### WordPress Plugin
 
-```php
+\`\`\`php
 <?php
 // wp-content/plugins/icefunnel/icefunnel.php
 
@@ -639,7 +639,7 @@ class IceFunnelPlugin {
 
 new IceFunnelPlugin();
 ?>
-```
+\`\`\`
 
 ---
 
@@ -647,7 +647,7 @@ new IceFunnelPlugin();
 
 ### 1. E-commerce Integration
 
-```javascript
+\`\`\`javascript
 // Integração completa com e-commerce
 class EcommerceIntegration {
   constructor(apiKey) {
@@ -684,11 +684,11 @@ class EcommerceIntegration {
     }
   }
 }
-```
+\`\`\`
 
 ### 2. SaaS Onboarding
 
-```javascript
+\`\`\`javascript
 // Automação de onboarding para SaaS
 class SaaSOnboarding {
   constructor(apiKey) {
@@ -727,11 +727,11 @@ class SaaSOnboarding {
     return stepScores[step] || 0;
   }
 }
-```
+\`\`\`
 
 ### 3. Lead Scoring Avançado
 
-```javascript
+\`\`\`javascript
 // Sistema de lead scoring inteligente
 class AdvancedLeadScoring {
   constructor(apiKey) {
@@ -777,7 +777,7 @@ class AdvancedLeadScoring {
     return { score, factors };
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -785,7 +785,7 @@ class AdvancedLeadScoring {
 
 ### Validação de Assinatura
 
-```javascript
+\`\`\`javascript
 const crypto = require('crypto');
 
 function validateWebhookSignature(payload, signature, secret) {
@@ -809,11 +809,11 @@ app.post('/webhook', (req, res) => {
   // Processar webhook...
   res.json({ received: true });
 });
-```
+\`\`\`
 
 ### Criptografia de Dados Sensíveis
 
-```javascript
+\`\`\`javascript
 const crypto = require('crypto');
 
 class DataEncryption {
@@ -853,7 +853,7 @@ class DataEncryption {
     return decrypted;
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -861,7 +861,7 @@ class DataEncryption {
 
 ### Batch Processing
 
-```javascript
+\`\`\`javascript
 // Processar múltiplas operações em lote
 const batchOperations = async (operations) => {
   const batches = [];
@@ -883,11 +883,11 @@ const batchOperations = async (operations) => {
 
   return results;
 };
-```
+\`\`\`
 
 ### Caching Inteligente
 
-```javascript
+\`\`\`javascript
 class APICache {
   constructor(ttl = 300000) { // 5 minutos
     this.cache = new Map();
@@ -932,7 +932,7 @@ const getMetrics = async (userId) => {
     return response.json();
   });
 };
-```
+\`\`\`
 
 ---
 
@@ -940,7 +940,7 @@ const getMetrics = async (userId) => {
 
 ### Ambiente de Teste
 
-```javascript
+\`\`\`javascript
 // Configuração para testes
 const testConfig = {
   apiKey: 'sk_test_1234567890abcdef',
@@ -964,11 +964,11 @@ const testData = {
     }
   }
 };
-```
+\`\`\`
 
 ### Testes Unitários
 
-```javascript
+\`\`\`javascript
 // Jest tests
 describe('IceFunnel API', () => {
   test('should submit form successfully', async () => {
@@ -995,7 +995,7 @@ describe('IceFunnel API', () => {
     expect(result.metrics).toBeDefined();
   });
 });
-```
+\`\`\`
 
 ---
 
@@ -1003,12 +1003,12 @@ describe('IceFunnel API', () => {
 
 ### Exportar Dados
 
-```http
+\`\`\`http
 GET /api/export/data?userId=user_123&format=json
-```
+\`\`\`
 
 **Resposta:**
-```json
+\`\`\`json
 {
   "export": {
     "id": "export_123",
@@ -1024,11 +1024,11 @@ GET /api/export/data?userId=user_123&format=json
     }
   }
 }
-```
+\`\`\`
 
 ### Importar Dados
 
-```http
+\`\`\`http
 POST /api/import/data
 Content-Type: multipart/form-data
 
@@ -1037,7 +1037,7 @@ Content-Type: multipart/form-data
   "userId": "user_123",
   "overwrite": false
 }
-```
+\`\`\`
 
 ---
 

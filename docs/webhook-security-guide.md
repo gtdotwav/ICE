@@ -20,7 +20,7 @@ Todos os webhooks do IceFunnel são assinados usando HMAC-SHA256 para garantir a
 
 #### Implementação de Validação
 
-```javascript
+\`\`\`javascript
 // Node.js/Express
 const crypto = require('crypto');
 
@@ -56,9 +56,9 @@ const validateWebhook = (req, res, next) => {
 };
 
 app.use('/webhook/icefunnel', validateWebhook);
-```
+\`\`\`
 
-```python
+\`\`\`python
 # Python/Flask
 import hmac
 import hashlib
@@ -85,9 +85,9 @@ def handle_webhook():
     
     # Processar webhook...
     return {'received': True}
-```
+\`\`\`
 
-```php
+\`\`\`php
 // PHP
 function validateWebhookSignature($payload, $signature, $secret) {
     $expectedSignature = 'sha256=' . hash_hmac('sha256', json_encode($payload), $secret);
@@ -105,11 +105,11 @@ if (!validateWebhookSignature($payload, $signature, $secret)) {
 }
 
 // Processar webhook...
-```
+\`\`\`
 
 ### Rotação de Secrets
 
-```javascript
+\`\`\`javascript
 // Rotação automática de secrets
 class SecretRotation {
   constructor() {
@@ -137,7 +137,7 @@ class SecretRotation {
            validateWebhookSignature(payload, signature, newSecret);
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -145,7 +145,7 @@ class SecretRotation {
 
 ### Whitelist de IPs
 
-```javascript
+\`\`\`javascript
 // IP whitelist para webhooks
 const ICEFUNNEL_IPS = [
   '52.89.214.238',
@@ -169,11 +169,11 @@ const validateSourceIP = (req, res, next) => {
 };
 
 app.use('/webhook/icefunnel', validateSourceIP);
-```
+\`\`\`
 
 ### Validação de User-Agent
 
-```javascript
+\`\`\`javascript
 const validateUserAgent = (req, res, next) => {
   const userAgent = req.headers['user-agent'];
   
@@ -184,7 +184,7 @@ const validateUserAgent = (req, res, next) => {
   
   next();
 };
-```
+\`\`\`
 
 ---
 
@@ -192,7 +192,7 @@ const validateUserAgent = (req, res, next) => {
 
 ### Rate Limiting Avançado
 
-```javascript
+\`\`\`javascript
 const rateLimit = require('express-rate-limit');
 const RedisStore = require('rate-limit-redis');
 const Redis = require('ioredis');
@@ -233,11 +233,11 @@ const webhookLimiter = rateLimit({
 });
 
 app.use('/webhook', webhookLimiter);
-```
+\`\`\`
 
 ### Proteção contra DDoS
 
-```javascript
+\`\`\`javascript
 // DDoS protection middleware
 const ddosProtection = (req, res, next) => {
   const now = Date.now();
@@ -269,7 +269,7 @@ const ddosProtection = (req, res, next) => {
       next();
     });
 };
-```
+\`\`\`
 
 ---
 
@@ -277,7 +277,7 @@ const ddosProtection = (req, res, next) => {
 
 ### Criptografia de Payload Sensível
 
-```javascript
+\`\`\`javascript
 const crypto = require('crypto');
 
 class PayloadEncryption {
@@ -345,7 +345,7 @@ app.post('/webhook/icefunnel', (req, res) => {
   // Processar payload...
   res.json({ received: true });
 });
-```
+\`\`\`
 
 ---
 
@@ -353,7 +353,7 @@ app.post('/webhook/icefunnel', (req, res) => {
 
 ### Sistema de Auditoria Completo
 
-```javascript
+\`\`\`javascript
 // audit-system.js
 class WebhookAuditSystem {
   constructor() {
@@ -428,11 +428,11 @@ class WebhookAuditSystem {
     return anomalies;
   }
 }
-```
+\`\`\`
 
 ### Logs Estruturados
 
-```javascript
+\`\`\`javascript
 // structured-logging.js
 const winston = require('winston');
 
@@ -496,7 +496,7 @@ app.post('/webhook/icefunnel', (req, res) => {
     res.status(500).json({ error: 'Processing failed' });
   }
 });
-```
+\`\`\`
 
 ---
 
@@ -504,7 +504,7 @@ app.post('/webhook/icefunnel', (req, res) => {
 
 ### Sanitização de Logs
 
-```javascript
+\`\`\`javascript
 // data-sanitization.js
 class DataSanitizer {
   constructor() {
@@ -567,11 +567,11 @@ webhookLogger.info('Webhook data', {
   webhookId: 'wh_123',
   sanitizedData: sanitizer.sanitizeForLogging(req.body)
 });
-```
+\`\`\`
 
 ### Mascaramento de Dados
 
-```javascript
+\`\`\`javascript
 // data-masking.js
 class DataMasking {
   static maskEmail(email) {
@@ -605,7 +605,7 @@ class DataMasking {
     return '*'.repeat(cleaned.length - 4) + cleaned.slice(-4);
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -613,7 +613,7 @@ class DataMasking {
 
 ### LGPD/GDPR Compliance
 
-```javascript
+\`\`\`javascript
 // gdpr-compliance.js
 class GDPRCompliance {
   constructor() {
@@ -674,11 +674,11 @@ class GDPRCompliance {
     }
   }
 }
-```
+\`\`\`
 
 ### Consentimento e Opt-out
 
-```javascript
+\`\`\`javascript
 // consent-management.js
 class ConsentManagement {
   async recordConsent(email, consentType, granted) {
@@ -724,7 +724,7 @@ class ConsentManagement {
     }
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -732,7 +732,7 @@ class ConsentManagement {
 
 ### Detecção de Anomalias
 
-```javascript
+\`\`\`javascript
 // security-monitoring.js
 class SecurityMonitoring {
   constructor() {
@@ -802,11 +802,11 @@ class SecurityMonitoring {
     }
   }
 }
-```
+\`\`\`
 
 ### Alertas de Segurança
 
-```javascript
+\`\`\`javascript
 // security-alerts.js
 class SecurityAlertSystem {
   constructor() {
@@ -875,7 +875,7 @@ class SecurityAlertSystem {
     return actions[anomaly.type] || ['Investigar anomalia'];
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -883,7 +883,7 @@ class SecurityAlertSystem {
 
 ### Backup de Configurações
 
-```javascript
+\`\`\`javascript
 // backup-system.js
 class WebhookBackupSystem {
   async createBackup(userId) {
@@ -946,7 +946,7 @@ class WebhookBackupSystem {
     });
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -954,7 +954,7 @@ class WebhookBackupSystem {
 
 ### Testes de Penetração
 
-```javascript
+\`\`\`javascript
 // security-testing.js
 class WebhookSecurityTesting {
   async runSecurityTests(webhookUrl, secret) {
@@ -1094,7 +1094,7 @@ class WebhookSecurityTesting {
     };
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -1102,7 +1102,7 @@ class WebhookSecurityTesting {
 
 ### Regras de Firewall
 
-```bash
+\`\`\`bash
 #!/bin/bash
 # firewall-rules.sh
 
@@ -1144,11 +1144,11 @@ iptables -A INPUT -j DROP
 
 # Salvar regras
 iptables-save > /etc/iptables/rules.v4
-```
+\`\`\`
 
 ### Configuração Nginx
 
-```nginx
+\`\`\`nginx
 # nginx-webhook-security.conf
 
 # Rate limiting
@@ -1215,7 +1215,7 @@ server {
     access_log /var/log/nginx/webhook_access.log combined;
     error_log /var/log/nginx/webhook_error.log warn;
 }
-```
+\`\`\`
 
 ---
 
@@ -1285,7 +1285,7 @@ server {
 
 ### Plano de Resposta
 
-```javascript
+\`\`\`javascript
 // incident-response.js
 class IncidentResponse {
   async handleSecurityIncident(incident) {
@@ -1348,11 +1348,11 @@ class IncidentResponse {
     return investigation;
   }
 }
-```
+\`\`\`
 
 ### Comunicação de Incidentes
 
-```javascript
+\`\`\`javascript
 // incident-communication.js
 class IncidentCommunication {
   async notifyStakeholders(incident, phase) {
@@ -1388,7 +1388,7 @@ class IncidentCommunication {
     };
   }
 }
-```
+\`\`\`
 
 ---
 

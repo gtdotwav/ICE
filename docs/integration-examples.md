@@ -7,22 +7,22 @@
 #### Configuração Inicial
 
 1. **No HIAS FLOW:**
-   ```
+   \`\`\`
    Dashboard → Webhooks → Novo Webhook
    Nome: "Zapier Automation"
    URL: [URL fornecida pelo Zapier]
    Eventos: form.submitted, funnel.conversion, lead.qualified
-   ```
+   \`\`\`
 
 2. **No Zapier:**
-   ```
+   \`\`\`
    Trigger: Webhooks by Zapier
    Event: Catch Hook
-   ```
+   \`\`\`
 
 #### Exemplo: Lead para Google Sheets + Slack
 
-```javascript
+\`\`\`javascript
 // Zap Configuration
 {
   "trigger": {
@@ -57,7 +57,7 @@
     }
   ]
 }
-```
+\`\`\`
 
 ---
 
@@ -65,7 +65,7 @@
 
 #### Cenário: E-commerce Completo
 
-```json
+\`\`\`json
 {
   "scenario": {
     "name": "E-commerce Automation",
@@ -115,7 +115,7 @@
     ]
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -123,7 +123,7 @@
 
 #### Setup Completo
 
-```javascript
+\`\`\`javascript
 // hubspot-integration.js
 const hubspot = require('@hubspot/api-client');
 
@@ -269,13 +269,13 @@ app.post('/webhook/icefunnel', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-```
+\`\`\`
 
 ---
 
 ### 4. Salesforce - CRM Enterprise
 
-```javascript
+\`\`\`javascript
 // salesforce-integration.js
 const jsforce = require('jsforce');
 
@@ -370,13 +370,13 @@ class SalesforceIntegration {
     return convertResult;
   }
 }
-```
+\`\`\`
 
 ---
 
 ### 5. Pipedrive - CRM Simples
 
-```javascript
+\`\`\`javascript
 // pipedrive-integration.js
 const axios = require('axios');
 
@@ -478,13 +478,13 @@ class PipedriveIntegration {
     }
   }
 }
-```
+\`\`\`
 
 ---
 
 ### 6. ActiveCampaign - Email Marketing
 
-```javascript
+\`\`\`javascript
 // activecampaign-integration.js
 const axios = require('axios');
 
@@ -619,13 +619,13 @@ class ActiveCampaignIntegration {
     }
   }
 }
-```
+\`\`\`
 
 ---
 
 ### 7. Discord - Notificações da Equipe
 
-```javascript
+\`\`\`javascript
 // discord-integration.js
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 
@@ -714,13 +714,13 @@ class DiscordIntegration {
     }
   }
 }
-```
+\`\`\`
 
 ---
 
 ### 8. Google Sheets - Relatórios Automáticos
 
-```javascript
+\`\`\`javascript
 // google-sheets-integration.js
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
@@ -817,13 +817,13 @@ class GoogleSheetsIntegration {
     });
   }
 }
-```
+\`\`\`
 
 ---
 
 ### 9. Telegram - Notificações Móveis
 
-```javascript
+\`\`\`javascript
 // telegram-integration.js
 const TelegramBot = require('node-telegram-bot-api');
 
@@ -913,13 +913,13 @@ _${new Date(paymentData.completedAt).toLocaleString('pt-BR')}_
     }
   }
 }
-```
+\`\`\`
 
 ---
 
 ### 10. Airtable - Base de Dados Flexível
 
-```javascript
+\`\`\`javascript
 // airtable-integration.js
 const Airtable = require('airtable');
 
@@ -1012,7 +1012,7 @@ class AirtableIntegration {
     }
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -1020,7 +1020,7 @@ class AirtableIntegration {
 
 ### 1. Nutrição de Leads
 
-```javascript
+\`\`\`javascript
 // lead-nurturing-automation.js
 class LeadNurturingAutomation {
   constructor() {
@@ -1070,11 +1070,11 @@ class LeadNurturingAutomation {
     }
   }
 }
-```
+\`\`\`
 
 ### 2. Recuperação de Carrinho Abandonado
 
-```javascript
+\`\`\`javascript
 // cart-abandonment-recovery.js
 class CartAbandonmentRecovery {
   constructor() {
@@ -1123,7 +1123,7 @@ class CartAbandonmentRecovery {
     await this.trackRecoveryAttempt(cartData.sessionId, step);
   }
 }
-```
+\`\`\`
 
 ---
 
@@ -1131,7 +1131,7 @@ class CartAbandonmentRecovery {
 
 ### Dashboard de Webhooks
 
-```javascript
+\`\`\`javascript
 // webhook-dashboard.js
 class WebhookDashboard {
   async getWebhookMetrics(timeframe = '24h') {
@@ -1185,11 +1185,11 @@ class WebhookDashboard {
     return report;
   }
 }
-```
+\`\`\`
 
 ### Sistema de Alertas
 
-```javascript
+\`\`\`javascript
 // alert-system.js
 class WebhookAlertSystem {
   constructor() {
@@ -1262,7 +1262,7 @@ class WebhookAlertSystem {
     return actions[alertType] || [];
   }
 }
-```
+\`\`\`
 
 ---
 

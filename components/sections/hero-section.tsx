@@ -146,4 +146,3 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
     </section>
   )
 }
-
