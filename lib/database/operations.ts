@@ -3,7 +3,7 @@
  * Optimized queries with proper error handling
  */
 
-import { databaseManager } from "./connection"
+import { dbManager } from "./connection"
 import type { SupabaseClient } from "@supabase/supabase-js"
 
 export interface QueryOptions {
@@ -16,10 +16,15 @@ export interface QueryOptions {
 
 export class DatabaseOperations {
   private async ensureConnection() {
-    if (!databaseManager.isReady()) {
-      await databaseManager.initialize()
+    if (!dbManager.isReady()) {
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+      if (url && anonKey) {
+        await dbManager.initialize({ url, anonKey })
+      }
     }
-    return databaseManager.getClient()
+    return dbManager.getClient()
   }
 
   /**
@@ -31,7 +36,9 @@ export class DatabaseOperations {
       throw new Error("Database not initialized")
     }
 
-    return client.from(table).insert(data).select().single()
+    const { data: result, error } = await client.from(table).insert(data).select().single()
+    if (error) throw error
+    return result
   }
 
   /**
@@ -86,7 +93,9 @@ export class DatabaseOperations {
       throw new Error("Database not initialized")
     }
 
-    return client.from(table).update(data).eq("id", id).select().single()
+    const { data: result, error } = await client.from(table).update(data).eq("id", id).select().single()
+    if (error) throw error
+    return result
   }
 
   /**
@@ -113,7 +122,9 @@ export class DatabaseOperations {
       throw new Error("Database not initialized")
     }
 
-    return client.from(table).insert(data).select()
+    const { data: result, error } = await client.from(table).insert(data).select()
+    if (error) throw error
+    return result
   }
 
   async bulkUpdate<T>(table: string, updates: Array<{ id: string; data: Partial<T> }>): Promise<T[]> {
@@ -218,7 +229,7 @@ export class DatabaseOperations {
    * Real-time subscriptions
    */
   subscribeToChanges<T>(table: string, callback: (payload: any) => void, filters?: Record<string, any>): () => void {
-    const client = databaseManager.getClient()
+    const client = dbManager.getClient()
     if (!client) {
       console.warn("Database not initialized, subscription not created")
       return () => {}
@@ -320,7 +331,7 @@ export class DatabaseOperations {
   /**
    * Specific operations for common entities
    */
-  async getProducts(options?: QueryOptions) {
+  async getProducts(options: QueryOptions = {}) {
     const client = await this.ensureConnection()
     if (!client) return []
 

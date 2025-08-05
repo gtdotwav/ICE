@@ -4,7 +4,7 @@
  */
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js"
-import type { DatabaseConfig } from "./types" // Assuming DatabaseConfig is moved to a separate types file
+import type { DatabaseConfig } from "./types"
 
 export class DatabaseManager {
   private static instance: DatabaseManager

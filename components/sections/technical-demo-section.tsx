@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Code, Cpu, FileText, Target, Bot, Lightbulb } from "lucide-react"
 import { cn } from "@/lib/utils"
 
+type OutputColor = "green" | "cyan" | "purple"
+
 type OutputItem = {
   title: string
   metric: string
   description: string
-  color: keyof typeof outputColors
+  color: OutputColor
 }
 
 const demoData = {
@@ -29,19 +31,19 @@ data: userBehaviorData
         title: "Otimização de Headline",
         metric: "+34% CTR",
         description: 'Alterado de "Aumente vendas" para "Aumente vendas em 347%"',
-        color: "green",
+        color: "green" as OutputColor,
       },
       {
         title: "Otimização de CTA",
         metric: "+28% Cliques",
         description: "Cor do botão alterada para #00F0FF com base em heatmap.",
-        color: "cyan",
+        color: "cyan" as OutputColor,
       },
       {
         title: "Ajuste de Layout",
         metric: "+19% Envios",
         description: "Formulário movido para 40% acima da dobra.",
-        color: "purple",
+        color: "purple" as OutputColor,
       },
     ],
   },
@@ -60,13 +62,13 @@ context: 'SaaS for developers'
         title: "Variação A (Foco em Benefício)",
         metric: "9.8/10 Score",
         description: '"Construa APIs 10x mais rápido com nossa infraestrutura."',
-        color: "cyan",
+        color: "cyan" as OutputColor,
       },
       {
         title: "Variação B (Foco em Dor)",
         metric: "9.5/10 Score",
         description: '"Cansado de gerenciar servidores? Foque no seu código."',
-        color: "purple",
+        color: "purple" as OutputColor,
       },
     ],
   },
@@ -84,13 +86,13 @@ criteria: 'potential_ltv > 1000'
         title: "Segmento 'High-Value'",
         metric: "2,418 Usuários",
         description: "Potencial de LTV > R$1.000. Ação: Enviar oferta premium.",
-        color: "green",
+        color: "green" as OutputColor,
       },
       {
         title: "Segmento 'Churn-Risk'",
         metric: "897 Usuários",
         description: "Probabilidade de churn de 82%. Ação: Iniciar fluxo de retenção.",
-        color: "purple",
+        color: "purple" as OutputColor,
       },
     ],
   },

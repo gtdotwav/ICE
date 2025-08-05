@@ -1,560 +1,578 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
-import { useToast } from "@/hooks/use-toast"
-import { FileText, ImageIcon, Video, Mail, Send, CheckCircle, Zap } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useToast } from "@/components/ui/use-toast"
+import { Loader2, Send, CheckCircle, XCircle, FileText, ImageIcon, Video, Mail } from "lucide-react"
 
-interface WebhookTestButtonProps {
-  className?: string
+type AutomationType = "copywriter" | "images" | "videos" | "email"
+
+interface WebhookTestData {
+  copywriter: {
+    prompt: string
+    copyType: string
+    targetAudience: string
+    tone: string
+    productName: string
+    length: string
+  }
+  images: {
+    description: string
+    style: string
+    dimensions: string
+    format: string
+    quantity: number
+  }
+  videos: {
+    script: string
+    duration: string
+    style: string
+    voiceType: string
+    includeMusic: boolean
+  }
+  email: {
+    description: string
+    emailType: string
+    targetAudience: string
+    tone: string
+    callToAction: string
+  }
 }
 
-export function WebhookTestButton({ className }: WebhookTestButtonProps) {
+const initialData: WebhookTestData = {
+  copywriter: {
+    prompt: "Crie um texto persuasivo para landing page",
+    copyType: "landing-page",
+    targetAudience: "empreendedores",
+    tone: "persuasivo",
+    productName: "HIAS FLOW",
+    length: "médio",
+  },
+  images: {
+    description: "Imagem de hero para landing page de SaaS",
+    style: "moderno",
+    dimensions: "1920x1080",
+    format: "PNG",
+    quantity: 1,
+  },
+  videos: {
+    script: "Vídeo explicativo sobre automação de funis",
+    duration: "60",
+    style: "profissional",
+    voiceType: "feminina",
+    includeMusic: false,
+  },
+  email: {
+    description: "Email de boas-vindas para novos usuários",
+    emailType: "welcome",
+    targetAudience: "novos-usuarios",
+    tone: "amigável",
+    callToAction: "Começar agora",
+  },
+}
+
+export function WebhookTestButton() {
+  const [activeTab, setActiveTab] = useState<AutomationType>("copywriter")
+  const [formData, setFormData] = useState<WebhookTestData>(initialData)
   const [isLoading, setIsLoading] = useState(false)
-  const [activeTab, setActiveTab] = useState("copywriter")
   const [result, setResult] = useState<any>(null)
-  const [showResult, setShowResult] = useState(false)
   const { toast } = useToast()
 
-  // Estado para cada tipo de automação
-  const [copywriterData, setCopywriterData] = useState({
-    prompt: "Crie um headline persuasivo para um curso de marketing digital",
-    copyType: "headline",
-    targetAudience: "empreendedores iniciantes",
-    tone: "persuasive",
-    productName: "Marketing Pro",
-    length: "medium",
-  })
-
-  const [imagesData, setImagesData] = useState({
-    prompt: "Banner promocional para Black Friday com cores vibrantes",
-    style: "professional",
-    dimensions: "1200x630",
-    format: "png",
-    quantity: 1,
-  })
-
-  const [videosData, setVideosData] = useState({
-    prompt: "Vídeo promocional de 30 segundos para lançamento de produto",
-    duration: 30,
-    style: "promotional",
-    voiceType: "professional",
-    includeMusic: true,
-  })
-
-  const [emailData, setEmailData] = useState({
-    prompt: "Subject line para newsletter semanal sobre dicas de vendas",
-    emailType: "newsletter",
-    targetAudience: "profissionais de vendas",
-    tone: "professional",
-    callToAction: "Inscreva-se agora",
-  })
-
-  const handleCopywriterChange = (field: string, value: any) => {
-    setCopywriterData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const handleImagesChange = (field: string, value: any) => {
-    setImagesData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const handleVideosChange = (field: string, value: any) => {
-    setVideosData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const handleEmailChange = (field: string, value: any) => {
-    setEmailData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const getActiveData = () => {
-    switch (activeTab) {
-      case "copywriter":
-        return {
-          type: "copywriter",
-          prompt: copywriterData.prompt,
-          context: {
-            copy_type: copywriterData.copyType,
-            target_audience: copywriterData.targetAudience,
-            tone: copywriterData.tone,
-            product_name: copywriterData.productName,
-            length: copywriterData.length,
-          },
-        }
-      case "images":
-        return {
-          type: "images",
-          prompt: imagesData.prompt,
-          context: {
-            style: imagesData.style,
-            dimensions: imagesData.dimensions,
-            format: imagesData.format,
-            quantity: imagesData.quantity,
-          },
-        }
-      case "videos":
-        return {
-          type: "videos",
-          prompt: videosData.prompt,
-          context: {
-            duration: videosData.duration,
-            style: videosData.style,
-            voice_type: videosData.voiceType,
-            include_music: videosData.includeMusic,
-          },
-        }
-      case "email":
-        return {
-          type: "email",
-          prompt: emailData.prompt,
-          context: {
-            email_type: emailData.emailType,
-            target_audience: emailData.targetAudience,
-            tone: emailData.tone,
-            call_to_action: emailData.callToAction,
-          },
-        }
-      default:
-        return {
-          type: "copywriter",
-          prompt: "",
-          context: {},
-        }
-    }
+  const updateFormData = (type: AutomationType, field: string, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [type]: {
+        ...prev[type],
+        [field]: value,
+      },
+    }))
   }
 
   const simulateWebhook = async () => {
     setIsLoading(true)
-    setShowResult(false)
+    setResult(null)
 
     try {
-      const data = getActiveData()
+      const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-      // Preparar payload do webhook
-      const webhookPayload = {
-        event_type: "ai_automation_requested",
-        request_id: `req_test_${Date.now()}`,
-        user_id: "user_test_123",
+      const webhookData = {
+        event: "ai_automation.requested",
+        requestId,
+        userId: "user_123",
         timestamp: new Date().toISOString(),
-        automation_details: {
-          type: data.type,
-          prompt: data.prompt,
-          context: data.context,
+        automation: {
+          type: activeTab,
+          context: formData[activeTab],
         },
-        callback_config: {
-          return_url: `${window.location.origin}/api/webhooks/ai-automation/callback`,
-          user_interface_url: `${window.location.origin}/dashboard/ia`,
-          notification_email: "test@example.com",
+        callback: {
+          url: process.env.AI_AUTOMATION_WEBHOOK_URL || "https://webhook.site/test",
+          secret: process.env.AI_AUTOMATION_WEBHOOK_SECRET || "test_secret",
         },
       }
 
-      // Enviar para o endpoint de teste
       const response = await fetch("/api/webhooks/test", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(webhookPayload),
+        body: JSON.stringify(webhookData),
       })
 
-      const result = await response.json()
+      const responseData = await response.json()
 
       if (response.ok) {
+        setResult({
+          success: true,
+          data: responseData,
+          webhook: webhookData,
+        })
         toast({
           title: "Webhook enviado com sucesso!",
-          description: "Os dados foram enviados para o endpoint de teste.",
+          description: `Simulação de ${activeTab} executada com sucesso.`,
         })
-        setResult(result)
-        setShowResult(true)
       } else {
-        throw new Error(result.error || "Erro ao enviar webhook")
+        throw new Error(responseData.error || "Erro desconhecido")
       }
     } catch (error) {
-      console.error("Erro ao simular webhook:", error)
+      setResult({
+        success: false,
+        error: error instanceof Error ? error.message : "Erro desconhecido",
+      })
       toast({
-        title: "Erro ao enviar webhook",
-        description: error instanceof Error ? error.message : "Ocorreu um erro ao simular o webhook",
         variant: "destructive",
+        title: "Erro ao enviar webhook",
+        description: error instanceof Error ? error.message : "Erro desconhecido",
       })
     } finally {
       setIsLoading(false)
     }
   }
 
-  return (
-    <div className={className}>
-      <Card className="border-primary/20 shadow-lg">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-xl flex items-center gap-2">
-            <Zap className="h-5 w-5 text-primary" />
-            Teste de Webhook de IA
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-4 mb-6">
-              <TabsTrigger value="copywriter" className="flex items-center gap-1">
-                <FileText className="h-4 w-4" />
-                <span className="hidden sm:inline">Copywriter</span>
-              </TabsTrigger>
-              <TabsTrigger value="images" className="flex items-center gap-1">
-                <ImageIcon className="h-4 w-4" />
-                <span className="hidden sm:inline">Imagens</span>
-              </TabsTrigger>
-              <TabsTrigger value="videos" className="flex items-center gap-1">
-                <Video className="h-4 w-4" />
-                <span className="hidden sm:inline">Vídeos</span>
-              </TabsTrigger>
-              <TabsTrigger value="email" className="flex items-center gap-1">
-                <Mail className="h-4 w-4" />
-                <span className="hidden sm:inline">Email</span>
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="copywriter" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="copywriter-prompt">Prompt</Label>
-                  <Textarea
-                    id="copywriter-prompt"
-                    value={copywriterData.prompt}
-                    onChange={(e) => handleCopywriterChange("prompt", e.target.value)}
-                    className="mt-1"
-                    rows={3}
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="copywriter-type">Tipo de Copy</Label>
-                    <Select
-                      value={copywriterData.copyType}
-                      onValueChange={(value) => handleCopywriterChange("copyType", value)}
-                    >
-                      <SelectTrigger id="copywriter-type" className="mt-1">
-                        <SelectValue placeholder="Selecione o tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="headline">Headline</SelectItem>
-                        <SelectItem value="landing_page">Landing Page</SelectItem>
-                        <SelectItem value="ad_copy">Ad Copy</SelectItem>
-                        <SelectItem value="email_subject">Email Subject</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="copywriter-audience">Público-alvo</Label>
-                    <Input
-                      id="copywriter-audience"
-                      value={copywriterData.targetAudience}
-                      onChange={(e) => handleCopywriterChange("targetAudience", e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="copywriter-tone">Tom</Label>
-                    <Select
-                      value={copywriterData.tone}
-                      onValueChange={(value) => handleCopywriterChange("tone", value)}
-                    >
-                      <SelectTrigger id="copywriter-tone" className="mt-1">
-                        <SelectValue placeholder="Selecione o tom" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="professional">Profissional</SelectItem>
-                        <SelectItem value="casual">Casual</SelectItem>
-                        <SelectItem value="urgent">Urgente</SelectItem>
-                        <SelectItem value="persuasive">Persuasivo</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="copywriter-product">Nome do Produto</Label>
-                    <Input
-                      id="copywriter-product"
-                      value={copywriterData.productName}
-                      onChange={(e) => handleCopywriterChange("productName", e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="copywriter-length">Tamanho</Label>
-                    <Select
-                      value={copywriterData.length}
-                      onValueChange={(value) => handleCopywriterChange("length", value)}
-                    >
-                      <SelectTrigger id="copywriter-length" className="mt-1">
-                        <SelectValue placeholder="Selecione o tamanho" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="short">Curto</SelectItem>
-                        <SelectItem value="medium">Médio</SelectItem>
-                        <SelectItem value="long">Longo</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="images" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="images-prompt">Descrição da Imagem</Label>
-                  <Textarea
-                    id="images-prompt"
-                    value={imagesData.prompt}
-                    onChange={(e) => handleImagesChange("prompt", e.target.value)}
-                    className="mt-1"
-                    rows={3}
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="images-style">Estilo</Label>
-                    <Select value={imagesData.style} onValueChange={(value) => handleImagesChange("style", value)}>
-                      <SelectTrigger id="images-style" className="mt-1">
-                        <SelectValue placeholder="Selecione o estilo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="professional">Profissional</SelectItem>
-                        <SelectItem value="creative">Criativo</SelectItem>
-                        <SelectItem value="minimalist">Minimalista</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="images-dimensions">Dimensões</Label>
-                    <Select
-                      value={imagesData.dimensions}
-                      onValueChange={(value) => handleImagesChange("dimensions", value)}
-                    >
-                      <SelectTrigger id="images-dimensions" className="mt-1">
-                        <SelectValue placeholder="Selecione as dimensões" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1024x1024">1024x1024</SelectItem>
-                        <SelectItem value="1200x630">1200x630</SelectItem>
-                        <SelectItem value="800x600">800x600</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="images-format">Formato</Label>
-                    <Select value={imagesData.format} onValueChange={(value) => handleImagesChange("format", value)}>
-                      <SelectTrigger id="images-format" className="mt-1">
-                        <SelectValue placeholder="Selecione o formato" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="png">PNG</SelectItem>
-                        <SelectItem value="jpg">JPG</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="images-quantity">Quantidade</Label>
-                    <Input
-                      id="images-quantity"
-                      type="number"
-                      min={1}
-                      max={5}
-                      value={imagesData.quantity}
-                      onChange={(e) => handleImagesChange("quantity", Number.parseInt(e.target.value))}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="videos" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="videos-prompt">Script/Descrição do Vídeo</Label>
-                  <Textarea
-                    id="videos-prompt"
-                    value={videosData.prompt}
-                    onChange={(e) => handleVideosChange("prompt", e.target.value)}
-                    className="mt-1"
-                    rows={3}
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="videos-duration">Duração (segundos)</Label>
-                    <Input
-                      id="videos-duration"
-                      type="number"
-                      min={15}
-                      max={300}
-                      value={videosData.duration}
-                      onChange={(e) => handleVideosChange("duration", Number.parseInt(e.target.value))}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="videos-style">Estilo</Label>
-                    <Select value={videosData.style} onValueChange={(value) => handleVideosChange("style", value)}>
-                      <SelectTrigger id="videos-style" className="mt-1">
-                        <SelectValue placeholder="Selecione o estilo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="promotional">Promocional</SelectItem>
-                        <SelectItem value="educational">Educacional</SelectItem>
-                        <SelectItem value="testimonial">Depoimento</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="videos-voice">Tipo de Voz</Label>
-                    <Select
-                      value={videosData.voiceType}
-                      onValueChange={(value) => handleVideosChange("voiceType", value)}
-                    >
-                      <SelectTrigger id="videos-voice" className="mt-1">
-                        <SelectValue placeholder="Selecione o tipo de voz" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="professional">Profissional</SelectItem>
-                        <SelectItem value="casual">Casual</SelectItem>
-                        <SelectItem value="energetic">Energética</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center space-x-2 mt-8">
-                    <input
-                      type="checkbox"
-                      id="videos-music"
-                      checked={videosData.includeMusic}
-                      onChange={(e) => handleVideosChange("includeMusic", e.target.checked)}
-                      className="rounded border-primary/30 text-primary focus:ring-primary/50"
-                    />
-                    <Label htmlFor="videos-music">Incluir Música</Label>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="email" className="space-y-4">
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="email-prompt">Descrição do Email</Label>
-                  <Textarea
-                    id="email-prompt"
-                    value={emailData.prompt}
-                    onChange={(e) => handleEmailChange("prompt", e.target.value)}
-                    className="mt-1"
-                    rows={3}
-                  />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="email-type">Tipo de Email</Label>
-                    <Select
-                      value={emailData.emailType}
-                      onValueChange={(value) => handleEmailChange("emailType", value)}
-                    >
-                      <SelectTrigger id="email-type" className="mt-1">
-                        <SelectValue placeholder="Selecione o tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="marketing">Marketing</SelectItem>
-                        <SelectItem value="transactional">Transacional</SelectItem>
-                        <SelectItem value="newsletter">Newsletter</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="email-audience">Público-alvo</Label>
-                    <Input
-                      id="email-audience"
-                      value={emailData.targetAudience}
-                      onChange={(e) => handleEmailChange("targetAudience", e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email-tone">Tom</Label>
-                    <Select value={emailData.tone} onValueChange={(value) => handleEmailChange("tone", value)}>
-                      <SelectTrigger id="email-tone" className="mt-1">
-                        <SelectValue placeholder="Selecione o tom" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="professional">Profissional</SelectItem>
-                        <SelectItem value="casual">Casual</SelectItem>
-                        <SelectItem value="urgent">Urgente</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="email-cta">Call to Action</Label>
-                    <Input
-                      id="email-cta"
-                      value={emailData.callToAction}
-                      onChange={(e) => handleEmailChange("callToAction", e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-
-          <Separator className="my-6" />
-
-          <div className="flex justify-end">
-            <Button
-              onClick={simulateWebhook}
-              disabled={isLoading}
-              className="bg-primary hover:bg-primary/90 text-white"
-            >
-              {isLoading ? (
-                <>
-                  <motion.div className="mr-2 h-4 w-4 rounded-full border-2 border-t-transparent border-white animate-spin" />
-                  Enviando...
-                </>
-              ) : (
-                <>
-                  <Send className="mr-2 h-4 w-4" />
-                  Simular Webhook
-                </>
-              )}
-            </Button>
-          </div>
-
-          {showResult && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 p-4 border rounded-md bg-muted/30"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <h3 className="font-medium">Webhook Enviado com Sucesso</h3>
-                </div>
-                <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-200">
-                  Status 200
-                </Badge>
-              </div>
-              <Separator className="my-2" />
-              <div className="mt-2">
-                <p className="text-sm text-muted-foreground mb-2">Payload enviado:</p>
-                <pre className="bg-black/80 p-4 rounded-md text-xs text-white overflow-auto max-h-60">
-                  {JSON.stringify(result, null, 2)}
-                </pre>
-              </div>
-            </motion.div>
-          )}
-        </CardContent>
-      </Card>
+  const renderCopywriterForm = () => (
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="prompt">Prompt</Label>
+        <Textarea
+          id="prompt"
+          value={formData.copywriter.prompt}
+          onChange={(e) => updateFormData("copywriter", "prompt", e.target.value)}
+          placeholder="Descreva o que você quer que a IA escreva..."
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="copyType">Tipo de Copy</Label>
+          <Select
+            value={formData.copywriter.copyType}
+            onValueChange={(value) => updateFormData("copywriter", "copyType", value)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="landing-page">Landing Page</SelectItem>
+              <SelectItem value="email">Email</SelectItem>
+              <SelectItem value="ad-copy">Anúncio</SelectItem>
+              <SelectItem value="social-media">Redes Sociais</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="tone">Tom</Label>
+          <Select
+            value={formData.copywriter.tone}
+            onValueChange={(value) => updateFormData("copywriter", "tone", value)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="persuasivo">Persuasivo</SelectItem>
+              <SelectItem value="amigável">Amigável</SelectItem>
+              <SelectItem value="profissional">Profissional</SelectItem>
+              <SelectItem value="casual">Casual</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="targetAudience">Público-alvo</Label>
+          <Input
+            id="targetAudience"
+            value={formData.copywriter.targetAudience}
+            onChange={(e) => updateFormData("copywriter", "targetAudience", e.target.value)}
+            placeholder="Ex: empreendedores"
+          />
+        </div>
+        <div>
+          <Label htmlFor="productName">Nome do Produto</Label>
+          <Input
+            id="productName"
+            value={formData.copywriter.productName}
+            onChange={(e) => updateFormData("copywriter", "productName", e.target.value)}
+            placeholder="Ex: HIAS FLOW"
+          />
+        </div>
+      </div>
     </div>
+  )
+
+  const renderImagesForm = () => (
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="description">Descrição da Imagem</Label>
+        <Textarea
+          id="description"
+          value={formData.images.description}
+          onChange={(e) => updateFormData("images", "description", e.target.value)}
+          placeholder="Descreva a imagem que você quer gerar..."
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="style">Estilo</Label>
+          <Select value={formData.images.style} onValueChange={(value) => updateFormData("images", "style", value)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="moderno">Moderno</SelectItem>
+              <SelectItem value="minimalista">Minimalista</SelectItem>
+              <SelectItem value="corporativo">Corporativo</SelectItem>
+              <SelectItem value="criativo">Criativo</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="dimensions">Dimensões</Label>
+          <Select
+            value={formData.images.dimensions}
+            onValueChange={(value) => updateFormData("images", "dimensions", value)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1920x1080">1920x1080 (16:9)</SelectItem>
+              <SelectItem value="1080x1080">1080x1080 (1:1)</SelectItem>
+              <SelectItem value="1080x1350">1080x1350 (4:5)</SelectItem>
+              <SelectItem value="1200x630">1200x630 (OG)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="format">Formato</Label>
+          <Select value={formData.images.format} onValueChange={(value) => updateFormData("images", "format", value)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="PNG">PNG</SelectItem>
+              <SelectItem value="JPG">JPG</SelectItem>
+              <SelectItem value="WEBP">WEBP</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="quantity">Quantidade</Label>
+          <Input
+            id="quantity"
+            type="number"
+            min="1"
+            max="10"
+            value={formData.images.quantity}
+            onChange={(e) => updateFormData("images", "quantity", Number.parseInt(e.target.value))}
+          />
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderVideosForm = () => (
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="script">Script/Descrição</Label>
+        <Textarea
+          id="script"
+          value={formData.videos.script}
+          onChange={(e) => updateFormData("videos", "script", e.target.value)}
+          placeholder="Descreva o vídeo que você quer criar..."
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="duration">Duração (segundos)</Label>
+          <Input
+            id="duration"
+            type="number"
+            min="15"
+            max="300"
+            value={formData.videos.duration}
+            onChange={(e) => updateFormData("videos", "duration", e.target.value)}
+          />
+        </div>
+        <div>
+          <Label htmlFor="videoStyle">Estilo</Label>
+          <Select value={formData.videos.style} onValueChange={(value) => updateFormData("videos", "style", value)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="profissional">Profissional</SelectItem>
+              <SelectItem value="casual">Casual</SelectItem>
+              <SelectItem value="animado">Animado</SelectItem>
+              <SelectItem value="explicativo">Explicativo</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="voiceType">Tipo de Voz</Label>
+          <Select
+            value={formData.videos.voiceType}
+            onValueChange={(value) => updateFormData("videos", "voiceType", value)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="masculina">Masculina</SelectItem>
+              <SelectItem value="feminina">Feminina</SelectItem>
+              <SelectItem value="neutra">Neutra</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex items-center space-x-2 pt-6">
+          <input
+            type="checkbox"
+            id="includeMusic"
+            checked={formData.videos.includeMusic}
+            onChange={(e) => updateFormData("videos", "includeMusic", e.target.checked)}
+            className="rounded"
+          />
+          <Label htmlFor="includeMusic">Incluir música de fundo</Label>
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderEmailForm = () => (
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="emailDescription">Descrição</Label>
+        <Textarea
+          id="emailDescription"
+          value={formData.email.description}
+          onChange={(e) => updateFormData("email", "description", e.target.value)}
+          placeholder="Descreva o email que você quer criar..."
+        />
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="emailType">Tipo de Email</Label>
+          <Select
+            value={formData.email.emailType}
+            onValueChange={(value) => updateFormData("email", "emailType", value)}
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="welcome">Boas-vindas</SelectItem>
+              <SelectItem value="promotional">Promocional</SelectItem>
+              <SelectItem value="newsletter">Newsletter</SelectItem>
+              <SelectItem value="follow-up">Follow-up</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="emailTone">Tom</Label>
+          <Select value={formData.email.tone} onValueChange={(value) => updateFormData("email", "tone", value)}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="amigável">Amigável</SelectItem>
+              <SelectItem value="profissional">Profissional</SelectItem>
+              <SelectItem value="persuasivo">Persuasivo</SelectItem>
+              <SelectItem value="casual">Casual</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <Label htmlFor="emailTargetAudience">Público-alvo</Label>
+          <Input
+            id="emailTargetAudience"
+            value={formData.email.targetAudience}
+            onChange={(e) => updateFormData("email", "targetAudience", e.target.value)}
+            placeholder="Ex: novos usuários"
+          />
+        </div>
+        <div>
+          <Label htmlFor="callToAction">Call to Action</Label>
+          <Input
+            id="callToAction"
+            value={formData.email.callToAction}
+            onChange={(e) => updateFormData("email", "callToAction", e.target.value)}
+            placeholder="Ex: Começar agora"
+          />
+        </div>
+      </div>
+    </div>
+  )
+
+  const automationIcons = {
+    copywriter: FileText,
+    images: ImageIcon,
+    videos: Video,
+    email: Mail,
+  }
+
+  const automationLabels = {
+    copywriter: "Copywriter IA",
+    images: "Gerador de Imagens",
+    videos: "Criador de Vídeos",
+    email: "Otimizador de Email",
+  }
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Send className="h-5 w-5" />
+          Teste de Webhooks de IA
+        </CardTitle>
+        <CardDescription>
+          Simule o envio de webhooks para cada tipo de automação de IA disponível no sistema.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as AutomationType)}>
+          <TabsList className="grid w-full grid-cols-4">
+            {Object.entries(automationLabels).map(([key, label]) => {
+              const Icon = automationIcons[key as AutomationType]
+              return (
+                <TabsTrigger key={key} value={key} className="flex items-center gap-2">
+                  <Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">{label}</span>
+                </TabsTrigger>
+              )
+            })}
+          </TabsList>
+
+          <TabsContent value="copywriter" className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <FileText className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold">Copywriter IA</h3>
+            </div>
+            {renderCopywriterForm()}
+          </TabsContent>
+
+          <TabsContent value="images" className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <ImageIcon className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold">Gerador de Imagens</h3>
+            </div>
+            {renderImagesForm()}
+          </TabsContent>
+
+          <TabsContent value="videos" className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Video className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold">Criador de Vídeos</h3>
+            </div>
+            {renderVideosForm()}
+          </TabsContent>
+
+          <TabsContent value="email" className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Mail className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold">Otimizador de Email</h3>
+            </div>
+            {renderEmailForm()}
+          </TabsContent>
+        </Tabs>
+
+        <div className="flex justify-between items-center pt-4 border-t">
+          <div className="flex items-center gap-2">
+            <Badge variant="outline">Simulação</Badge>
+            <span className="text-sm text-muted-foreground">Ambiente de teste</span>
+          </div>
+          <Button onClick={simulateWebhook} disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Enviando...
+              </>
+            ) : (
+              <>
+                <Send className="mr-2 h-4 w-4" />
+                Simular Webhook
+              </>
+            )}
+          </Button>
+        </div>
+
+        {result && (
+          <Card className={`mt-4 ${result.success ? "border-green-200" : "border-red-200"}`}>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                {result.success ? (
+                  <>
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                    Webhook Enviado com Sucesso
+                  </>
+                ) : (
+                  <>
+                    <XCircle className="h-5 w-5 text-red-600" />
+                    Erro no Envio do Webhook
+                  </>
+                )}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {result.success ? (
+                  <>
+                    <div>
+                      <Label className="text-sm font-medium">Dados Enviados:</Label>
+                      <pre className="mt-1 p-3 bg-muted rounded-md text-xs overflow-x-auto">
+                        {JSON.stringify(result.webhook, null, 2)}
+                      </pre>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Resposta do Servidor:</Label>
+                      <pre className="mt-1 p-3 bg-muted rounded-md text-xs overflow-x-auto">
+                        {JSON.stringify(result.data, null, 2)}
+                      </pre>
+                    </div>
+                  </>
+                ) : (
+                  <div>
+                    <Label className="text-sm font-medium text-red-600">Erro:</Label>
+                    <p className="mt-1 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
+                      {result.error}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </CardContent>
+    </Card>
   )
 }

@@ -35,12 +35,12 @@ export const ChatContainer = ({ onClose }: ChatContainerProps) => {
   }, [messages, isTyping])
 
   const currentStepConfig = chatFlow[currentStep as keyof typeof chatFlow]
-  const currentOptions = currentStepConfig?.options || []
+  const currentOptions = "options" in currentStepConfig && currentStepConfig.options ? currentStepConfig.options : []
 
   const renderInput = () => {
     if (isInputDisabled) return null
 
-    if (currentStepConfig?.input_type === "email") {
+    if ("input_type" in currentStepConfig && currentStepConfig.input_type === "email") {
       return (
         <ChatInputForm
           inputType="email"

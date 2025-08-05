@@ -222,7 +222,7 @@ export class PerformanceOptimizer {
       domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
       loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
       firstPaint: navigation.responseEnd - navigation.requestStart,
-      timeToInteractive: navigation.domInteractive - navigation.navigationStart,
+      timeToInteractive: navigation.domInteractive - navigation.fetchStart,
     }
   }
 }

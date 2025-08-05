@@ -65,12 +65,12 @@ export const useConversationFlow = (state: ChatState, dispatch: React.Dispatch<C
         break
       }
       case 2: {
-        const painPointText = getOptionText(1, profile.painPoint)
+        const painPointText = getOptionText(1, profile.painPoint || "")
         addBotMessage(`Entendido, seu foco é ${painPointText}. E qual o nível de urgência para resolver isso?`, 1000)
         break
       }
       case 4: {
-        const techLevelText = getOptionText(3, profile.techLevel)
+        const techLevelText = getOptionText(3, profile.techLevel || "")
         addBotMessage(
           `Perfeito. Com base no seu perfil de "${techLevelText}", estou analisando a melhor solução...`,
           500,
@@ -96,14 +96,14 @@ export const useConversationFlow = (state: ChatState, dispatch: React.Dispatch<C
         break
       }
       case 6: {
-        const painPoint = getOptionText(1, profile.painPoint)
-        const urgency = getOptionText(2, profile.urgencyLevel)
+        const painPoint = getOptionText(1, profile.painPoint || "")
+        const urgency = getOptionText(2, profile.urgencyLevel || "")
         const solutionMessage = `Analisei suas respostas. Para o desafio de ${painPoint}, com urgência ${urgency}, o plano **Scale AI** é o ponto de partida ideal para você.`
         addBotMessage(solutionMessage, 1500)
         break
       }
       default: {
-        if (stepConfig.message) {
+        if ("message" in stepConfig && stepConfig.message) {
           addBotMessage(stepConfig.message, 1000)
         }
         break
@@ -149,14 +149,21 @@ export const useConversationFlow = (state: ChatState, dispatch: React.Dispatch<C
     dispatch({ type: "UPDATE_PROFILE", payload: { email: value } })
 
     // Capturar lead via API
-    const leadData = { ...profile, email: value }
+    const leadData = {
+      email: value,
+      name: "Usuário Chat",
+      painPoint: profile.painPoint || "",
+      urgencyLevel: profile.urgencyLevel || "",
+      techLevel: profile.techLevel || "",
+    }
+
     API.qualifyLead({
       email: value,
-      name: leadData.name || 'Usuário Chat',
+      name: leadData.name,
       score: 90, // Score alto para leads do chat
-      criteria: ['chat_interaction', leadData.painPoint, leadData.urgencyLevel],
-      source: 'chatbot',
-      tags: [leadData.painPoint, leadData.urgencyLevel, leadData.techLevel]
+      criteria: ["chat_interaction", leadData.painPoint, leadData.urgencyLevel],
+      source: "chatbot",
+      tags: [leadData.painPoint, leadData.urgencyLevel, leadData.techLevel],
     }).catch(console.error)
 
     const nextStep = currentStep + 1

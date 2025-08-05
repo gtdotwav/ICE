@@ -2,7 +2,7 @@
 
 import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
-import type { JSX } from "react/jsx-runtime" // Import JSX to fix the undeclared variable error
+import type { JSX } from "react/jsx-runtime"
 
 type AnimatedTextProps = {
   text: string
@@ -38,7 +38,12 @@ export function AnimatedText({ text, el: Wrapper = "p", className }: AnimatedTex
         {text.split(" ").map((word, wordIndex, arr) => (
           <span key={wordIndex} className="inline-block">
             {word.split("").map((char, charIndex) => (
-              <motion.span key={charIndex} className="inline-block text-sky-200" variants={defaultAnimations} custom={charCount++}>
+              <motion.span
+                key={charIndex}
+                className="inline-block text-sky-200"
+                variants={defaultAnimations}
+                custom={charCount++}
+              >
                 {char}
               </motion.span>
             ))}

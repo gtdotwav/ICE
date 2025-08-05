@@ -52,10 +52,11 @@ export function ClientInitializer() {
           const observer = new PerformanceObserver((list) => {
             list.getEntries().forEach((entry) => {
               if (entry.entryType === "navigation") {
+                const navEntry = entry as PerformanceNavigationTiming
                 analytics.trackEvent("page_performance", {
-                  loadTime: entry.loadEventEnd - entry.loadEventStart,
-                  domContentLoaded: entry.domContentLoadedEventEnd - entry.domContentLoadedEventStart,
-                  firstPaint: entry.responseEnd - entry.requestStart,
+                  loadTime: navEntry.loadEventEnd - navEntry.loadEventStart,
+                  domContentLoaded: navEntry.domContentLoadedEventEnd - navEntry.domContentLoadedEventStart,
+                  firstPaint: navEntry.responseEnd - navEntry.requestStart,
                 })
               }
             })

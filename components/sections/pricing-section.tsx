@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useState, useMemo } from "react"
-import { motion } from "framer-motion"
+import { useState, useMemo } from "react"
+import { motion, type Variants } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
 import Link from "next/link"
@@ -60,7 +60,7 @@ export function PricingSection() {
     },
   ]
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: (i: number) => ({
       opacity: 1,
@@ -114,7 +114,10 @@ export function PricingSection() {
                 <div className="space-y-6 sm:space-y-8">
                   {/* ROI Controls */}
                   <div>
-                    <label htmlFor="visitors" className="flex justify-between text-foreground mb-2 font-medium text-sm sm:text-base">
+                    <label
+                      htmlFor="visitors"
+                      className="flex justify-between text-foreground mb-2 font-medium text-sm sm:text-base"
+                    >
                       <span>Tráfego Mensal</span>
                       <span className="font-bold text-primary">{new Intl.NumberFormat("pt-BR").format(visitors)}</span>
                     </label>
@@ -130,7 +133,10 @@ export function PricingSection() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="conversion" className="flex justify-between text-foreground mb-2 font-medium text-sm sm:text-base">
+                    <label
+                      htmlFor="conversion"
+                      className="flex justify-between text-foreground mb-2 font-medium text-sm sm:text-base"
+                    >
                       <span>Taxa de Conversão Atual</span>
                       <span className="font-bold text-primary">{conversion.toFixed(1)}%</span>
                     </label>
@@ -146,7 +152,10 @@ export function PricingSection() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="ticket" className="flex justify-between text-foreground mb-2 font-medium text-sm sm:text-base">
+                    <label
+                      htmlFor="ticket"
+                      className="flex justify-between text-foreground mb-2 font-medium text-sm sm:text-base"
+                    >
                       <span>Ticket Médio</span>
                       <span className="font-bold text-primary">{formatCurrency(ticket)}</span>
                     </label>
@@ -229,7 +238,9 @@ export function PricingSection() {
                       >
                         {plan.price !== "Custom" ? `R$${plan.price}` : plan.price}
                       </span>
-                      {plan.price !== "Custom" && <span className="text-muted-foreground text-base sm:text-lg">/mês</span>}
+                      {plan.price !== "Custom" && (
+                        <span className="text-muted-foreground text-base sm:text-lg">/mês</span>
+                      )}
                     </div>
                   </div>
 

@@ -6,14 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogDescription, 
-  DialogHeader, 
-  DialogTitle 
-} from "@/components/ui/dialog"
-import { Cookie, Settings, Shield, BarChart, Target, X } from "lucide-react"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Cookie, Settings, Shield, BarChart, Target } from "lucide-react"
 import { cookieManager, type CookieConsent } from "@/lib/cookie-manager"
 
 export function CookieConsentBanner() {
@@ -23,7 +17,7 @@ export function CookieConsentBanner() {
     necessary: true,
     analytics: false,
     marketing: false,
-    preferences: false
+    preferences: false,
   })
 
   useEffect(() => {
@@ -41,9 +35,9 @@ export function CookieConsentBanner() {
       necessary: true,
       analytics: true,
       marketing: true,
-      preferences: true
+      preferences: true,
     }
-    
+
     cookieManager.setConsent(fullConsent)
     setConsent(fullConsent)
     setShowBanner(false)
@@ -54,9 +48,9 @@ export function CookieConsentBanner() {
       necessary: true,
       analytics: false,
       marketing: false,
-      preferences: false
+      preferences: false,
     }
-    
+
     cookieManager.setConsent(necessaryOnly)
     setConsent(necessaryOnly)
     setShowBanner(false)
@@ -70,37 +64,37 @@ export function CookieConsentBanner() {
 
   const cookieCategories = [
     {
-      key: 'necessary' as keyof CookieConsent,
-      title: 'Cookies Necessários',
-      description: 'Essenciais para o funcionamento básico do site',
+      key: "necessary" as keyof CookieConsent,
+      title: "Cookies Necessários",
+      description: "Essenciais para o funcionamento básico do site",
       icon: Shield,
       required: true,
-      examples: ['Autenticação', 'Segurança', 'Preferências básicas']
+      examples: ["Autenticação", "Segurança", "Preferências básicas"],
     },
     {
-      key: 'analytics' as keyof CookieConsent,
-      title: 'Cookies de Analytics',
-      description: 'Nos ajudam a entender como você usa o site',
+      key: "analytics" as keyof CookieConsent,
+      title: "Cookies de Analytics",
+      description: "Nos ajudam a entender como você usa o site",
       icon: BarChart,
       required: false,
-      examples: ['Google Analytics', 'Métricas de performance', 'Heatmaps']
+      examples: ["Google Analytics", "Métricas de performance", "Heatmaps"],
     },
     {
-      key: 'marketing' as keyof CookieConsent,
-      title: 'Cookies de Marketing',
-      description: 'Usados para personalizar anúncios e campanhas',
+      key: "marketing" as keyof CookieConsent,
+      title: "Cookies de Marketing",
+      description: "Usados para personalizar anúncios e campanhas",
       icon: Target,
       required: false,
-      examples: ['Facebook Pixel', 'Google Ads', 'Remarketing']
+      examples: ["Facebook Pixel", "Google Ads", "Remarketing"],
     },
     {
-      key: 'preferences' as keyof CookieConsent,
-      title: 'Cookies de Preferências',
-      description: 'Salvam suas configurações e preferências',
+      key: "preferences" as keyof CookieConsent,
+      title: "Cookies de Preferências",
+      description: "Salvam suas configurações e preferências",
       icon: Settings,
       required: false,
-      examples: ['Tema', 'Idioma', 'Layout personalizado']
-    }
+      examples: ["Tema", "Idioma", "Layout personalizado"],
+    },
   ]
 
   return (
@@ -122,15 +116,14 @@ export function CookieConsentBanner() {
                     <Cookie className="h-5 w-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-semibold text-foreground mb-1">
-                      Nós usamos cookies
-                    </h3>
+                    <h3 className="font-semibold text-foreground mb-1">Nós usamos cookies</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Utilizamos cookies para melhorar sua experiência, personalizar conteúdo e analisar nosso tráfego. 
+                      Utilizamos cookies para melhorar sua experiência, personalizar conteúdo e analisar nosso tráfego.
                       Ao continuar navegando, você concorda com nossa{" "}
                       <a href="/privacy" className="text-primary hover:underline">
                         Política de Privacidade
-                      </a>.
+                      </a>
+                      .
                     </p>
                   </div>
                 </div>
@@ -153,11 +146,7 @@ export function CookieConsentBanner() {
                   >
                     Apenas Necessários
                   </Button>
-                  <Button
-                    size="sm"
-                    onClick={handleAcceptAll}
-                    className="bg-primary hover:bg-primary/90"
-                  >
+                  <Button size="sm" onClick={handleAcceptAll} className="bg-primary hover:bg-primary/90">
                     Aceitar Todos
                   </Button>
                 </div>
@@ -198,23 +187,19 @@ export function CookieConsentBanner() {
                             </Badge>
                           )}
                         </CardTitle>
-                        <CardDescription className="text-sm">
-                          {category.description}
-                        </CardDescription>
+                        <CardDescription className="text-sm">{category.description}</CardDescription>
                       </div>
                     </div>
                     <Switch
-                      checked={consent[category.key] || false}
-                      onCheckedChange={(checked) => 
-                        setConsent(prev => ({ ...prev, [category.key]: checked }))
-                      }
+                      checked={Boolean(consent[category.key])}
+                      onCheckedChange={(checked) => setConsent((prev) => ({ ...prev, [category.key]: checked }))}
                       disabled={category.required}
                     />
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0">
                   <div className="text-xs text-muted-foreground">
-                    <strong>Exemplos:</strong> {category.examples.join(', ')}
+                    <strong>Exemplos:</strong> {category.examples.join(", ")}
                   </div>
                 </CardContent>
               </Card>
@@ -222,16 +207,10 @@ export function CookieConsentBanner() {
           </div>
 
           <div className="flex justify-between pt-4 border-t border-border">
-            <Button
-              variant="outline"
-              onClick={() => setShowSettings(false)}
-              className="glass-button bg-transparent"
-            >
+            <Button variant="outline" onClick={() => setShowSettings(false)} className="glass-button bg-transparent">
               Cancelar
             </Button>
-            <Button onClick={handleCustomConsent}>
-              Salvar Preferências
-            </Button>
+            <Button onClick={handleCustomConsent}>Salvar Preferências</Button>
           </div>
         </DialogContent>
       </Dialog>

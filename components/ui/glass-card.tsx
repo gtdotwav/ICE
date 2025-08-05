@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, type MotionProps } from "framer-motion"
+import { motion, type MotionProps, type Variants } from "framer-motion"
 import { cn } from "@/lib/utils"
 import type { HTMLAttributes } from "react"
 
@@ -10,7 +10,7 @@ type GlassCardProps = HTMLAttributes<HTMLDivElement> &
   }
 
 export function GlassCard({ className, children, custom, ...props }: GlassCardProps) {
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 50, scale: 0.98 },
     visible: (i = 1) => ({
       opacity: 1,

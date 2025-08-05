@@ -1,7 +1,8 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { User, Shield, Bell, CreditCard, Plug, Users, Settings, Badge } from "lucide-react"
+import { User, Shield, Bell, CreditCard, Plug, Users, Settings } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 
 interface SettingsSidebarProps {
   activeSection: string

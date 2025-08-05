@@ -1,8 +1,8 @@
-import { WebhookConfig, WebhookPayload, WebhookDelivery, RetryConfig } from './types'
-import { WebhookQueue } from './webhook-queue'
-import { WebhookSecurity } from './webhook-security'
-import { WebhookLogger } from './webhook-logger'
-import { nanoid } from 'nanoid'
+import type { WebhookConfig, WebhookPayload, WebhookDelivery, RetryConfig } from "./types"
+import { WebhookQueue } from "./webhook-queue"
+import { WebhookSecurity } from "./webhook-security"
+import { WebhookLogger } from "./webhook-logger"
+import { nanoid } from "nanoid"
 
 export class WebhookService {
   private queue: WebhookQueue
@@ -18,15 +18,11 @@ export class WebhookService {
   /**
    * Envia webhook para todos os endpoints configurados para um evento específico
    */
-  async triggerWebhook(
-    eventType: string,
-    data: Record<string, any>,
-    userId: string
-  ): Promise<void> {
+  async triggerWebhook(eventType: string, data: Record<string, any>, userId: string): Promise<void> {
     try {
       // Busca todas as configurações de webhook ativas para este usuário e evento
       const webhookConfigs = await this.getActiveWebhookConfigs(userId, eventType)
-      
+
       if (webhookConfigs.length === 0) {
         console.log(`Nenhum webhook configurado para evento: ${eventType}`)
         return
@@ -38,33 +34,29 @@ export class WebhookService {
         event: eventType as any,
         timestamp: new Date().toISOString(),
         data,
-        source: 'hiasflow',
-        version: '1.0'
+        source: "hiasflow",
+        version: "1.0",
       }
 
       // Envia para cada webhook configurado
       for (const config of webhookConfigs) {
         await this.queueWebhookDelivery(config, payload)
       }
-
     } catch (error) {
-      console.error('Erro ao disparar webhook:', error)
-      await this.logger.logError('webhook_trigger_failed', { eventType, userId, error })
+      console.error("Erro ao disparar webhook:", error)
+      await this.logger.logError("webhook_trigger_failed", { eventType, userId, error }, 0)
     }
   }
 
   /**
    * Adiciona webhook à fila de entrega
    */
-  private async queueWebhookDelivery(
-    config: WebhookConfig,
-    payload: WebhookPayload
-  ): Promise<void> {
-    const delivery: Omit<WebhookDelivery, 'id' | 'createdAt'> = {
+  private async queueWebhookDelivery(config: WebhookConfig, payload: WebhookPayload): Promise<void> {
+    const delivery: Omit<WebhookDelivery, "id" | "createdAt"> = {
       webhookConfigId: config.id,
       payload,
-      status: 'pending',
-      attempts: 0
+      status: "pending",
+      attempts: 0,
     }
 
     await this.queue.addToQueue(delivery)
@@ -75,50 +67,49 @@ export class WebhookService {
    */
   async processWebhookDelivery(deliveryId: string): Promise<void> {
     const startTime = Date.now()
-    
+
     try {
       const delivery = await this.getWebhookDelivery(deliveryId)
       const config = await this.getWebhookConfig(delivery.webhookConfigId)
-      
+
       if (!config.isActive) {
-        await this.updateDeliveryStatus(deliveryId, 'failed', 'Webhook desativado')
+        await this.updateDeliveryStatus(deliveryId, "failed", "Webhook desativado")
         return
       }
 
       // Assina o payload
       const signature = this.security.signPayload(delivery.payload, config.secret)
-      
+
       // Prepara headers
       const headers = {
-        'Content-Type': 'application/json',
-        'X-Webhook-Signature': signature,
-        'X-Webhook-Event': delivery.payload.event,
-        'X-Webhook-ID': delivery.payload.id,
-        'User-Agent': 'IceFunnel-Webhooks/1.0',
-        ...config.headers
+        "Content-Type": "application/json",
+        "X-Webhook-Signature": signature,
+        "X-Webhook-Event": delivery.payload.event,
+        "X-Webhook-ID": delivery.payload.id,
+        "User-Agent": "IceFunnel-Webhooks/1.0",
+        ...config.headers,
       }
 
       // Envia o webhook
       const response = await fetch(config.url, {
-        method: 'POST',
+        method: "POST",
         headers,
         body: JSON.stringify(delivery.payload),
-        signal: AbortSignal.timeout(30000) // 30s timeout
+        signal: AbortSignal.timeout(30000), // 30s timeout
       })
 
       const responseBody = await response.text()
       const duration = Date.now() - startTime
 
       if (response.ok) {
-        await this.updateDeliveryStatus(deliveryId, 'delivered')
+        await this.updateDeliveryStatus(deliveryId, "delivered")
         await this.logger.logSuccess(config.id, delivery.payload.event, duration, {
           status: response.status,
-          response: responseBody
+          response: responseBody,
         })
       } else {
         throw new Error(`HTTP ${response.status}: ${responseBody}`)
       }
-
     } catch (error) {
       const duration = Date.now() - startTime
       await this.handleWebhookError(deliveryId, error as Error, duration)
@@ -128,31 +119,27 @@ export class WebhookService {
   /**
    * Trata erros e implementa retry logic
    */
-  private async handleWebhookError(
-    deliveryId: string,
-    error: Error,
-    duration: number
-  ): Promise<void> {
+  private async handleWebhookError(deliveryId: string, error: Error, duration: number): Promise<void> {
     const delivery = await this.getWebhookDelivery(deliveryId)
     const config = await this.getWebhookConfig(delivery.webhookConfigId)
-    
+
     delivery.attempts += 1
-    
+
     await this.logger.logError(config.id, delivery.payload.event, duration, {
       error: error.message,
-      attempt: delivery.attempts
+      attempt: delivery.attempts,
     })
 
     if (delivery.attempts >= config.retryConfig.maxAttempts) {
-      await this.updateDeliveryStatus(deliveryId, 'failed', error.message)
+      await this.updateDeliveryStatus(deliveryId, "failed", error.message)
       return
     }
 
     // Calcula próximo retry com backoff exponencial
     const delay = this.calculateRetryDelay(delivery.attempts, config.retryConfig)
     const nextRetryAt = new Date(Date.now() + delay * 1000)
-    
-    await this.updateDeliveryStatus(deliveryId, 'retrying', error.message, nextRetryAt)
+
+    await this.updateDeliveryStatus(deliveryId, "retrying", error.message, nextRetryAt)
     await this.queue.scheduleRetry(deliveryId, delay)
   }
 
@@ -166,13 +153,9 @@ export class WebhookService {
   /**
    * Valida webhook recebido
    */
-  async validateIncomingWebhook(
-    endpoint: string,
-    signature: string,
-    payload: any
-  ): Promise<boolean> {
+  async validateIncomingWebhook(endpoint: string, signature: string, payload: any): Promise<boolean> {
     const config = await this.getIncomingWebhookConfig(endpoint)
-    
+
     if (!config || !config.isActive) {
       return false
     }
@@ -183,22 +166,19 @@ export class WebhookService {
   /**
    * Processa webhook recebido
    */
-  async processIncomingWebhook(
-    endpoint: string,
-    payload: any
-  ): Promise<void> {
+  async processIncomingWebhook(endpoint: string, payload: any): Promise<void> {
     const startTime = Date.now()
-    
+
     try {
       const config = await this.getIncomingWebhookConfig(endpoint)
-      
+
       if (!config) {
-        throw new Error('Configuração de webhook não encontrada')
+        throw new Error("Configuração de webhook não encontrada")
       }
 
       // Mapeia evento externo para evento interno
       const internalEvent = this.mapExternalEvent(payload, config.eventMapping)
-      
+
       if (internalEvent) {
         // Processa o evento no sistema
         await this.processInternalEvent(internalEvent, payload.data, config.userId)
@@ -206,7 +186,6 @@ export class WebhookService {
 
       const duration = Date.now() - startTime
       await this.logger.logIncomingSuccess(config.id, payload.event, duration, payload)
-
     } catch (error) {
       const duration = Date.now() - startTime
       await this.logger.logIncomingError(endpoint, duration, error as Error, payload)
@@ -223,26 +202,25 @@ export class WebhookService {
     // Simulação de busca no banco de dados
     const mockConfigs: WebhookConfig[] = [
       {
-        id: 'wh_001',
-        name: 'Test Webhook',
-        url: 'https://webhook.site/test',
-        events: [{ type: eventType as any, description: 'Test event' }],
-        secret: 'test_secret',
+        id: "wh_001",
+        name: "Test Webhook",
+        url: "https://webhook.site/test",
+        events: [{ type: eventType as any, description: "Test event" }],
+        secret: "test_secret",
         isActive: true,
         retryConfig: {
           maxAttempts: 3,
           backoffMultiplier: 2,
-          initialDelay: 5
+          initialDelay: 5,
         },
         headers: {},
         createdAt: new Date(),
         updatedAt: new Date(),
-        userId
-      }
+        userId,
+      },
     ]
-    return mockConfigs.filter(config => 
-      config.userId === userId && 
-      config.events.some(event => event.type === eventType)
+    return mockConfigs.filter(
+      (config) => config.userId === userId && config.events.some((event) => event.type === eventType),
     )
   }
 
@@ -250,20 +228,20 @@ export class WebhookService {
     // Simulação de busca no banco de dados
     return {
       id,
-      name: 'Test Webhook',
-      url: 'https://webhook.site/test',
-      events: [{ type: 'form.submitted', description: 'Form submitted' }],
-      secret: 'test_secret',
+      name: "Test Webhook",
+      url: "https://webhook.site/test",
+      events: [{ type: "form.submitted", description: "Form submitted" }],
+      secret: "test_secret",
       isActive: true,
       retryConfig: {
         maxAttempts: 3,
         backoffMultiplier: 2,
-        initialDelay: 5
+        initialDelay: 5,
       },
       headers: {},
       createdAt: new Date(),
       updatedAt: new Date(),
-      userId: 'user_123'
+      userId: "user_123",
     }
   }
 
@@ -271,43 +249,43 @@ export class WebhookService {
     // Simulação de busca no banco de dados
     return {
       id,
-      webhookConfigId: 'wh_001',
+      webhookConfigId: "wh_001",
       payload: {
-        id: 'payload_123',
-        event: 'form.submitted',
+        id: "payload_123",
+        event: "form.submitted",
         timestamp: new Date().toISOString(),
         data: {},
-        source: 'icefunnel',
-        version: '1.0'
+        source: "icefunnel",
+        version: "1.0",
       },
-      status: 'pending',
+      status: "pending",
       attempts: 0,
-      createdAt: new Date()
+      createdAt: new Date(),
     }
   }
 
   private async getIncomingWebhookConfig(endpoint: string): Promise<any> {
     // Simulação de busca no banco de dados
     return {
-      id: 'incoming_001',
-      name: 'Test Incoming',
+      id: "incoming_001",
+      name: "Test Incoming",
       endpoint,
-      secret: 'incoming_secret',
+      secret: "incoming_secret",
       isActive: true,
-      allowedSources: ['*'],
+      allowedSources: ["*"],
       eventMapping: {
-        'external_event': 'internal_event'
+        external_event: "internal_event",
       },
-      userId: 'user_123',
-      createdAt: new Date()
+      userId: "user_123",
+      createdAt: new Date(),
     }
   }
 
   private async updateDeliveryStatus(
     id: string,
-    status: WebhookDelivery['status'],
+    status: WebhookDelivery["status"],
     errorMessage?: string,
-    nextRetryAt?: Date
+    nextRetryAt?: Date,
   ): Promise<void> {
     // Simulação de atualização no banco de dados
     console.log(`Updating delivery ${id} to status: ${status}`, { errorMessage, nextRetryAt })

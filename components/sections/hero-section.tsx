@@ -88,7 +88,7 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
               <span className="gradient-text block sm:inline">Funis com IA que</span>
               <br className="hidden sm:block" />
               <span className="block sm:inline mt-2 sm:mt-0">
-                <AnimatedText text="Otimizam Conversões" className="gradient-primary" delay={0.5} />
+                <AnimatedText text="Otimizam Conversões" className="gradient-primary" />
               </span>
             </h1>
 
@@ -142,7 +142,6 @@ export function HeroSection({ onOpenModal, onOpenChatbot }: HeroSectionProps) {
           </div>
         </div>
       </div>
-
     </section>
   )
 }
