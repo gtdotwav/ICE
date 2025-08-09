@@ -4,6 +4,7 @@ import { useState } from "react"
 import { FunnelsHeader } from "@/components/dashboard/funnels/funnels-header"
 import { FunnelsTable } from "@/components/dashboard/funnels/funnels-table"
 import { CreateFunnelWizard } from "@/components/dashboard/funnels/create-funnel-wizard"
+import { FunnelPromptPanel } from "@/components/dashboard/funnels/funnel-prompt-panel"
 import type { Funnel } from "@/components/dashboard/funnels/funnels-table"
 
 const initialFunnels: Funnel[] = [
@@ -30,6 +31,7 @@ export default function FunnelsPage() {
         <p className="text-lg text-muted-foreground">Gerencie e otimize seus funis de conversão.</p>
       </div>
 
+      <FunnelPromptPanel />
       <FunnelsHeader onOpenWizard={() => setIsWizardOpen(true)} />
       <FunnelsTable funnels={funnels} onOpenWizard={() => setIsWizardOpen(true)} />
 

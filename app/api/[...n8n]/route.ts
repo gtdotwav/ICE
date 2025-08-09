@@ -14,6 +14,7 @@ const ALLOWLIST: RegExp[] = [
   /^\/api\/monitoring\/metrics$/,
   /^\/api\/products$/,
   /^\/api\/funnels$/,
+  /^\/api\/funnels\/generate$/, // Added route for funnel generation
   /^\/api\/funnels\/stats$/,
   /^\/api\/webhooks(\/.*)?$/,
 ]
