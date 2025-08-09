@@ -1,9 +1,10 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Space_Grotesk } from "next/font/google"
+import { Inter, Space_Grotesk } from 'next/font/google'
 import "./globals.css"
 import { cn } from "@/lib/utils"
-import { AnimatedGradient, FloatingLogo, Toaster, CookieConsentBanner, ClientInitializer } from "./client-components"
+import { AnimatedGradient, FloatingLogo, CookieConsentBanner, ClientInitializer } from "./client-components"
+import { Toaster } from "@/components/ui/toaster"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -18,11 +19,9 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: "HIAS FLOW | AI-Powered Conversion Engine",
-  description:
-    "Funis com IA que otimizam conversões. Inteligência Artificial aplicada em cada etapa para um ROI previsível e crescimento escalável.",
-  keywords: ["IA", "SaaS", "Funil de Vendas", "Machine Learning", "Otimização de Conversão", "Next.js"],
-  generator: "v0.dev",
+  title: "IceFunnel",
+  description: "Dashboard SaaS para otimização de funis de vendas com IA",
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -31,10 +30,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" className="dark">
+    <html lang="pt-BR" suppressHydrationWarning className="dark">
       <body
         className={cn(
-          "min-h-screen bg-background font-body text-foreground antialiased",
+          "min-h-[100dvh] bg-background text-foreground antialiased",
           inter.variable,
           spaceGrotesk.variable,
         )}

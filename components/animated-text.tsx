@@ -1,59 +1,60 @@
 "use client"
 
-import { motion, useInView } from "framer-motion"
-import { useRef } from "react"
+import { motion } from "framer-motion"
+import type { ReactNode } from "react"
 
-type AnimatedTextProps = {
-  text: string
-  el?: "p" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "span" | "div"
+interface AnimatedTextProps {
+  children: ReactNode
   className?: string
+  delay?: number
+  duration?: number
 }
 
-export function AnimatedText({ text, el: Wrapper = "p", className }: AnimatedTextProps) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { amount: 0.5, once: true })
+export function AnimatedText({ children, className = "", delay = 0, duration = 0.6 }: AnimatedTextProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration,
+        delay,
+        ease: [0.25, 0.25, 0, 1],
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
 
-  const defaultAnimations = {
-    hidden: {
-      opacity: 0,
-      y: 20,
-    },
-    visible: (i: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        delay: i * 0.05,
-      },
-    }),
-  }
-
-  let charCount = 0
+export function AnimatedTextWord({
+  text,
+  className = "",
+  delay = 0,
+}: {
+  text: string
+  className?: string
+  delay?: number
+}) {
+  const words = text.split(" ")
 
   return (
-    <Wrapper className={className}>
-      <span className="sr-only">{text}</span>
-      <motion.span ref={ref} initial="hidden" animate={isInView ? "visible" : "hidden"} aria-hidden>
-        {text.split(" ").map((word, wordIndex, arr) => (
-          <span key={wordIndex} className="inline-block">
-            {word.split("").map((char, charIndex) => (
-              <motion.span
-                key={charIndex}
-                className="inline-block text-sky-200"
-                variants={defaultAnimations}
-                custom={charCount++}
-              >
-                {char}
-              </motion.span>
-            ))}
-            {wordIndex < arr.length - 1 && (
-              <motion.span className="inline-block" variants={defaultAnimations} custom={charCount++}>
-                &nbsp;
-              </motion.span>
-            )}
-          </span>
-        ))}
-      </motion.span>
-    </Wrapper>
+    <span className={className}>
+      {words.map((word, index) => (
+        <motion.span
+          key={index}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.6,
+            delay: delay + index * 0.1,
+            ease: [0.25, 0.25, 0, 1],
+          }}
+          className="inline-block mr-2"
+        >
+          {word}
+        </motion.span>
+      ))}
+    </span>
   )
 }

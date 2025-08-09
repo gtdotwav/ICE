@@ -1,15 +1,17 @@
 "use client"
 
-import { Search } from "lucide-react"
+import { Search } from 'lucide-react'
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export function ProductsToolbar() {
   return (
-    <div className="flex flex-col items-center gap-4 md:flex-row">
+    <div className="flex items-center gap-2">
+      <Input placeholder="Buscar produto..." className="max-w-xs" />
+      {/* rest of code here */}
       <div className="relative w-full md:flex-grow">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input placeholder="Buscar por nome..." className="w-full pl-10" />
+        {/* <Input placeholder="Buscar por nome..." className="w-full pl-10" /> */}
       </div>
       <div className="flex w-full gap-4 md:w-auto">
         <Select>

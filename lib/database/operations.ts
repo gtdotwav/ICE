@@ -1,429 +1,411 @@
-/**
- * Database Operations with CRUD functionality
- * Optimized queries with proper error handling
- */
+import { createClient } from "@supabase/supabase-js"
 
-import { dbManager } from "./connection"
-import type { SupabaseClient } from "@supabase/supabase-js"
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
-export interface QueryOptions {
-  limit?: number
-  offset?: number
-  orderBy?: string
-  orderDirection?: "asc" | "desc"
-  filters?: Record<string, any>
+export interface DatabaseUser {
+  id: string
+  email: string
+  name?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface DatabaseProduct {
+  id: string
+  name: string
+  category: string
+  price: number
+  status: "active" | "draft" | "archived"
+  description?: string
+  promo_price?: number
+  user_id: string
+  created_at: string
+  updated_at: string
+}
+
+export interface DatabaseWebhook {
+  id: string
+  name: string
+  url: string
+  events: string[]
+  secret: string
+  is_active: boolean
+  max_attempts: number
+  initial_delay: number
+  backoff_multiplier: number
+  headers?: Record<string, string>
+  user_id: string
+  created_at: string
+  updated_at: string
+}
+
+export interface DatabaseWebhookDelivery {
+  id: string
+  webhook_config_id: string
+  payload: any
+  status: "pending" | "delivered" | "failed" | "retrying"
+  attempts: number
+  last_attempt_at?: string
+  next_retry_at?: string
+  response_status?: number
+  response_body?: string
+  error_message?: string
+  created_at: string
 }
 
 export class DatabaseOperations {
-  private async ensureConnection() {
-    if (!dbManager.isReady()) {
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-      if (url && anonKey) {
-        await dbManager.initialize({ url, anonKey })
-      }
-    }
-    return dbManager.getClient()
-  }
-
-  /**
-   * Generic CREATE operation
-   */
-  async create<T>(table: string, data: Partial<T>): Promise<T> {
-    const client = await this.ensureConnection()
-    if (!client) {
-      throw new Error("Database not initialized")
-    }
-
-    const { data: result, error } = await client.from(table).insert(data).select().single()
-    if (error) throw error
-    return result
-  }
-
-  /**
-   * Generic READ operation with advanced filtering
-   */
-  async read<T>(table: string, options: QueryOptions = {}): Promise<{ data: T[]; count: number }> {
-    const client = await this.ensureConnection()
-    if (!client) {
-      return { data: [], count: 0 }
-    }
-
-    const { limit = 50, offset = 0, orderBy, orderDirection = "desc", filters } = options
-
-    let query = client.from(table).select("*", { count: "exact" })
-
-    // Apply filters
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (Array.isArray(value)) {
-            query = query.in(key, value)
-          } else if (typeof value === "string" && value.includes("%")) {
-            query = query.like(key, value)
-          } else {
-            query = query.eq(key, value)
-          }
-        }
-      })
-    }
-
-    // Apply ordering
-    if (orderBy) {
-      query = query.order(orderBy, { ascending: orderDirection === "asc" })
-    }
-
-    // Apply pagination
-    query = query.range(offset, offset + limit - 1)
-
-    const result = await query
-    return {
-      data: result.data || [],
-      count: result.count || 0,
-    }
-  }
-
-  /**
-   * Generic UPDATE operation
-   */
-  async update<T>(table: string, id: string, data: Partial<T>): Promise<T> {
-    const client = await this.ensureConnection()
-    if (!client) {
-      throw new Error("Database not initialized")
-    }
-
-    const { data: result, error } = await client.from(table).update(data).eq("id", id).select().single()
-    if (error) throw error
-    return result
-  }
-
-  /**
-   * Generic DELETE operation
-   */
-  async delete(table: string, id: string): Promise<void> {
-    const client = await this.ensureConnection()
-    if (!client) {
-      throw new Error("Database not initialized")
-    }
-
-    const result = await client.from(table).delete().eq("id", id)
-    if (result.error) {
-      throw result.error
-    }
-  }
-
-  /**
-   * Bulk operations for better performance
-   */
-  async bulkCreate<T>(table: string, data: Partial<T>[]): Promise<T[]> {
-    const client = await this.ensureConnection()
-    if (!client) {
-      throw new Error("Database not initialized")
-    }
-
-    const { data: result, error } = await client.from(table).insert(data).select()
-    if (error) throw error
-    return result || []
-  }
-
-  async bulkUpdate<T>(table: string, updates: Array<{ id: string; data: Partial<T> }>): Promise<T[]> {
-    const client = await this.ensureConnection()
-    if (!client) {
-      throw new Error("Database not initialized")
-    }
-
-    const results = []
-    for (const { id, data } of updates) {
-      const { data: result, error } = await client.from(table).update(data).eq("id", id).select().single()
-      if (error) {
-        throw error
-      }
-      results.push(result)
-    }
-    return results
-  }
-
-  /**
-   * Search with full-text search
-   */
-  async search<T>(
-    table: string,
-    searchTerm: string,
-    searchColumns: string[],
-    options: QueryOptions = {},
-  ): Promise<T[]> {
-    const client = await this.ensureConnection()
-    if (!client) {
-      return []
-    }
-
-    const { limit = 50, offset = 0 } = options
-
-    let query = client.from(table).select("*")
-
-    // Build search query
-    const searchConditions = searchColumns.map((column) => `${column}.ilike.%${searchTerm}%`).join(",")
-
-    query = query.or(searchConditions)
-    query = query.range(offset, offset + limit - 1)
-
-    const result = await query
-    return result.data || []
-  }
-
-  /**
-   * Aggregate operations
-   */
-  async aggregate(
-    table: string,
-    aggregations: Record<string, "count" | "sum" | "avg" | "min" | "max">,
-    filters?: Record<string, any>,
-  ): Promise<Record<string, number>> {
-    const client = await this.ensureConnection()
-    if (!client) {
-      return {}
-    }
-
-    let query = client.from(table).select("*")
-
-    // Apply filters
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        query = query.eq(key, value)
-      })
-    }
-
-    const { data, error } = await query
-    if (error) throw error
-
-    // Calculate aggregations manually since Supabase doesn't support all SQL aggregations directly
-    const result: Record<string, number> = {}
-
-    if (data && data.length > 0) {
-      Object.entries(aggregations).forEach(([column, func]) => {
-        const values = data.map((row) => row[column]).filter((val) => val !== null && val !== undefined)
-
-        switch (func) {
-          case "count":
-            result[column] = values.length
-            break
-          case "sum":
-            result[column] = values.reduce((sum, val) => sum + (Number(val) || 0), 0)
-            break
-          case "avg":
-            result[column] =
-              values.length > 0 ? values.reduce((sum, val) => sum + (Number(val) || 0), 0) / values.length : 0
-            break
-          case "min":
-            result[column] = values.length > 0 ? Math.min(...values.map(Number)) : 0
-            break
-          case "max":
-            result[column] = values.length > 0 ? Math.max(...values.map(Number)) : 0
-            break
-        }
-      })
-    }
-
-    return result
-  }
-
-  /**
-   * Real-time subscriptions
-   */
-  subscribeToChanges<T>(table: string, callback: (payload: any) => void, filters?: Record<string, any>): () => void {
-    const client = dbManager.getClient()
-    if (!client) {
-      console.warn("Database not initialized, subscription not created")
-      return () => {}
-    }
-
-    const subscription = client
-      .channel(`${table}_changes`)
-      .on(
-        "postgres_changes",
+  // User operations
+  async createUser(userData: Omit<DatabaseUser, "id" | "created_at" | "updated_at">): Promise<DatabaseUser> {
+    const { data, error } = await supabase
+      .from("users")
+      .insert([
         {
-          event: "*",
-          schema: "public",
-          table,
-          filter: filters
-            ? Object.entries(filters)
-                .map(([key, value]) => `${key}=eq.${value}`)
-                .join("&")
-            : undefined,
+          ...userData,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
         },
-        callback,
-      )
-      .subscribe()
+      ])
+      .select()
+      .single()
 
-    return () => {
-      subscription.unsubscribe()
+    if (error) {
+      throw new Error(`Failed to create user: ${error.message}`)
     }
+
+    return data
   }
 
-  /**
-   * Transaction support
-   */
-  async transaction<T>(operations: Array<(client: SupabaseClient) => Promise<any>>): Promise<T[]> {
-    const client = await this.ensureConnection()
-    if (!client) {
-      throw new Error("Database not initialized")
-    }
+  async getUserById(id: string): Promise<DatabaseUser | null> {
+    const { data, error } = await supabase.from("users").select("*").eq("id", id).single()
 
-    // Supabase doesn't support explicit transactions in the client
-    // but we can use RPC for complex operations
-
-    try {
-      const results = []
-      for (const operation of operations) {
-        const result = await operation(client)
-        if (result.error) {
-          throw result.error
-        }
-        results.push(result.data)
+    if (error) {
+      if (error.code === "PGRST116") {
+        return null // User not found
       }
-      return results
-    } catch (error) {
-      console.error("Transaction failed:", error)
-      throw error
+      throw new Error(`Failed to get user: ${error.message}`)
     }
+
+    return data
   }
 
-  /**
-   * Performance monitoring
-   */
-  async getPerformanceMetrics(): Promise<{
-    activeConnections: number
-    queryLatency: number
-    errorRate: number
-    cacheHitRate: number
-  }> {
-    const startTime = Date.now()
+  async getUserByEmail(email: string): Promise<DatabaseUser | null> {
+    const { data, error } = await supabase.from("users").select("*").eq("email", email).single()
 
-    try {
-      const client = await this.ensureConnection()
-      if (!client) {
-        return {
-          activeConnections: 0,
-          queryLatency: 0,
-          errorRate: 100,
-          cacheHitRate: 0,
-        }
+    if (error) {
+      if (error.code === "PGRST116") {
+        return null // User not found
       }
-
-      // Simple query to measure latency
-      await client.from("products").select("count").limit(1)
-      const queryLatency = Date.now() - startTime
-
-      return {
-        activeConnections: 1, // Supabase manages connections
-        queryLatency,
-        errorRate: 0, // Would be calculated from error logs
-        cacheHitRate: 0, // Would be calculated from cache metrics
-      }
-    } catch (error) {
-      return {
-        activeConnections: 0,
-        queryLatency: Date.now() - startTime,
-        errorRate: 100,
-        cacheHitRate: 0,
-      }
+      throw new Error(`Failed to get user by email: ${error.message}`)
     }
+
+    return data
   }
 
-  /**
-   * Specific operations for common entities
-   */
-  async getProducts(options: QueryOptions = {}) {
-    const client = await this.ensureConnection()
-    if (!client) return []
-
-    const { limit = 50, offset = 0, orderBy = "created_at", orderDirection = "desc", filters } = options
-
-    let query = client.from("products").select(`
-      *,
-      categories (name),
-      suppliers (name)
-    `)
-
-    // Apply filters
-    if (filters) {
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          if (Array.isArray(value)) {
-            query = query.in(key, value)
-          } else if (typeof value === "string" && value.includes("%")) {
-            query = query.like(key, value)
-          } else {
-            query = query.eq(key, value)
-          }
-        }
+  async updateUser(id: string, updates: Partial<Omit<DatabaseUser, "id" | "created_at">>): Promise<DatabaseUser> {
+    const { data, error } = await supabase
+      .from("users")
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString(),
       })
+      .eq("id", id)
+      .select()
+      .single()
+
+    if (error) {
+      throw new Error(`Failed to update user: ${error.message}`)
     }
 
-    // Apply ordering
-    query = query.order(orderBy, { ascending: orderDirection === "asc" })
-
-    // Apply pagination
-    query = query.range(offset, offset + limit - 1)
-
-    const { data, error } = await query
-    if (error) throw error
-    return data || []
+    return data
   }
 
-  async getCategories() {
-    const client = await this.ensureConnection()
-    if (!client) return []
+  // Product operations
+  async createProduct(
+    productData: Omit<DatabaseProduct, "id" | "created_at" | "updated_at">,
+  ): Promise<DatabaseProduct> {
+    const { data, error } = await supabase
+      .from("products")
+      .insert([
+        {
+          ...productData,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ])
+      .select()
+      .single()
 
-    const { data, error } = await client.from("categories").select("*").order("name")
+    if (error) {
+      throw new Error(`Failed to create product: ${error.message}`)
+    }
 
-    if (error) throw error
-    return data || []
+    return data
   }
 
-  async getSuppliers() {
-    const client = await this.ensureConnection()
-    if (!client) return []
+  async getProductById(id: string): Promise<DatabaseProduct | null> {
+    const { data, error } = await supabase.from("products").select("*").eq("id", id).single()
 
-    const { data, error } = await client.from("suppliers").select("*").order("name")
+    if (error) {
+      if (error.code === "PGRST116") {
+        return null
+      }
+      throw new Error(`Failed to get product: ${error.message}`)
+    }
 
-    if (error) throw error
-    return data || []
+    return data
   }
 
-  async getInventoryData() {
-    const client = await this.ensureConnection()
-    if (!client) return []
-
-    const { data, error } = await client
-      .from("inventory_counts")
+  async getProductsByUserId(userId: string): Promise<DatabaseProduct[]> {
+    const { data, error } = await supabase
+      .from("products")
       .select("*")
-      .order("data_agendamento", { ascending: false })
-
-    if (error) throw error
-    return data || []
-  }
-
-  async getOrders() {
-    const client = await this.ensureConnection()
-    if (!client) return []
-
-    const { data, error } = await client
-      .from("orders")
-      .select(`
-        *,
-        order_items (
-          *,
-          products (name, price)
-        )
-      `)
+      .eq("user_id", userId)
       .order("created_at", { ascending: false })
 
-    if (error) throw error
+    if (error) {
+      throw new Error(`Failed to get products: ${error.message}`)
+    }
+
     return data || []
+  }
+
+  async updateProduct(
+    id: string,
+    updates: Partial<Omit<DatabaseProduct, "id" | "created_at">>,
+  ): Promise<DatabaseProduct> {
+    const { data, error } = await supabase
+      .from("products")
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single()
+
+    if (error) {
+      throw new Error(`Failed to update product: ${error.message}`)
+    }
+
+    return data
+  }
+
+  async deleteProduct(id: string): Promise<void> {
+    const { error } = await supabase.from("products").delete().eq("id", id)
+
+    if (error) {
+      throw new Error(`Failed to delete product: ${error.message}`)
+    }
+  }
+
+  // Webhook operations
+  async createWebhookConfig(
+    webhookData: Omit<DatabaseWebhook, "id" | "created_at" | "updated_at">,
+  ): Promise<DatabaseWebhook> {
+    const { data, error } = await supabase
+      .from("webhook_configs")
+      .insert([
+        {
+          ...webhookData,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ])
+      .select()
+      .single()
+
+    if (error) {
+      throw new Error(`Failed to create webhook config: ${error.message}`)
+    }
+
+    return data
+  }
+
+  async getWebhookConfigById(id: string): Promise<DatabaseWebhook | null> {
+    const { data, error } = await supabase.from("webhook_configs").select("*").eq("id", id).single()
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        return null
+      }
+      throw new Error(`Failed to get webhook config: ${error.message}`)
+    }
+
+    return data
+  }
+
+  async getWebhookConfigsByUserId(userId: string): Promise<DatabaseWebhook[]> {
+    const { data, error } = await supabase
+      .from("webhook_configs")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      throw new Error(`Failed to get webhook configs: ${error.message}`)
+    }
+
+    return data || []
+  }
+
+  async getActiveWebhookConfigsByEvent(userId: string, eventType: string): Promise<DatabaseWebhook[]> {
+    const { data, error } = await supabase
+      .from("webhook_configs")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("is_active", true)
+      .contains("events", [eventType])
+
+    if (error) {
+      throw new Error(`Failed to get active webhook configs: ${error.message}`)
+    }
+
+    return data || []
+  }
+
+  async updateWebhookConfig(
+    id: string,
+    updates: Partial<Omit<DatabaseWebhook, "id" | "created_at">>,
+  ): Promise<DatabaseWebhook> {
+    const { data, error } = await supabase
+      .from("webhook_configs")
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select()
+      .single()
+
+    if (error) {
+      throw new Error(`Failed to update webhook config: ${error.message}`)
+    }
+
+    return data
+  }
+
+  async deleteWebhookConfig(id: string): Promise<void> {
+    const { error } = await supabase.from("webhook_configs").delete().eq("id", id)
+
+    if (error) {
+      throw new Error(`Failed to delete webhook config: ${error.message}`)
+    }
+  }
+
+  // Webhook delivery operations
+  async createWebhookDelivery(
+    deliveryData: Omit<DatabaseWebhookDelivery, "id" | "created_at">,
+  ): Promise<DatabaseWebhookDelivery> {
+    const { data, error } = await supabase
+      .from("webhook_deliveries")
+      .insert([
+        {
+          ...deliveryData,
+          created_at: new Date().toISOString(),
+        },
+      ])
+      .select()
+      .single()
+
+    if (error) {
+      throw new Error(`Failed to create webhook delivery: ${error.message}`)
+    }
+
+    return data
+  }
+
+  async getWebhookDeliveryById(id: string): Promise<DatabaseWebhookDelivery | null> {
+    const { data, error } = await supabase.from("webhook_deliveries").select("*").eq("id", id).single()
+
+    if (error) {
+      if (error.code === "PGRST116") {
+        return null
+      }
+      throw new Error(`Failed to get webhook delivery: ${error.message}`)
+    }
+
+    return data
+  }
+
+  async updateWebhookDelivery(
+    id: string,
+    updates: Partial<Omit<DatabaseWebhookDelivery, "id" | "created_at">>,
+  ): Promise<DatabaseWebhookDelivery> {
+    const { data, error } = await supabase.from("webhook_deliveries").update(updates).eq("id", id).select().single()
+
+    if (error) {
+      throw new Error(`Failed to update webhook delivery: ${error.message}`)
+    }
+
+    return data
+  }
+
+  async getWebhookDeliveriesByConfigId(configId: string, limit = 100): Promise<DatabaseWebhookDelivery[]> {
+    const { data, error } = await supabase
+      .from("webhook_deliveries")
+      .select("*")
+      .eq("webhook_config_id", configId)
+      .order("created_at", { ascending: false })
+      .limit(limit)
+
+    if (error) {
+      throw new Error(`Failed to get webhook deliveries: ${error.message}`)
+    }
+
+    return data || []
+  }
+
+  async getPendingWebhookDeliveries(): Promise<DatabaseWebhookDelivery[]> {
+    const { data, error } = await supabase
+      .from("webhook_deliveries")
+      .select("*")
+      .in("status", ["pending", "retrying"])
+      .lte("next_retry_at", new Date().toISOString())
+      .order("created_at", { ascending: true })
+
+    if (error) {
+      throw new Error(`Failed to get pending webhook deliveries: ${error.message}`)
+    }
+
+    return data || []
+  }
+
+  // Analytics and stats
+  async getWebhookStats(
+    configId: string,
+    days = 7,
+  ): Promise<{
+    totalDeliveries: number
+    successRate: number
+    averageResponseTime: number
+  }> {
+    const startDate = new Date()
+    startDate.setDate(startDate.getDate() - days)
+
+    const { data, error } = await supabase
+      .from("webhook_deliveries")
+      .select("status, response_status, created_at, last_attempt_at")
+      .eq("webhook_config_id", configId)
+      .gte("created_at", startDate.toISOString())
+
+    if (error) {
+      throw new Error(`Failed to get webhook stats: ${error.message}`)
+    }
+
+    const deliveries = data || []
+    const totalDeliveries = deliveries.length
+    const successfulDeliveries = deliveries.filter((d) => d.status === "delivered").length
+    const successRate = totalDeliveries > 0 ? (successfulDeliveries / totalDeliveries) * 100 : 0
+
+    // Calculate average response time (simplified)
+    const averageResponseTime = 250 // Placeholder
+
+    return {
+      totalDeliveries,
+      successRate: Math.round(successRate * 100) / 100,
+      averageResponseTime,
+    }
   }
 }
 
-// Export singleton instance
-export const dbOps = new DatabaseOperations()
+export const db = new DatabaseOperations()

@@ -44,7 +44,7 @@ export class WebhookService {
       }
     } catch (error) {
       console.error("Erro ao disparar webhook:", error)
-      await this.logger.logError("webhook_trigger_failed", { eventType, userId, error }, 0, {})
+      await this.logger.logError("webhook_trigger_failed", eventType, 0, { eventType, userId, error })
     }
   }
 

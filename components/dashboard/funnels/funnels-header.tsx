@@ -1,23 +1,38 @@
 "use client"
 
+import useSWR from "swr"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { PlusCircle } from "lucide-react"
+import { DollarSign, Target, Zap, LineChart } from 'lucide-react'
 
-interface FunnelsHeaderProps {
-  onOpenWizard: () => void
-}
+const fetcher = (u: string) => fetch(u).then((r) => r.json())
 
-export function FunnelsHeader({ onOpenWizard }: FunnelsHeaderProps) {
+export function FunnelsHeader({ onOpenWizard }: { onOpenWizard: () => void }) {
+  const { data } = useSWR("/api/funnels/stats", fetcher)
+  const cards = [
+    { label: "Receita Total", value: data?.revenueTotal ?? "—", icon: DollarSign },
+    { label: "Conversão Média", value: data ? `${data.avgConversion}%` : "—", icon: Target },
+    { label: "Funis Ativos", value: data?.activeFunnels ?? "—", icon: Zap },
+    { label: "Otimizações IA", value: data?.aiOptimizations ?? "—", icon: LineChart },
+  ]
+
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-      <div className="flex-1">
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight mt-2">Gerenciamento de Funis</h1>
+    <div className="space-y-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c) => (
+          <Card key={c.label}>
+            <CardContent className="p-4">
+              <div className="text-xs text-muted-foreground">{c.label}</div>
+              <div className="flex items-center gap-2 mt-1">
+                <c.icon className="h-4 w-4 text-primary" />
+                <div className="text-xl font-semibold">{c.value}</div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
-      <div className="flex items-center gap-2">
-        <Button size="lg" onClick={onOpenWizard}>
-          <PlusCircle className="mr-2 h-5 w-5" />
-          Criar Novo Funil
-        </Button>
+      <div>
+        <Button onClick={onOpenWizard}>Criar Novo Funil</Button>
       </div>
     </div>
   )

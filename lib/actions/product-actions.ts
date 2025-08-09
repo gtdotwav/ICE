@@ -24,3 +24,25 @@ export async function createProduct(formData: ProductFormData) {
     message: "Produto criado com sucesso!",
   }
 }
+
+export async function updateProduct(id: string, formData: ProductFormData) {
+  const result = productSchema.safeParse(formData)
+
+  if (!result.success) {
+    return {
+      success: false,
+      errors: result.error.flatten().fieldErrors,
+    }
+  }
+
+  // Simula a atualização de um produto no banco de dados
+  console.log(`Updating product ${id}:`, result.data)
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+
+  revalidatePath("/dashboard/products")
+
+  return {
+    success: true,
+    message: "Produto atualizado com sucesso!",
+  }
+}

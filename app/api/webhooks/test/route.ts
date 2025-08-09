@@ -1,56 +1,94 @@
-import { type NextRequest, NextResponse } from "next/server"
+import crypto from "crypto"
+import { WebhookStore } from "../store"
 
-export async function POST(request: NextRequest) {
-  try {
-    // Obter dados do corpo da requisição
-    const webhookData = await request.json()
+// HMAC header per spec
+const SIGN_HEADER = "X-IceFunnel-Signature"
 
-    // Validar dados mínimos necessários
-    if (!webhookData.event_type || !webhookData.automation_details?.type) {
-      return NextResponse.json({ error: "Dados de webhook inválidos" }, { status: 400 })
-    }
-
-    // Simular processamento do webhook
-    console.log("Webhook de teste recebido:", webhookData)
-
-    // Simular resposta de sucesso
-    const responseData = {
-      success: true,
-      received_at: new Date().toISOString(),
-      request_id: webhookData.request_id || `req_${Date.now()}`,
-      event_type: webhookData.event_type,
-      automation_type: webhookData.automation_details.type,
-      status: "received",
-      message: "Webhook recebido com sucesso e será processado",
-      estimated_processing_time: getEstimatedTime(webhookData.automation_details.type),
-      webhook_signature: "sim_" + Buffer.from(Date.now().toString()).toString("base64").substring(0, 8),
-    }
-
-    // Retornar resposta de sucesso
-    return NextResponse.json(responseData)
-  } catch (error) {
-    console.error("Erro ao processar webhook de teste:", error)
-    return NextResponse.json(
-      {
-        error: "Erro ao processar webhook",
-        details: error instanceof Error ? error.message : "Erro desconhecido",
-      },
-      { status: 500 },
-    )
-  }
+function signBody(body: string, secret: string) {
+  return crypto.createHmac("sha256", secret).update(body).digest("hex")
 }
 
-function getEstimatedTime(type: string): string {
-  switch (type) {
-    case "copywriter":
-      return "30-60 segundos"
-    case "images":
-      return "2-3 minutos"
-    case "videos":
-      return "5-10 minutos"
-    case "email":
-      return "1-2 minutos"
-    default:
-      return "1-5 minutos"
+export async function POST(req: Request) {
+  const body = (await req.json().catch(() => null)) as {
+    id?: string
+    event?: string
+    samplePayload?: unknown
+    forceSuccess?: boolean
+  } | null
+
+  if (!body?.id) {
+    return new Response(JSON.stringify({ error: "Missing id" }), { status: 400 })
   }
+
+  const webhook = WebhookStore.get(body.id)
+  if (!webhook) {
+    return new Response(JSON.stringify({ error: "Webhook not found" }), { status: 404 })
+  }
+  if (!webhook.active) {
+    return new Response(JSON.stringify({ error: "Webhook is inactive" }), { status: 409 })
+  }
+
+  // Prepare payload
+  const event = body.event || "webhook.test"
+  const payload = body.samplePayload ?? {
+    event,
+    ts: new Date().toISOString(),
+    example: true,
+  }
+  const raw = JSON.stringify(payload)
+
+  const secret = webhook.secret || process.env.ICEFUNNEL_WEBHOOK_SECRET || "dev_secret"
+
+  let success = body.forceSuccess ?? Math.random() > 0.2
+  let respStatus: number | undefined
+  let errMsg: string | undefined
+  const started = Date.now()
+
+  try {
+    // Attempt to deliver to the target URL.
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      [SIGN_HEADER]: signBody(raw, secret),
+    }
+    const resp = await fetch(webhook.url, {
+      method: "POST",
+      headers,
+      body: raw,
+    })
+    respStatus = resp.status
+    // Consider success based on HTTP 2xx unless forceSuccess controls outcome.
+    if (body.forceSuccess == null) success = resp.ok
+  } catch (err: any) {
+    errMsg = typeof err?.message === "string" ? err.message : "network_error"
+    if (body.forceSuccess == null) success = false
+  }
+
+  const durationMs = Date.now() - started
+
+  // Update stats and logs
+  WebhookStore.updateStats(webhook.id, success)
+  WebhookStore.addLog({
+    id: crypto.randomUUID(),
+    webhookId: webhook.id,
+    timestamp: new Date().toISOString(),
+    event,
+    payload,
+    status: success ? "success" : "error",
+    durationMs,
+    responseStatus: respStatus,
+    error: errMsg,
+  })
+
+  const updated = WebhookStore.get(webhook.id)!
+  return Response.json(
+    {
+      ok: success,
+      webhook: {
+        id: updated.id,
+        stats: updated.stats,
+        lastDeliveryAt: updated.stats.lastDeliveryAt,
+      },
+    },
+    { status: success ? 200 : 502 },
+  )
 }

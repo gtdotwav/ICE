@@ -4,7 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { User, ShoppingCart, TrendingUp, Settings, Mail, FileText, Clock, ExternalLink } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { User, ShoppingCart, TrendingUp, Settings, Mail, FileText, Clock, ExternalLink } from 'lucide-react'
 
 const activities = [
   {
@@ -78,74 +79,101 @@ const activities = [
   },
 ]
 
+const items = [
+  { id: 1, title: "Novo funil criado", time: "2 min atrás", status: "success" as const },
+  { id: 2, title: "Conversão concluída", time: "15 min atrás", status: "success" as const },
+  { id: 3, title: "Falha de webhook", time: "1 hora atrás", status: "error" as const },
+]
+
 export function RecentActivity() {
   return (
-    <ScrollArea className="h-[400px] pr-4">
-      <div className="space-y-4">
-        {activities.map((activity, index) => (
-          <div
-            key={activity.id}
-            className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-all duration-200 cursor-pointer group animate-slide-up"
-            style={{ animationDelay: `${index * 50}ms` }}
-          >
-            {/* Icon */}
-            <div
-              className={`p-2 rounded-lg ${activity.bgColor} ${activity.color} group-hover:scale-110 transition-transform duration-200`}
-            >
-              <activity.icon className="h-4 w-4" />
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 space-y-1">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium text-sm group-hover:text-primary transition-colors duration-200">
-                  {activity.title}
-                </h4>
-                {activity.value && (
-                  <Badge variant="secondary" className="bg-green-500/20 text-green-400 text-xs">
-                    {activity.value}
-                  </Badge>
-                )}
-              </div>
-
-              <p className="text-xs text-muted-foreground leading-relaxed">{activity.description}</p>
-
-              <div className="flex items-center justify-between mt-2">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-5 w-5">
-                    <AvatarImage src={activity.avatar || "/placeholder.svg"} />
-                    <AvatarFallback className="text-xs bg-primary/20 text-primary">
-                      {activity.user.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-xs text-muted-foreground">{activity.user}</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+    <div className="space-y-4">
+      <Card>
+        <CardContent className="p-4 space-y-3">
+          {items.map((i) => (
+            <div key={i.id} className="flex items-center justify-between rounded-md border p-3">
+              <div className="space-y-1">
+                <div className="font-medium">{i.title}</div>
+                <div className="text-xs text-muted-foreground flex items-center gap-1">
                   <Clock className="h-3 w-3" />
-                  {activity.time}
+                  {i.time}
                 </div>
               </div>
+              <Badge variant={i.status === "success" ? "default" : "destructive"}>
+                {i.status === "success" ? "OK" : "Erro"}
+              </Badge>
             </div>
+          ))}
+        </CardContent>
+      </Card>
 
-            {/* Action */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 h-8 w-8"
+      <ScrollArea className="h-[400px] pr-4">
+        <div className="space-y-4">
+          {activities.map((activity, index) => (
+            <div
+              key={activity.id}
+              className="flex items-start gap-4 p-3 rounded-lg hover:bg-white/5 transition-all duration-200 cursor-pointer group animate-slide-up"
+              style={{ animationDelay: `${index * 50}ms` }}
             >
-              <ExternalLink className="h-3 w-3" />
-            </Button>
-          </div>
-        ))}
-      </div>
+              {/* Icon */}
+              <div
+                className={`p-2 rounded-lg ${activity.bgColor} ${activity.color} group-hover:scale-110 transition-transform duration-200`}
+              >
+                <activity.icon className="h-4 w-4" />
+              </div>
 
-      {/* Load More */}
-      <div className="flex justify-center mt-6">
-        <Button variant="outline" size="sm" className="glass-button bg-transparent">
-          Carregar mais atividades
-        </Button>
-      </div>
-    </ScrollArea>
+              {/* Content */}
+              <div className="flex-1 space-y-1">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium text-sm group-hover:text-primary transition-colors duration-200">
+                    {activity.title}
+                  </h4>
+                  {activity.value && (
+                    <Badge variant="secondary" className="bg-green-500/20 text-green-400 text-xs">
+                      {activity.value}
+                    </Badge>
+                  )}
+                </div>
+
+                <p className="text-xs text-muted-foreground leading-relaxed">{activity.description}</p>
+
+                <div className="flex items-center justify-between mt-2">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-5 w-5">
+                      <AvatarImage src={activity.avatar || "/placeholder.svg"} />
+                      <AvatarFallback className="text-xs bg-primary/20 text-primary">
+                        {activity.user.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-xs text-muted-foreground">{activity.user}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Clock className="h-3 w-3" />
+                    {activity.time}
+                  </div>
+                </div>
+              </div>
+
+              {/* Action */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 h-8 w-8"
+              >
+                <ExternalLink className="h-3 w-3" />
+              </Button>
+            </div>
+          ))}
+        </div>
+
+        {/* Load More */}
+        <div className="flex justify-center mt-6">
+          <Button variant="outline" size="sm" className="glass-button bg-transparent">
+            Carregar mais atividades
+          </Button>
+        </div>
+      </ScrollArea>
+    </div>
   )
 }
