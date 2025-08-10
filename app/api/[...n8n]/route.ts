@@ -1,6 +1,6 @@
+// Catch-all API that proxies to n8n with allowlist + same-origin guard
 import { n8nForward } from "@/lib/n8nClient"
 
-// Allowlist of app API paths to forward to n8n.
 const ALLOWLIST: RegExp[] = [
   /^\/api\/users\/register$/,
   /^\/api\/forms\/submit$/,
@@ -8,18 +8,19 @@ const ALLOWLIST: RegExp[] = [
   /^\/api\/payments\/complete$/,
   /^\/api\/ai\/copywriter$/,
   /^\/api\/ai-automation\/request$/,
+  /^\/api\/ai\/metrics$/,
   /^\/api\/analytics\/events$/,
   /^\/api\/analytics\/web-vitals$/,
   /^\/api\/metrics$/,
   /^\/api\/monitoring\/metrics$/,
   /^\/api\/products$/,
   /^\/api\/funnels$/,
-  /^\/api\/funnels\/generate$/, // Added route for funnel generation
   /^\/api\/funnels\/stats$/,
+  /^\/api\/ai\/page-generate$/, // Preview generation (Studio)
+  /^\/api\/funnels\/create$/, // Create funnel + page (Studio)
   /^\/api\/webhooks(\/.*)?$/,
 ]
 
-// Simple protection: only accept calls from same origin.
 function requireSameOrigin(req: Request) {
   const origin = req.headers.get("origin")
   const host = req.headers.get("host")
@@ -33,7 +34,6 @@ function requireSameOrigin(req: Request) {
 }
 
 function assertAllowed(pathname: string) {
-  if (ALLOWLIST.length === 0) return
   const ok = ALLOWLIST.some((rx) => rx.test(pathname))
   if (!ok) throw new Error(`Path not allowed: ${pathname}`)
 }
@@ -43,8 +43,7 @@ async function handle(req: Request) {
     return new Response(JSON.stringify({ error: "forbidden" }), { status: 403 })
   }
   const url = new URL(req.url)
-  // Rebuild the path starting at /api/...
-  const parts = url.pathname.split("/").slice(1) // ["api", ...]
+  const parts = url.pathname.split("/").slice(1)
   const idxApi = parts.indexOf("api")
   const forwardPath = `/${parts.slice(idxApi).join("/")}`
   assertAllowed(forwardPath)

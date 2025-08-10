@@ -5,6 +5,7 @@ const PREFIX = process.env.N8N_WEBHOOK_PREFIX || "webhook"
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY || ""
 const N8N_HMAC_SECRET = process.env.N8N_HMAC_SECRET || ""
 
+/** Build full n8n webhook URL from /api/... path */
 function buildUrl(path: string, search?: string) {
   const clean = path.startsWith("/") ? path : `/${path}`
   const query = search ? (search.startsWith("?") ? search : `?${search}`) : ""
@@ -16,15 +17,14 @@ function hmac(body: string, secret: string) {
 }
 
 /**
- * Forwards an incoming API request to an n8n Webhook endpoint.
- * - Adds x-internal-api-key
- * - Optionally signs the body with x-webhook-signature
+ * Proxies an incoming Next.js API request to the corresponding n8n webhook.
+ * - Preserves method, query, and body
+ * - Sends x-internal-api-key
+ * - Optionally signs body with x-webhook-signature if N8N_HMAC_SECRET is set
  */
 export async function n8nForward(req: Request, path: string) {
   const target = buildUrl(path, new URL(req.url).search)
   const method = req.method.toUpperCase()
-
-  // Only include body for payload methods.
   const rawBody = method === "GET" || method === "HEAD" ? "" : await req.text()
 
   const headers: Record<string, string> = {
